@@ -6,6 +6,8 @@ import { inngest } from "@/inngest/client";
 import { strategistModel } from "./models";
 import { proposeOptimization } from "./optimizer";
 import { executeOptimization } from "@/lib/manager/execute";
+import { searchAdLibrary } from "@/lib/ads/ad-library";
+import { decryptSecret } from "@/lib/crypto";
 import type { BriefInput } from "./strategist";
 
 /**
@@ -377,6 +379,52 @@ function buildTools(orgId: string, userId: string | null) {
               ? `Recommendation created as a pending approval — review it at /dashboard/campaigns/${campaignId}/chat.`
               : "No change recommended.",
         };
+      },
+    }),
+
+    spy_competitor_ads: tool({
+      description:
+        "Search the Meta Ad Library for a competitor's currently running ads (copy, titles, platforms, start dates). Coverage: commercial ads are only exposed for EU countries — use FR (or another EU code), not MA/US. Great for stealing angles before a creative refresh.",
+      inputSchema: z.object({
+        searchTerms: z.string().describe("Competitor brand or product name"),
+        countries: z
+          .array(z.string())
+          .default(["FR"])
+          .describe("EU ISO country codes, e.g. ['FR']"),
+      }),
+      execute: async ({ searchTerms, countries }) => {
+        const [account] = await db
+          .select()
+          .from(schema.adAccounts)
+          .where(
+            and(
+              eq(schema.adAccounts.orgId, orgId),
+              eq(schema.adAccounts.platform, "meta"),
+            ),
+          )
+          .limit(1);
+        if (!account?.encryptedToken) {
+          return { error: "No connected Meta account — connect one in Settings first." };
+        }
+        try {
+          const ads = await searchAdLibrary(
+            { searchTerms, countries, limit: 10 },
+            decryptSecret(account.encryptedToken),
+          );
+          return ads.length
+            ? { count: ads.length, ads }
+            : {
+                count: 0,
+                note: "No active ads found — try a different spelling, or note that only EU-reached ads are visible.",
+              };
+        } catch (err) {
+          const msg = err instanceof Error ? err.message : "unknown";
+          return {
+            error: /permission for this action/i.test(msg)
+              ? "Ad Library access needs a one-time identity confirmation: the account owner must visit facebook.com/ads/library/api, confirm their identity, and accept the terms. After that this tool works."
+              : `Ad Library query failed: ${msg.slice(0, 200)}`,
+          };
+        }
       },
     }),
 

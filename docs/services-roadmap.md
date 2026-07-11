@@ -15,7 +15,7 @@ Status: ✅ built & verified · 🔶 partial · ❌ not built
 | Market research (web-grounded) | ✅ | Step 0 of every campaign; real stats + sources |
 | Competitor identification | ✅ | Part of research (found real competitors live) |
 | Audience personas | ✅ | Standalone tool, brand-aware, persisted |
-| **Competitor ad monitoring** | ❌ | Meta Ad Library API — see what competitors actually run, feed into strategy |
+| **Competitor ad monitoring** | 🔶 | Ad Library client + assistant tool built ("what is X running in FR?"); activates after one-time identity confirmation at facebook.com/ads/library/api (EU countries only for commercial ads) |
 | **Trend & seasonality detection** | ❌ | Ramadan/Eid/fashion-week timing already surfaces in research; make it a calendar the agent plans around |
 | Keyword / search intent research | ❌ | Only matters if/when Google Ads channel is added |
 
