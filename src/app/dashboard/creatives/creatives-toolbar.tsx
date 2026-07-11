@@ -1,0 +1,81 @@
+"use client";
+
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useCallback } from "react";
+
+interface ToolbarProps {
+  total: number;
+  generating: number;
+  ready: number;
+}
+
+export function CreativesToolbar({ total, generating, ready }: ToolbarProps) {
+  const router      = useRouter();
+  const pathname    = usePathname();
+  const searchParams = useSearchParams();
+
+  const status = searchParams.get("status") ?? "all";
+  const sort   = searchParams.get("sort")   ?? "newest";
+
+  const update = useCallback((key: string, value: string) => {
+    const p = new URLSearchParams(searchParams.toString());
+    if (value === "all" || value === "newest") {
+      p.delete(key);
+    } else {
+      p.set(key, value);
+    }
+    router.replace(`${pathname}?${p.toString()}`, { scroll: false });
+  }, [router, pathname, searchParams]);
+
+  return (
+    <div className="mt-5 flex flex-wrap items-center gap-3">
+      {/* Stats chips */}
+      <div className="flex items-center gap-2 text-sm">
+        <button type="button" onClick={() => update("status", "all")}
+          className={`rounded-full px-3.5 py-1.5 font-medium transition-colors ${
+            status === "all"
+              ? "bg-zinc-700 text-zinc-100"
+              : "text-zinc-500 hover:text-zinc-300"
+          }`}>
+          All <span className="ml-1 text-zinc-500">{total}</span>
+        </button>
+
+        {generating > 0 && (
+          <button type="button" onClick={() => update("status", "generating")}
+            className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-medium transition-colors ${
+              status === "generating"
+                ? "bg-amber-950/60 text-amber-300"
+                : "text-zinc-500 hover:text-zinc-300"
+            }`}>
+            <span className="relative flex h-1.5 w-1.5">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-amber-400" />
+            </span>
+            Generating <span className="ml-0.5 text-zinc-500">{generating}</span>
+          </button>
+        )}
+
+        <button type="button" onClick={() => update("status", "ready")}
+          className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-medium transition-colors ${
+            status === "ready"
+              ? "bg-emerald-950/60 text-emerald-300"
+              : "text-zinc-500 hover:text-zinc-300"
+          }`}>
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+          Ready <span className="ml-0.5 text-zinc-500">{ready}</span>
+        </button>
+      </div>
+
+      {/* Sort */}
+      <div className="ml-auto flex items-center gap-2">
+        <span className="text-xs text-zinc-600">Sort by</span>
+        <select value={sort} onChange={(e) => update("sort", e.target.value)}
+          className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-300 outline-none focus:border-zinc-500">
+          <option value="newest">Newest first</option>
+          <option value="score">Highest score</option>
+          <option value="oldest">Oldest first</option>
+        </select>
+      </div>
+    </div>
+  );
+}

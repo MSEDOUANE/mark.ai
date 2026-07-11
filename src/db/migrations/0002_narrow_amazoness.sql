@@ -1,0 +1,2 @@
+CREATE TYPE "public"."autonomy_level" AS ENUM('approve_all', 'approve_spend', 'full_auto');--> statement-breakpoint
+ALTER TABLE "organizations" ADD COLUMN "autonomy_level" "autonomy_level" DEFAULT 'approve_spend' NOT NULL;

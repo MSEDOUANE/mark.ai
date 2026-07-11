@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "web",
+      "runtimeExecutable": "C:\\Users\\MSI\\Desktop\\MINE\\MarkAI\\.claude\\dev-server.cmd",
+      "runtimeArgs": [],
+      "port": 3000,
+      "autoPort": false
+    },
+    {
+      "name": "inngest",
+      "runtimeExecutable": "C:\\Users\\MSI\\AppData\\Local\\nvm\\v22.21.1\\npx.cmd",
+      "runtimeArgs": [
+        "inngest-cli@latest",
+        "dev",
+        "-u",
+        "http://localhost:3000/api/inngest"
+      ],
+      "port": 8288
+    }
+  ]
+}
