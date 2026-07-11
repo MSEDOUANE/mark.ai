@@ -60,17 +60,17 @@ export default async function SettingsPage({
             How much the AI does on its own. Anything that starts or increases ad
             spend can require your approval.
           </p>
-          <form action={updateAutonomy} className="mt-3 flex flex-wrap items-end gap-3">
+          <form action={updateAutonomy} className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end">
             <select
               name="autonomyLevel"
               defaultValue={org.autonomyLevel}
-              className={field}
+              className={`${field} w-full sm:flex-1`}
             >
               <option value="approve_all">{AUTONOMY_LABELS.approve_all}</option>
               <option value="approve_spend">{AUTONOMY_LABELS.approve_spend}</option>
               <option value="full_auto">{AUTONOMY_LABELS.full_auto}</option>
             </select>
-            <button className="rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-zinc-100">
+            <button className="w-full rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-zinc-100 sm:w-auto">
               Save
             </button>
           </form>

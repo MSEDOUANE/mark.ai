@@ -85,7 +85,7 @@ export default async function DashboardPage() {
         </header>
 
         {/* Stats bar */}
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <div className="mt-6 grid grid-cols-1 gap-3 min-[420px]:grid-cols-2 sm:grid-cols-4">
           <StatCard label="Campaigns" value={campaignCount} href="/dashboard/campaigns" />
           <StatCard label="Creatives" value={creativeCount} href="/dashboard/creatives" />
           <StatCard label="Brands" value={brandCount} href="/dashboard/brands" />

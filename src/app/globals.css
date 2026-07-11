@@ -59,6 +59,11 @@ textarea {
     transform 160ms ease;
 }
 
+a,
+button {
+  -webkit-tap-highlight-color: transparent;
+}
+
 input,
 select,
 textarea {
@@ -91,4 +96,15 @@ a:focus-visible {
   box-shadow:
     0 0 0 1px rgba(255, 255, 255, 0.2),
     0 0 0 4px rgba(251, 191, 36, 0.22);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

@@ -90,7 +90,7 @@ export default async function CampaignsPage({
             campaigns.map((c) => (
               <div
                 key={c.id}
-                className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-zinc-900/80 p-4"
+                className="flex flex-col gap-3 rounded-xl border border-white/10 bg-zinc-900/80 p-4 sm:flex-row sm:items-center sm:justify-between"
               >
                 <Link
                   href={`/dashboard/campaigns/${c.id}`}
@@ -106,18 +106,18 @@ export default async function CampaignsPage({
                       : ""}
                   </div>
                 </Link>
-                <div className="flex items-center gap-2">
+                <div className="flex w-full items-center gap-2 sm:w-auto">
                   <Link
                     href={`/dashboard/campaigns/${c.id}/chat`}
                     target="_blank"
                     rel="noreferrer"
-                    className="rounded-full border border-amber-300/25 bg-amber-300 px-3 py-1.5 text-xs font-semibold text-zinc-950 hover:bg-amber-200"
+                    className="flex-1 rounded-full border border-amber-300/25 bg-amber-300 px-3 py-2 text-center text-xs font-semibold text-zinc-950 hover:bg-amber-200 sm:flex-none"
                   >
                     AI Chat
                   </Link>
                   <Link
                     href={`/dashboard/campaigns/${c.id}`}
-                    className="rounded-full border border-white/10 bg-zinc-950 px-2.5 py-1.5 text-zinc-300 hover:bg-zinc-800 hover:text-zinc-50 hover:border-white/20"
+                    className="rounded-full border border-white/10 bg-zinc-950 px-3 py-2 text-center text-zinc-300 hover:border-white/20 hover:bg-zinc-800 hover:text-zinc-50"
                     aria-label={`Open ${c.name}`}
                   >
                     →
