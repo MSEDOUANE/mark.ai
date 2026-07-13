@@ -64,6 +64,7 @@ export async function createVideoProject(formData: FormData) {
   const style = clean(formData, "style") ?? "ugc";
   const language = clean(formData, "language") ?? "en";
   const voice = clean(formData, "voice") ?? "female";
+  const avatar = clean(formData, "avatar");
 
   let product: typeof schema.products.$inferSelect | undefined;
   if (productId) {
@@ -90,6 +91,7 @@ export async function createVideoProject(formData: FormData) {
       style,
       language,
       voice,
+      avatar: style === "avatar" ? avatar : null,
     })
     .returning();
 

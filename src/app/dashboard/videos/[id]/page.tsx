@@ -41,6 +41,8 @@ export default async function VideoEditorPage({
   const script = project.script as VideoScript;
   const scenes = script?.scenes ?? [];
   const rendering = project.status === "rendering";
+  // Avatar projects: one lip-synced take — only the spoken lines are editable.
+  const isAvatar = project.style === "avatar";
 
   return (
     <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
@@ -111,20 +113,23 @@ export default async function VideoEditorPage({
         {/* Scene editor */}
         {scenes.length > 0 ? (
           <section className="mt-6">
-            <h2 className="text-lg font-semibold">Scenes</h2>
+            <h2 className="text-lg font-semibold">{isAvatar ? "Script" : "Scenes"}</h2>
             <p className="mt-1 text-sm text-zinc-400">
-              Adjust any scene — visuals, motion, voiceover, length — then
-              regenerate it, and re-render the final cut.
+              {isAvatar
+                ? "The creator speaks these lines as one continuous take — edit any line, then re-render."
+                : "Adjust any scene — visuals, motion, voiceover, length — then regenerate it, and re-render the final cut."}
             </p>
             <div className="mt-4 space-y-4">
               {scenes.map((scene, i) => (
                 <div key={i} className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-sm font-semibold text-zinc-300">
-                      Scene {i + 1}
-                      <span className="ml-2 text-xs font-normal text-zinc-600">
-                        {scene.videoUrl ? "clip ready" : scene.imageUrl ? "still ready — clip pending" : "not rendered yet"}
-                      </span>
+                      {isAvatar ? `Line ${i + 1}` : `Scene ${i + 1}`}
+                      {!isAvatar && (
+                        <span className="ml-2 text-xs font-normal text-zinc-600">
+                          {scene.videoUrl ? "clip ready" : scene.imageUrl ? "still ready — clip pending" : "not rendered yet"}
+                        </span>
+                      )}
                     </p>
                     <div className="flex items-center gap-1">
                       <form action={moveScene}>
@@ -149,51 +154,59 @@ export default async function VideoEditorPage({
                     </div>
                   </div>
 
-                  <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-[200px_1fr]">
-                    {/* Preview */}
-                    <div className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950">
-                      {scene.videoUrl ? (
-                        <video src={scene.videoUrl} controls loop muted playsInline className="aspect-square w-full object-cover" />
-                      ) : scene.imageUrl ? (
-                        // eslint-disable-next-line @next/next/no-img-element
-                        <img src={scene.imageUrl} alt={`Scene ${i + 1}`} className="aspect-square w-full object-cover" />
-                      ) : (
-                        <div className="flex aspect-square w-full items-center justify-center text-3xl text-zinc-700">🎬</div>
-                      )}
-                    </div>
+                  <div className={`mt-4 grid grid-cols-1 gap-4 ${isAvatar ? "" : "md:grid-cols-[200px_1fr]"}`}>
+                    {/* Preview (voiceover styles only — avatar has one final take) */}
+                    {!isAvatar && (
+                      <div className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950">
+                        {scene.videoUrl ? (
+                          <video src={scene.videoUrl} controls loop muted playsInline className="aspect-square w-full object-cover" />
+                        ) : scene.imageUrl ? (
+                          // eslint-disable-next-line @next/next/no-img-element
+                          <img src={scene.imageUrl} alt={`Scene ${i + 1}`} className="aspect-square w-full object-cover" />
+                        ) : (
+                          <div className="flex aspect-square w-full items-center justify-center text-3xl text-zinc-700">🎬</div>
+                        )}
+                      </div>
+                    )}
 
                     {/* Editable fields */}
                     <form action={updateScene} className="space-y-3">
                       <input type="hidden" name="projectId" value={project.id} />
                       <input type="hidden" name="index" value={i} />
+                      {!isAvatar && (
+                        <>
+                          <label className="block text-xs text-zinc-500">
+                            Visual (what the viewer sees)
+                            <textarea name="visual" rows={2} defaultValue={scene.visual} className={`mt-1 ${field}`} />
+                          </label>
+                          <label className="block text-xs text-zinc-500">
+                            Motion (camera / subject movement)
+                            <input name="motion" defaultValue={scene.motion} className={`mt-1 ${field}`} />
+                          </label>
+                        </>
+                      )}
                       <label className="block text-xs text-zinc-500">
-                        Visual (what the viewer sees)
-                        <textarea name="visual" rows={2} defaultValue={scene.visual} className={`mt-1 ${field}`} />
-                      </label>
-                      <label className="block text-xs text-zinc-500">
-                        Motion (camera / subject movement)
-                        <input name="motion" defaultValue={scene.motion} className={`mt-1 ${field}`} />
-                      </label>
-                      <label className="block text-xs text-zinc-500">
-                        Voiceover line
+                        {isAvatar ? "Spoken line" : "Voiceover line"}
                         <textarea name="voiceover" rows={2} defaultValue={scene.voiceover} className={`mt-1 ${field}`} />
                       </label>
                       <div className="flex flex-wrap items-center gap-3">
-                        <label className="text-xs text-zinc-500">
-                          Length
-                          <select name="durationSeconds" defaultValue={String(scene.durationSeconds)} className={`mt-1 ${field}`}>
-                            <option value="5">5s</option>
-                            <option value="10">10s</option>
-                          </select>
-                        </label>
-                        <button className="mt-4 rounded-lg border border-zinc-600 bg-zinc-800 px-4 py-2 text-xs font-semibold text-zinc-200 transition-colors hover:bg-zinc-700">
+                        {!isAvatar && (
+                          <label className="text-xs text-zinc-500">
+                            Length
+                            <select name="durationSeconds" defaultValue={String(scene.durationSeconds)} className={`mt-1 ${field}`}>
+                              <option value="5">5s</option>
+                              <option value="10">10s</option>
+                            </select>
+                          </label>
+                        )}
+                        <button className={`${isAvatar ? "" : "mt-4"} rounded-lg border border-zinc-600 bg-zinc-800 px-4 py-2 text-xs font-semibold text-zinc-200 transition-colors hover:bg-zinc-700`}>
                           Save changes
                         </button>
                       </div>
                     </form>
                   </div>
 
-                  {!rendering ? (
+                  {!rendering && !isAvatar ? (
                     <form action={regenerateScene} className="mt-3">
                       <input type="hidden" name="projectId" value={project.id} />
                       <input type="hidden" name="index" value={i} />

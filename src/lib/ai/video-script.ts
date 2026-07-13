@@ -51,6 +51,11 @@ export type VideoScript = {
 };
 
 const STYLE_DIRECTION: Record<string, string> = {
+  avatar:
+    "UGC creator monologue spoken to camera in ONE continuous take by a lip-synced " +
+    "avatar. The voiceover lines ARE the entire ad — they must flow naturally as one " +
+    "speech (no scene jumps), conversational and enthusiastic first-person. Visual/" +
+    "motion fields are ignored for this style; keep them minimal.",
   ugc:
     "UGC (user-generated-content) ad: authentic selfie/handheld feel, a real person's " +
     "perspective, casual and enthusiastic first-person voiceover ('I found…', 'you NEED " +

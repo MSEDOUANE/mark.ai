@@ -5,12 +5,14 @@ import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { db, schema } from "@/db";
 import { createVideoProject } from "./actions";
+import { AVATARS } from "@/lib/creative/image-models/fal-audio-video";
 
 const field =
   "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500";
 
 const STYLES = [
-  { id: "ugc", icon: "🤳", label: "UGC", desc: "Authentic creator-style — selfie feel, casual voice" },
+  { id: "avatar", icon: "🎤", label: "UGC Avatar", desc: "Real lip-synced creator presents your product to camera" },
+  { id: "ugc", icon: "🤳", label: "UGC B-roll", desc: "Authentic selfie-feel scenes with voiceover" },
   { id: "storytelling", icon: "🎬", label: "Storytelling", desc: "Problem → discovery → transformation arc" },
   { id: "showcase", icon: "✨", label: "Showcase", desc: "Premium editorial product film" },
 ];
@@ -107,6 +109,15 @@ export default async function VideosPage({
               </div>
             </div>
 
+            <label className="block text-sm">
+              <span className="text-zinc-400">Avatar <span className="text-zinc-600">(UGC Avatar style)</span></span>
+              <select name="avatar" className={`mt-1.5 ${field}`} defaultValue={AVATARS[0].id}>
+                {AVATARS.map((a) => (
+                  <option key={a.id} value={a.id}>{a.label}</option>
+                ))}
+              </select>
+            </label>
+
             <div className="grid grid-cols-2 gap-3 text-sm">
               <label className="block">
                 <span className="text-zinc-400">Voiceover language</span>
@@ -116,7 +127,7 @@ export default async function VideosPage({
                 </select>
               </label>
               <label className="block">
-                <span className="text-zinc-400">Voice</span>
+                <span className="text-zinc-400">Voice <span className="text-zinc-600">(voiceover styles)</span></span>
                 <select name="voice" className={`mt-1.5 ${field}`} defaultValue="female">
                   <option value="female">Female</option>
                   <option value="male">Male</option>

@@ -1,7 +1,8 @@
 /**
  * Audio + assembly models for the Video Studio, all on fal.ai:
- *   • ttsGenerate  — Kokoro TTS (per-language endpoints) → voiceover audio URL
- *   • composeVideo — fal ffmpeg compose: scene clips + voiceover → final mp4
+ *   • ttsGenerate    — Kokoro TTS (per-language endpoints) → voiceover audio URL
+ *   • composeVideo   — fal ffmpeg compose: scene clips + voiceover → final mp4
+ *   • avatarGenerate — VEED talking avatars: script → lip-synced UGC creator video
  *
  * Endpoint ids are pinned here so a model swap is a one-line change.
  */
@@ -41,6 +42,74 @@ export async function ttsGenerate(args: {
   const data = (await res.json()) as { audio?: { url?: string } };
   if (!data.audio?.url) throw new Error("tts: no audio URL in response");
   return data.audio.url;
+}
+
+/**
+ * Curated VEED avatar presets (ids verified against the model's OpenAPI spec).
+ * Vertical framing — right for Reels/TikTok/Stories placements.
+ */
+export const AVATARS: Array<{ id: string; label: string }> = [
+  { id: "emily_vertical_primary", label: "Emily — casual creator" },
+  { id: "marcus_vertical_primary", label: "Marcus — energetic creator" },
+  { id: "mira_vertical_primary", label: "Mira — modern creator" },
+  { id: "elena_vertical_primary", label: "Elena — warm & friendly" },
+  { id: "jasmine_vertical_walking", label: "Jasmine — walking vlog" },
+  { id: "aisha_vertical_walking", label: "Aisha — walking vlog" },
+];
+
+/** Lip-synced talking-creator video from a script (VEED avatars, queue API). */
+export async function avatarGenerate(args: {
+  text: string;
+  avatarId: string;
+  apiKey: string;
+}): Promise<string> {
+  const headers = {
+    Authorization: `Key ${args.apiKey}`,
+    "Content-Type": "application/json",
+  };
+  const submit = await fetch("https://queue.fal.run/veed/avatars/text-to-video", {
+    method: "POST",
+    headers,
+    body: JSON.stringify({
+      avatar_id: args.avatarId,
+      text: args.text.slice(0, 2000),
+    }),
+  });
+  if (!submit.ok) {
+    throw new Error(
+      `avatar submit: ${submit.status} ${(await submit.text()).slice(0, 200)}`,
+    );
+  }
+  const job = (await submit.json()) as {
+    status_url?: string;
+    response_url?: string;
+  };
+  if (!job.status_url || !job.response_url) {
+    throw new Error("avatar: queue response missing status/response URLs");
+  }
+
+  const deadline = Date.now() + 12 * 60_000; // avatars render slowly
+  for (;;) {
+    if (Date.now() > deadline) throw new Error("avatar: timed out");
+    await new Promise((r) => setTimeout(r, 6000));
+    const st = await fetch(job.status_url, { headers });
+    if (!st.ok) continue;
+    const s = (await st.json()) as { status?: string };
+    if (s.status === "COMPLETED") break;
+    if (s.status === "FAILED" || s.status === "CANCELLED") {
+      throw new Error(`avatar: generation ${s.status}`);
+    }
+  }
+
+  const result = await fetch(job.response_url, { headers });
+  if (!result.ok) {
+    throw new Error(
+      `avatar result: ${result.status} ${(await result.text()).slice(0, 200)}`,
+    );
+  }
+  const data = (await result.json()) as { video?: { url?: string } };
+  if (!data.video?.url) throw new Error("avatar: no video URL in response");
+  return data.video.url;
 }
 
 interface ComposeKeyframe {

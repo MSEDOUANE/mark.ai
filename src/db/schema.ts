@@ -444,6 +444,8 @@ export const videoProjects = pgTable("video_projects", {
   // BCP-47-ish language for voiceover: "en" | "fr"
   language: text("language").notNull().default("en"),
   voice: text("voice").notNull().default("female"),
+  // VEED avatar id — used by the "avatar" style (lip-synced UGC creator).
+  avatar: text("avatar"),
   // "draft" | "rendering" | "ready" | "failed"
   status: text("status").notNull().default("draft"),
   script: jsonb("script").notNull().default(sql`'{}'::jsonb`),
