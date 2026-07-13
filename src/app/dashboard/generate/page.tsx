@@ -127,19 +127,20 @@ const ASSETS: AssetType[] = [
     ),
   },
   {
-    href: "/dashboard/generate/video-ads",
+    href: "/dashboard/videos",
     icon: "🎬",
     label: "Video Ads",
-    description: "UGC-style and storytelling video ads — scripted, voiced, and edited by AI.",
-    badge: "Soon",
+    description: "Lip-synced UGC creator, storytelling, and showcase videos — AI scripts, voices, films, and cuts them; you edit any scene.",
+    badge: "New",
     categories: ["All", "Images"],
     preview: (
-      <div className="h-full w-full overflow-hidden rounded-lg bg-zinc-900 flex items-center justify-center">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-zinc-700">
-          <svg className="h-5 w-5 translate-x-0.5 text-zinc-400" fill="currentColor" viewBox="0 0 24 24">
+      <div className="relative h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-rose-900/50 to-zinc-900 flex items-center justify-center">
+        <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/90 shadow-lg">
+          <svg className="h-5 w-5 translate-x-0.5 text-zinc-900" fill="currentColor" viewBox="0 0 24 24">
             <path d="M8 5.14v14l11-7-11-7z" />
           </svg>
         </div>
+        <span className="absolute bottom-2 left-2 rounded bg-black/60 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">UGC · Voiced</span>
       </div>
     ),
   },
