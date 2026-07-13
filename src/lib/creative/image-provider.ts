@@ -10,7 +10,7 @@
  */
 
 import type { CreativeJob, CreativeProvider, GenerateCreativeInput } from "./provider";
-import { TEXT_MODELS, IMG2IMG_MODEL, COMPOSE_MODEL, DEFAULT_TEXT_MODEL } from "./image-models/registry";
+import { TEXT_MODELS, IMG2IMG_MODEL, COMPOSE_MODEL, VIDEO_MODEL, DEFAULT_TEXT_MODEL } from "./image-models/registry";
 
 export class ImageProvider implements CreativeProvider {
   readonly name = "image";
@@ -24,6 +24,11 @@ export class ImageProvider implements CreativeProvider {
   async submit(input: GenerateCreativeInput): Promise<CreativeJob> {
     const jobId = crypto.randomUUID();
     try {
+      if (input.type === "video") {
+        const url = await this.runVideo(input);
+        return { providerJobId: jobId, status: "ready", assetUrl: url };
+      }
+
       const refs = input.imageUrls?.filter(Boolean) ?? [];
       const url = refs.length > 0
         ? await this.runCompose(input.prompt, refs, input.aspectRatio)
@@ -37,6 +42,22 @@ export class ImageProvider implements CreativeProvider {
       console.error("[image-provider] generation failed:", error);
       return { providerJobId: jobId, status: "failed", error };
     }
+  }
+
+  /**
+   * Video creative: animate the supplied source image, or generate the scene
+   * still first (text-to-image) and animate that.
+   */
+  private async runVideo(input: GenerateCreativeInput): Promise<string> {
+    const source =
+      input.imageUrl ?? (await this.runText2Img(input.prompt, input.imageModel));
+    console.log("[image-provider] img2video | source:", source.slice(0, 60));
+    return VIDEO_MODEL({
+      prompt: input.prompt,
+      imageUrl: source,
+      apiKey: this.apiKey,
+      durationSeconds: input.durationSeconds,
+    });
   }
 
   private async runCompose(prompt: string, imageUrls: string[], aspectRatio?: string): Promise<string> {

@@ -16,12 +16,13 @@
  * Change the IMG2IMG_MODEL export to point to a different implementation.
  */
 
-import type { TextToImageFn, ImageToImageFn, ComposeFn } from "./types";
+import type { TextToImageFn, ImageToImageFn, ComposeFn, ImageToVideoFn } from "./types";
 
 import { generate as falNanoBanana } from "./fal-nano-banana";
 import { generate as falNanoBananaEdit } from "./fal-nano-banana-edit";
 import { generate as falFluxSchnell } from "./fal-flux-schnell";
 import { generate as falFluxRedux } from "./fal-flux-redux";
+import { generate as falKlingVideo } from "./fal-kling-video";
 
 /** Text-to-image models selectable from the UI via the `imageModel` field. */
 export const TEXT_MODELS: Record<string, TextToImageFn> = {
@@ -37,3 +38,6 @@ export const IMG2IMG_MODEL: ImageToImageFn = falFluxRedux;
 
 /** Multi-image composition model for "AI Compose" mode (product + model → one scene). */
 export const COMPOSE_MODEL: ComposeFn = falNanoBananaEdit;
+
+/** Image-to-video model for video ad creatives (animates the ad scene). */
+export const VIDEO_MODEL: ImageToVideoFn = falKlingVideo;

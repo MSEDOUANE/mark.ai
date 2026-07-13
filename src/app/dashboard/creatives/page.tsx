@@ -7,6 +7,7 @@ import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { db, schema } from "@/db";
 import { CreativeCard } from "../campaigns/[id]/creative-card";
 import { AssignForm } from "./assign-form";
+import { animateCreative } from "./actions";
 import { CreativesToolbar } from "./creatives-toolbar";
 import { RetrySelector } from "./retry-selector";
 import { CreativesPoller } from "./creatives-poller";
@@ -206,6 +207,7 @@ export default async function CreativesPage({
                     scoreTips={meta.scoreTips as string[] | undefined}
                     statusLabel={STATUS_LABEL[c.status] ?? c.status}
                     assetVersion={c.assetUrl?.slice(0, 12) ?? null}
+                    assetUrl={c.assetUrl}
                   />
 
                   {/* Campaign assignment */}
@@ -243,6 +245,17 @@ export default async function CreativesPage({
                         </svg>
                         Publish as ad
                       </Link>
+                    )}
+                    {c.type !== "video" && c.status === "ready" && c.assetUrl && (
+                      <form action={animateCreative}>
+                        <input type="hidden" name="creativeId" value={c.id} />
+                        <button className="mt-2 flex w-full items-center justify-center gap-1.5 rounded-lg bg-violet-400/10 py-1.5 text-xs font-semibold text-violet-300 transition-colors hover:bg-violet-400/20">
+                          <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5.25 5.653c0-.856.917-1.398 1.667-.986l11.54 6.347a1.125 1.125 0 010 1.972l-11.54 6.347a1.125 1.125 0 01-1.667-.986V5.653z" />
+                          </svg>
+                          Animate → video ad (~5s)
+                        </button>
+                      </form>
                     )}
                   </div>
                 </div>

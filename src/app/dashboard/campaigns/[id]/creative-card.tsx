@@ -26,6 +26,8 @@ interface CreativeCardProps {
   statusLabel: string;
   /** First chars of assetUrl — changes when fal.ai generates a new background, busts the 1-hour render cache. */
   assetVersion?: string | null;
+  /** Full asset URL — needed for video creatives (the clip plays directly). */
+  assetUrl?: string | null;
 }
 
 // ── Score ring ────────────────────────────────────────────────────────────────
@@ -84,6 +86,7 @@ export function CreativeCard({
   scoreTips,
   statusLabel,
   assetVersion,
+  assetUrl,
 }: CreativeCardProps) {
   const [size,         setSize]      = useState<Size>("portrait");
   const [showTips,     setShowTips]  = useState(false);
@@ -128,12 +131,20 @@ export function CreativeCard({
           </div>
         )}
 
-        {/* Actual image — shown immediately once ready; browser handles its own loading indicator */}
-        {status === "ready" && (
+        {/* Ready: video creatives play the clip; image creatives show the designed render */}
+        {status === "ready" && type === "video" && assetUrl ? (
+          <>
+            <video key={assetUrl} src={assetUrl} controls loop muted playsInline
+              className="h-full w-full object-contain" />
+            <span className="absolute left-2 top-2 rounded-full bg-black/60 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide text-white backdrop-blur">
+              ▶ Video
+            </span>
+          </>
+        ) : status === "ready" ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img key={previewUrl} src={previewUrl} alt={headline ?? "ad creative"}
             className="h-full w-full object-contain" />
-        )}
+        ) : null}
 
         {/* Score ring — top-right overlay */}
         {typeof score === "number" && (

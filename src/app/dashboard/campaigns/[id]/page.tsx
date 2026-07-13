@@ -1026,6 +1026,7 @@ export default async function CampaignDetailPage({
                   scoreTips={meta.scoreTips}
                   statusLabel={STATUS_LABEL[cr.status] ?? cr.status}
                   assetVersion={cr.assetUrl?.slice(0, 12) ?? null}
+                  assetUrl={cr.assetUrl}
                 />
               );
             })}

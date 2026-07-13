@@ -28,8 +28,20 @@ export interface ComposeParams {
   aspectRatio?: string;
 }
 
+export interface ImageToVideoParams {
+  /** Motion/scene direction for the animation. */
+  prompt: string;
+  /** Source still to animate — data URL or http URL. */
+  imageUrl: string;
+  apiKey: string;
+  /** Clip length in seconds (model-dependent; usually 5 or 10). */
+  durationSeconds?: number;
+}
+
 /** Returns the generated image URL on success; throws on failure. */
 export type TextToImageFn = (params: TextToImageParams) => Promise<string>;
 export type ImageToImageFn = (params: ImageToImageParams) => Promise<string>;
 /** Multi-image composition: combines several reference images per a prompt. */
 export type ComposeFn = (params: ComposeParams) => Promise<string>;
+/** Animates a still into a short clip; returns the video URL. */
+export type ImageToVideoFn = (params: ImageToVideoParams) => Promise<string>;

@@ -580,6 +580,72 @@ export async function applyScoreTips(formData: FormData) {
   revalidatePath("/dashboard/creatives");
 }
 
+/**
+ * Animate a ready image creative into a ~5s video ad: clones the row as
+ * type "video" pointing at the source's scene image, then the normal
+ * generation job runs it through the image-to-video model. Copy carries over
+ * (Meta video ads keep headline/text as ad fields around the clip).
+ */
+export async function animateCreative(formData: FormData) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+  const { org } = await ensureProfile(user);
+
+  const id = clean(formData, "creativeId");
+  if (!id) return;
+
+  const [creative] = await db
+    .select()
+    .from(schema.creatives)
+    .where(and(eq(schema.creatives.id, id), eq(schema.creatives.orgId, org.id)))
+    .limit(1);
+  if (!creative || creative.type === "video") return;
+  if (creative.status !== "ready" || !creative.assetUrl) {
+    redirect(
+      "/dashboard/creatives?error=" +
+        encodeURIComponent("Wait for the image to finish generating before animating."),
+    );
+  }
+
+  const meta = (creative.meta ?? {}) as Record<string, unknown>;
+  const { score: _s, scoreRationale: _r, scoreTips: _t, ...restMeta } = meta;
+  void _s; void _r; void _t;
+
+  const [videoCreative] = await db
+    .insert(schema.creatives)
+    .values({
+      orgId: org.id,
+      productId: creative.productId,
+      campaignId: creative.campaignId,
+      type: "video",
+      status: "pending",
+      prompt:
+        `Bring this ad scene to life with subtle cinematic motion — gentle camera ` +
+        `push-in, natural ambient movement, the subject stays sharp. Scene: ${creative.prompt ?? ""}`.slice(0, 800),
+      meta: {
+        ...restMeta,
+        // The source's generated scene (public fal URL) is what gets animated.
+        photoSource: "upload",
+        photoUrl: creative.assetUrl,
+        sourceCreativeId: creative.id,
+      },
+    })
+    .returning();
+
+  try {
+    await inngest.send({
+      name: "creative/generate.requested",
+      data: { creativeId: videoCreative.id },
+    });
+  } catch (err) {
+    console.error("[animate] inngest.send failed:", err);
+  }
+
+  revalidatePath("/dashboard/creatives");
+  redirect("/dashboard/creatives?generated=1");
+}
+
 export async function assignCreativeToCampaign(formData: FormData) {
   const supabase = await createClient();
   const {

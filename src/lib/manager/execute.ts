@@ -45,10 +45,13 @@ function normalizeCountries(
  * an A/B test that the winner-detection loop resolves once data comes in.
  */
 function pickTopCreatives(rows: Creative[], max = 3): Creative[] {
-  if (rows.length === 0) return [];
+  // Image ads only — the launch tree uploads PNGs; video ads need the
+  // separate advideos flow (not built yet).
+  const images = rows.filter((r) => r.type !== "video");
+  if (images.length === 0) return [];
   const score = (r: Creative) => Number((r.meta as CreativeMeta)?.score ?? -1);
-  const ready = rows.filter((r) => r.status === "ready");
-  const pool = ready.length ? ready : rows;
+  const ready = images.filter((r) => r.status === "ready");
+  const pool = ready.length ? ready : images;
   return [...pool].sort((a, b) => score(b) - score(a)).slice(0, max);
 }
 
