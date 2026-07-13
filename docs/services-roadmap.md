@@ -26,7 +26,7 @@ Status: ✅ built & verified · 🔶 partial · ❌ not built
 | Campaign strategy from a brief | ✅ | Brand-voice-grounded, research-grounded |
 | Channel recommendation | 🔶 | Strategist picks meta/tiktok; only Meta is executable |
 | Budget parsing + currency safety | ✅ | Auto-converts stated currency to account billing currency |
-| **Cross-campaign budget allocation** | ❌ | Agent reallocates a total monthly budget across campaigns by performance — the real "media buyer" job |
+| **Cross-campaign budget allocation** | ✅ | AI media buyer: weekly cron (+ assistant tool) proposes redistributing the total daily budget by 14-day performance; org-level approval card on Overview; approval pushes real ad-set budgets |
 | **Marketing calendar** | ❌ | Plan launches/drops around seasonal moments; agent proposes the quarter |
 | Funnel design (TOFU/MOFU/BOFU) | ❌ | Strategy is single-campaign; no funnel-stage orchestration |
 
@@ -76,7 +76,7 @@ Status: ✅ built & verified · 🔶 partial · ❌ not built
 | Creative refresh on fatigue | ✅ | Agent proposes fresh variants, spend-neutral |
 | Optimization chat (per campaign) | ✅ | Ongoing thread + approval gate + change preview |
 | **Anomaly alerts** | ✅ | Rule-based: spend spike, CTR collapse, delivery stop, conversion stop → Overview banners, deduped, audit-logged |
-| Cross-campaign reallocation | ❌ | See §2 — same capability, execution side |
+| Cross-campaign reallocation | ✅ | See §2 — executeAllocation applies approved budgets per campaign with per-line audit |
 
 ## 7. Reporting & Insights
 

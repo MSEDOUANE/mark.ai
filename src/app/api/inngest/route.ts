@@ -9,6 +9,7 @@ import {
 import { managerMonitorCampaign } from "@/inngest/functions/manager-monitor";
 import { refreshMetaTokens } from "@/inngest/functions/refresh-tokens";
 import { generateWeeklyReports } from "@/inngest/functions/weekly-report";
+import { proposeWeeklyAllocation } from "@/inngest/functions/budget-allocation";
 
 export const { GET, POST, PUT } = serve({
   client: inngest,
@@ -20,5 +21,6 @@ export const { GET, POST, PUT } = serve({
     managerMonitorCampaign,
     refreshMetaTokens,
     generateWeeklyReports,
+    proposeWeeklyAllocation,
   ],
 });

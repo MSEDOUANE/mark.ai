@@ -17,6 +17,7 @@ const TOOL_LABELS: Record<string, string> = {
   request_optimization: "Ran the optimizer",
   generate_weekly_report: "Queued a report",
   spy_competitor_ads: "Searched competitor ads",
+  propose_budget_allocation: "Proposed budget reallocation",
 };
 
 const SUGGESTIONS = [

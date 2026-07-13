@@ -6,8 +6,10 @@ import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { db, schema } from "@/db";
 import { signOut } from "../login/actions";
 import { dismissAlert } from "./alerts-actions";
+import { approveAllocation, rejectAllocation } from "./allocation-actions";
 import { AUTONOMY_LABELS } from "@/lib/manager/policy";
 import type { ReportPayload } from "@/lib/ai/reporter";
+import type { AllocationProposal } from "@/lib/ai/allocator";
 
 export default async function DashboardPage() {
   const supabase = await createClient();
@@ -64,6 +66,19 @@ export default async function DashboardPage() {
     .where(and(eq(schema.alerts.orgId, org.id), eq(schema.alerts.status, "open")))
     .orderBy(desc(schema.alerts.createdAt))
     .limit(10);
+
+  const [pendingAllocation] = await db
+    .select()
+    .from(schema.approvals)
+    .where(
+      and(
+        eq(schema.approvals.orgId, org.id),
+        eq(schema.approvals.entityType, "budget_allocation"),
+        eq(schema.approvals.status, "pending"),
+      ),
+    )
+    .orderBy(desc(schema.approvals.createdAt))
+    .limit(1);
 
   const autonomyLabel = AUTONOMY_LABELS[org.autonomyLevel] ?? org.autonomyLevel;
 
@@ -147,6 +162,21 @@ export default async function DashboardPage() {
             ))}
           </div>
         )}
+
+        {/* Pending budget reallocation (org-level approval) */}
+        {pendingAllocation ? (
+          <AllocationCard
+            approvalId={pendingAllocation.id}
+            payload={
+              pendingAllocation.payload as {
+                proposal: AllocationProposal;
+                currency: string;
+                totalMinor: number;
+                proposedTotal: number;
+              }
+            }
+          />
+        ) : null}
 
         {/* Latest AI weekly report */}
         {latestReport ? (
@@ -241,6 +271,78 @@ export default async function DashboardPage() {
 
       </div>
     </main>
+  );
+}
+
+function AllocationCard({
+  approvalId,
+  payload,
+}: {
+  approvalId: string;
+  payload: {
+    proposal: AllocationProposal;
+    currency: string;
+    totalMinor: number;
+    proposedTotal: number;
+  };
+}) {
+  const { proposal, currency } = payload;
+  const money = (minor: number) => `${(minor / 100).toFixed(2)} ${currency}`;
+
+  return (
+    <section className="mt-6 rounded-xl border border-amber-300/25 bg-amber-950/20 p-5">
+      <div className="flex flex-wrap items-baseline justify-between gap-2">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-amber-200">
+          Budget reallocation proposed
+        </h2>
+        <span className="text-xs text-zinc-500">
+          total {money(payload.totalMinor)} → {money(payload.proposedTotal)} / day
+        </span>
+      </div>
+      <p className="mt-2 text-sm leading-relaxed text-zinc-300">{proposal.summary}</p>
+
+      <div className="mt-4 space-y-2">
+        {proposal.lines.map((l) => {
+          const delta = l.proposedDailyBudgetMinor - l.currentDailyBudgetMinor;
+          return (
+            <div key={l.campaignId}
+              className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border border-zinc-800 bg-zinc-950/60 px-3 py-2 text-sm">
+              <Link href={`/dashboard/campaigns/${l.campaignId}`}
+                className="min-w-0 flex-1 truncate font-medium text-zinc-200 hover:underline">
+                {l.campaignName}
+              </Link>
+              <span className="tabular-nums text-zinc-400">
+                {money(l.currentDailyBudgetMinor)} → {money(l.proposedDailyBudgetMinor)}
+              </span>
+              <span className={`text-xs font-semibold tabular-nums ${
+                delta > 0 ? "text-emerald-400" : delta < 0 ? "text-red-400" : "text-zinc-600"
+              }`}>
+                {delta > 0 ? "+" : ""}{(delta / 100).toFixed(2)}
+              </span>
+              <p className="w-full text-xs text-zinc-500">{l.rationale}</p>
+            </div>
+          );
+        })}
+      </div>
+
+      <div className="mt-4 flex flex-wrap items-center gap-3">
+        <form action={approveAllocation}>
+          <input type="hidden" name="approvalId" value={approvalId} />
+          <button className="rounded-xl bg-amber-400 px-5 py-2.5 text-sm font-bold text-zinc-950 shadow shadow-amber-500/20 transition-colors hover:bg-amber-300">
+            Approve — apply budgets
+          </button>
+        </form>
+        <form action={rejectAllocation}>
+          <input type="hidden" name="approvalId" value={approvalId} />
+          <button className="rounded-xl border border-zinc-700 px-5 py-2.5 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-zinc-100">
+            Reject
+          </button>
+        </form>
+        <span className="text-xs text-zinc-600">
+          Approving updates the real ad-set budgets on Meta for linked campaigns.
+        </span>
+      </div>
+    </section>
   );
 }
 

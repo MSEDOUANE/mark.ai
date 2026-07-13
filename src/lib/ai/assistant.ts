@@ -7,6 +7,7 @@ import { strategistModel } from "./models";
 import { proposeOptimization } from "./optimizer";
 import { executeOptimization } from "@/lib/manager/execute";
 import { searchAdLibrary } from "@/lib/ads/ad-library";
+import { proposeBudgetAllocation } from "./allocator";
 import { decryptSecret } from "@/lib/crypto";
 import type { BriefInput } from "./strategist";
 
@@ -423,6 +424,31 @@ function buildTools(orgId: string, userId: string | null) {
             error: /permission for this action/i.test(msg)
               ? "Ad Library access needs a one-time identity confirmation: the account owner must visit facebook.com/ads/library/api, confirm their identity, and accept the terms. After that this tool works."
               : `Ad Library query failed: ${msg.slice(0, 200)}`,
+          };
+        }
+      },
+    }),
+
+    propose_budget_allocation: tool({
+      description:
+        "Analyze all active campaigns' last-14-day performance and propose redistributing the total daily budget toward the winners. The proposal becomes a pending approval on the Overview page — it never applies without the human. Needs ≥2 active campaigns with recent metrics.",
+      inputSchema: z.object({}),
+      execute: async () => {
+        try {
+          const proposal = await proposeBudgetAllocation(orgId, userId);
+          if (!proposal) {
+            return {
+              note:
+                "No allocation proposed — needs at least 2 active campaigns with budgets and recent metrics, and no allocation already awaiting approval.",
+            };
+          }
+          return {
+            proposal,
+            note: "Reallocation proposal created — review and approve it on the Overview page.",
+          };
+        } catch (err) {
+          return {
+            error: `Allocation failed: ${err instanceof Error ? err.message.slice(0, 200) : "unknown"}`,
           };
         }
       },

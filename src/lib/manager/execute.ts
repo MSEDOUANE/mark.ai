@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { decryptSecret } from "@/lib/crypto";
 import {
@@ -11,6 +11,7 @@ import type { MarketResearch } from "@/lib/ai/research-schema";
 import { renderCreativeImageBytes, type CreativeBrand } from "@/lib/creative/design";
 import { createCreativesForCampaign } from "@/lib/creative/campaign-creatives";
 import type { OptimizationProposal } from "@/lib/ai/optimization-schema";
+import type { AllocationProposal } from "@/lib/ai/allocator";
 
 type Campaign = typeof schema.campaigns.$inferSelect;
 type AdAccount = typeof schema.adAccounts.$inferSelect;
@@ -345,4 +346,86 @@ export async function executeOptimization(
     action: `optimization_${proposal.action}`,
     payload: { proposal },
   });
+}
+
+/**
+ * Apply an approved cross-campaign budget allocation: for each line, push the
+ * new daily budget to the platform ad set (when linked) and record it locally.
+ * Per-line failures don't abort the rest — each outcome is audit-logged.
+ */
+export async function executeAllocation(
+  orgId: string,
+  proposal: AllocationProposal,
+  actor: Actor,
+): Promise<{ applied: number; failed: number }> {
+  let applied = 0;
+  let failed = 0;
+
+  for (const line of proposal.lines) {
+    const [campaign] = await db
+      .select()
+      .from(schema.campaigns)
+      .where(
+        and(eq(schema.campaigns.id, line.campaignId), eq(schema.campaigns.orgId, orgId)),
+      )
+      .limit(1);
+    if (!campaign) {
+      failed++;
+      continue;
+    }
+    if (campaign.budgetMinor === line.proposedDailyBudgetMinor) {
+      applied++; // unchanged line — nothing to push
+      continue;
+    }
+
+    try {
+      const externalIds = (campaign.externalIds ?? {}) as Record<string, string>;
+      const adSetId = externalIds.metaAdSet;
+      if (campaign.adAccountId && adSetId) {
+        const [adAccount] = await db
+          .select()
+          .from(schema.adAccounts)
+          .where(eq(schema.adAccounts.id, campaign.adAccountId))
+          .limit(1);
+        if (adAccount?.encryptedToken) {
+          const provider = getCampaignProvider(campaign.platform);
+          await provider.updateAdSetBudget(
+            adSetId,
+            line.proposedDailyBudgetMinor,
+            decryptSecret(adAccount.encryptedToken),
+          );
+        }
+      }
+      await db
+        .update(schema.campaigns)
+        .set({ budgetMinor: line.proposedDailyBudgetMinor, updatedAt: new Date() })
+        .where(eq(schema.campaigns.id, campaign.id));
+      await db.insert(schema.auditLog).values({
+        orgId,
+        campaignId: campaign.id,
+        actor,
+        action: "allocation_applied",
+        payload: {
+          from: campaign.budgetMinor,
+          to: line.proposedDailyBudgetMinor,
+          rationale: line.rationale,
+        },
+        costMinor: line.proposedDailyBudgetMinor,
+      });
+      applied++;
+    } catch (err) {
+      failed++;
+      await db.insert(schema.auditLog).values({
+        orgId,
+        campaignId: campaign.id,
+        actor,
+        action: "allocation_failed",
+        payload: {
+          error: err instanceof Error ? err.message.slice(0, 300) : String(err),
+        },
+      });
+    }
+  }
+
+  return { applied, failed };
 }
