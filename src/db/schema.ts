@@ -422,6 +422,42 @@ export const landingPages = pgTable("landing_pages", {
 });
 
 /**
+ * Video Studio projects — multi-scene, voiced video ads. `script` holds the
+ * whole editable project (VideoScript JSON: scenes with visual prompts,
+ * voiceover lines, and per-scene asset URLs); `finalUrl` is the assembled mp4.
+ * Users adjust scenes in the editor and re-render; status tracks the pipeline.
+ */
+export const videoProjects = pgTable("video_projects", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  orgId: uuid("org_id")
+    .notNull()
+    .references(() => organizations.id, { onDelete: "cascade" }),
+  productId: uuid("product_id").references(() => products.id, {
+    onDelete: "set null",
+  }),
+  brandProfileId: uuid("brand_profile_id").references(() => brandProfiles.id, {
+    onDelete: "set null",
+  }),
+  title: text("title").notNull(),
+  // "ugc" | "storytelling" | "showcase"
+  style: text("style").notNull().default("ugc"),
+  // BCP-47-ish language for voiceover: "en" | "fr"
+  language: text("language").notNull().default("en"),
+  voice: text("voice").notNull().default("female"),
+  // "draft" | "rendering" | "ready" | "failed"
+  status: text("status").notNull().default("draft"),
+  script: jsonb("script").notNull().default(sql`'{}'::jsonb`),
+  finalUrl: text("final_url"),
+  error: text("error"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+/**
  * WhatsApp lead conversations (from click-to-WhatsApp ads or organic inbound)
  * via the WhatsApp Business Cloud API webhook. One row per message; the AI
  * responder threads by contact number.

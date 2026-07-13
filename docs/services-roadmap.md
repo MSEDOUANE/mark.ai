@@ -49,7 +49,7 @@ Status: ✅ built & verified · 🔶 partial · ❌ not built
 | Ad copy (frameworks) | ✅ | Brand-aware, persisted |
 | Social captions (per-platform) | ✅ | Brand-aware, persisted |
 | Conversion scoring + refine loop | ✅ | Score → tips → AI rewrite to 90+ |
-| **Video ads** | 🔶 | Schema + Higgsfield image2video exist; blocked on credits; no video design layer |
+| **Video ads** | ✅ | Two layers, all on fal.ai: (1) "Animate" turns any image creative into a 5s Kling clip; (2) **Video Studio** (/dashboard/videos) — UGC/storytelling/showcase styles, AI scene-by-scene script, per-scene image→video, Kokoro TTS voiceover (EN/FR), ffmpeg assembly, and a scene editor (edit visuals/motion/voiceover/length, reorder, delete, regenerate scene, re-render) |
 | **Landing pages** | ✅ | AI writes structured content in brand voice → fixed branded template at public /p/[slug]; Pages section in dashboard; CTA = WhatsApp (wa.me) or link |
 | Email marketing content | ❌ | New channel entirely |
 | Organic content calendar + scheduling | ❌ | Captions exist; no posting/scheduling to socials |

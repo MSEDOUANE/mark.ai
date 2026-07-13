@@ -12,6 +12,7 @@ const navItems = [
   { href: "/dashboard/campaigns/new", label: "New brief", nested: true },
   { href: "/dashboard/generate", label: "Generate" },
   { href: "/dashboard/creatives", label: "Creatives" },
+  { href: "/dashboard/videos", label: "Videos" },
   { href: "/dashboard/pages", label: "Pages" },
   { href: "/dashboard/brands", label: "Brands" },
   { href: "/dashboard/settings", label: "Settings" },
