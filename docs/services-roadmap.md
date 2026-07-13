@@ -94,7 +94,7 @@ Status: ✅ built & verified · 🔶 partial · ❌ not built
 |---|---|---|
 | Per-campaign optimization chat | ✅ | |
 | **Global marketing assistant** | ✅ | `/dashboard/assistant` — Claude with 7 org-scoped capability tools (overview, performance, catalog, create campaign, refresh creatives, optimizer, report); persisted thread; spend stays approval-gated |
-| Approval inbox | 🔶 | Approvals live on campaign pages; no single queue |
+| Approval inbox | ✅ | /dashboard/approvals — one queue for launch/optimization/allocation approvals with inline approve/reject; sidebar count badge |
 
 ## 9. Morocco-market differentiators (SaaS wedge)
 

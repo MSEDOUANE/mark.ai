@@ -46,6 +46,7 @@ async function decideAllocation(
   }
 
   revalidatePath("/dashboard");
+  revalidatePath("/dashboard/approvals");
   revalidatePath("/dashboard/campaigns");
 }
 

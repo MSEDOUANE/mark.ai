@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 const navItems = [
   { href: "/dashboard", label: "Overview" },
   { href: "/dashboard/assistant", label: "Assistant ✦" },
+  { href: "/dashboard/approvals", label: "Approvals", badgeKey: "approvals" as const },
   { href: "/dashboard/campaigns", label: "Campaigns" },
   { href: "/dashboard/campaigns/new", label: "New brief", nested: true },
   { href: "/dashboard/generate", label: "Generate" },
@@ -25,7 +26,13 @@ function isSectionActive(pathname: string, href: string) {
   return pathname.startsWith(`${href}/`);
 }
 
-export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
+export function SidebarNav({
+  onNavigate,
+  approvalsCount = 0,
+}: {
+  onNavigate?: () => void;
+  approvalsCount?: number;
+}) {
   const pathname = usePathname();
 
   return (
@@ -33,6 +40,8 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
       {navItems.map((item) => {
         const current = isCurrent(pathname, item.href);
         const sectionActive = isSectionActive(pathname, item.href);
+        const badge =
+          item.badgeKey === "approvals" && approvalsCount > 0 ? approvalsCount : null;
         return (
           <Link
             key={item.href}
@@ -41,13 +50,18 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
             onClick={onNavigate}
             className={
               current
-                ? `block rounded-lg border border-amber-300/25 bg-amber-950/25 px-3 py-2 text-sm font-medium text-zinc-50 ${item.nested ? "ml-3" : ""}`
+                ? `flex items-center justify-between rounded-lg border border-amber-300/25 bg-amber-950/25 px-3 py-2 text-sm font-medium text-zinc-50 ${item.nested ? "ml-3" : ""}`
                 : sectionActive
-                  ? `block rounded-lg border border-transparent bg-zinc-900/70 px-3 py-2 text-sm font-medium text-zinc-100 ${item.nested ? "ml-3" : ""}`
-                  : `block rounded-lg border border-transparent px-3 py-2 text-sm text-zinc-300 hover:border-white/10 hover:bg-zinc-900 hover:text-zinc-50 ${item.nested ? "ml-3" : ""}`
+                  ? `flex items-center justify-between rounded-lg border border-transparent bg-zinc-900/70 px-3 py-2 text-sm font-medium text-zinc-100 ${item.nested ? "ml-3" : ""}`
+                  : `flex items-center justify-between rounded-lg border border-transparent px-3 py-2 text-sm text-zinc-300 hover:border-white/10 hover:bg-zinc-900 hover:text-zinc-50 ${item.nested ? "ml-3" : ""}`
             }
           >
-            {item.label}
+            <span>{item.label}</span>
+            {badge ? (
+              <span className="ml-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-400 px-1.5 text-[11px] font-bold text-zinc-950">
+                {badge}
+              </span>
+            ) : null}
           </Link>
         );
       })}
@@ -55,11 +69,15 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   );
 }
 
-export function MobileNav() {
+export function MobileNav({ approvalsCount = 0 }: { approvalsCount?: number }) {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
 
+  // Close the mobile menu whenever the route changes (incl. back/forward,
+  // which don't fire the Link onClick). Syncing UI to an external value (the
+  // pathname) is a valid effect here.
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsOpen(false);
   }, [pathname]);
 
@@ -113,7 +131,7 @@ export function MobileNav() {
             aria-label="Navigation menu"
             className="flex h-full w-72 flex-col border-l border-white/10 bg-zinc-950 shadow-2xl shadow-black/50"
           >
-            <SidebarNav onNavigate={() => setIsOpen(false)} />
+            <SidebarNav onNavigate={() => setIsOpen(false)} approvalsCount={approvalsCount} />
             <p className="border-t border-white/10 px-4 py-3 text-xs text-zinc-400">
               AI recommendations stay gated by approval.
             </p>

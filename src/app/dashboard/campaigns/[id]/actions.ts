@@ -32,8 +32,14 @@ function resolveReturnPath(formData: FormData, campaignId: string) {
   const fallback = `/dashboard/campaigns/${campaignId}`;
   const raw = String(formData.get("returnTo") ?? "").trim();
   if (!raw.startsWith("/")) return fallback;
-  if (!raw.startsWith(`/dashboard/campaigns/${campaignId}`)) return fallback;
-  return raw;
+  // Allow returning to this campaign (or its subpages) or the approval inbox.
+  if (
+    raw.startsWith(`/dashboard/campaigns/${campaignId}`) ||
+    raw === "/dashboard/approvals"
+  ) {
+    return raw;
+  }
+  return fallback;
 }
 
 function withError(path: string, message: string) {
@@ -111,6 +117,7 @@ export async function approveLaunch(formData: FormData) {
   if (!approval || approval.status !== "pending") redirect("/dashboard/campaigns");
 
   const campaignId = approval.entityId;
+  const returnTo = resolveReturnPath(formData, campaignId);
   const payload = approval.payload as { spec: CampaignSpec; adAccountId: string };
 
   const [adAccount] = await db
@@ -167,7 +174,8 @@ export async function approveLaunch(formData: FormData) {
     .where(eq(schema.approvals.id, approvalId));
 
   revalidatePath(`/dashboard/campaigns/${campaignId}`);
-  redirect(`/dashboard/campaigns/${campaignId}`);
+  revalidatePath("/dashboard/approvals");
+  redirect(returnTo);
 }
 
 export async function rejectLaunch(formData: FormData) {
@@ -180,6 +188,7 @@ export async function rejectLaunch(formData: FormData) {
     .where(and(eq(schema.approvals.id, approvalId), eq(schema.approvals.orgId, org.id)))
     .limit(1);
   if (!approval) redirect("/dashboard/campaigns");
+  const returnTo = resolveReturnPath(formData, approval.entityId);
 
   await db
     .update(schema.approvals)
@@ -191,7 +200,8 @@ export async function rejectLaunch(formData: FormData) {
     .where(eq(schema.campaigns.id, approval.entityId));
 
   revalidatePath(`/dashboard/campaigns/${approval.entityId}`);
-  redirect(`/dashboard/campaigns/${approval.entityId}`);
+  revalidatePath("/dashboard/approvals");
+  redirect(returnTo);
 }
 
 // ---------------------------------------------------------------------------
