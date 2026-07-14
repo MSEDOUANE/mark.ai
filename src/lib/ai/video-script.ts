@@ -141,6 +141,16 @@ export interface VideoScriptInput {
   language: string;
   /** Arabic dialect id (only used when language === "ar"). */
   dialect?: string | null;
+  /** Business objective for the ad, e.g. leads or sales. */
+  objective?: string | null;
+  /** Free-form user direction to guide script/style choices. */
+  userPrompt?: string | null;
+  /** Non-negotiable points the script should cover. */
+  keyPoints?: string | null;
+  /** Preferred CTA phrasing or action. */
+  callToAction?: string | null;
+  /** Claims, visuals, or wording to avoid. */
+  mustAvoid?: string | null;
   sceneCount?: number;
 }
 
@@ -165,6 +175,11 @@ export async function generateVideoScript(
       `Product: ${input.productName}`,
       input.productDescription ? `Description: ${input.productDescription}` : null,
       input.audience ? `Audience: ${input.audience}` : null,
+      input.objective ? `Objective: ${input.objective}` : null,
+      input.userPrompt ? `User direction: ${input.userPrompt}` : null,
+      input.keyPoints ? `Key points to include: ${input.keyPoints}` : null,
+      input.callToAction ? `CTA preference: ${input.callToAction}` : null,
+      input.mustAvoid ? `Avoid: ${input.mustAvoid}` : null,
       `Write ${input.sceneCount ?? 3} scenes. The first scene's voiceover IS the hook.`,
     ]
       .filter(Boolean)

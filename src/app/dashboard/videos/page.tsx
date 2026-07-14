@@ -81,7 +81,12 @@ export default async function VideosPage({
 
             {products.length > 0 ? (
               <label className="block text-sm">
-                <span className="text-zinc-400">Product</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-zinc-400">Product</span>
+                  <Link href="/dashboard/products/new" className="text-xs text-amber-400 hover:underline">
+                    + New product
+                  </Link>
+                </div>
                 <select name="productId" className={`mt-1.5 ${field}`} defaultValue={products[0]?.id ?? ""}>
                   {products.map((p) => (
                     <option key={p.id} value={p.id}>{p.name}</option>
@@ -89,10 +94,19 @@ export default async function VideosPage({
                 </select>
               </label>
             ) : (
-              <label className="block text-sm">
-                <span className="text-zinc-400">Title / product *</span>
-                <input name="title" placeholder="Reveria Signature Collection" className={`mt-1.5 ${field}`} />
-              </label>
+              <div>
+                <label className="block text-sm">
+                  <span className="text-zinc-400">Title / product *</span>
+                  <input name="title" placeholder="Reveria Signature Collection" className={`mt-1.5 ${field}`} />
+                </label>
+                <p className="mt-1.5 text-xs text-zinc-600">
+                  Or{" "}
+                  <Link href="/dashboard/products/new" className="text-amber-400 hover:underline">
+                    add a product to your catalog
+                  </Link>{" "}
+                  to reuse it everywhere.
+                </p>
+              </div>
             )}
 
             <div className="text-sm">
@@ -118,6 +132,72 @@ export default async function VideosPage({
               languages={VOICE_LANGUAGES}
               dialects={ARABIC_DIALECTS.map((d) => ({ id: d.id, label: d.label }))}
             />
+
+            <div className="space-y-3 rounded-xl border border-zinc-800 bg-zinc-950/60 p-4">
+              <p className="text-sm font-semibold text-zinc-200">Creative brief (optional)</p>
+              <p className="text-xs text-zinc-500">
+                Add direction for script tone, key points, and outcomes so the generated
+                video matches your exact goal.
+              </p>
+
+              <label className="block text-sm">
+                <span className="text-zinc-400">Goal / objective</span>
+                <input
+                  name="objective"
+                  placeholder="Example: Drive WhatsApp inquiries from first-time buyers"
+                  className={`mt-1.5 ${field}`}
+                />
+              </label>
+
+              <label className="block text-sm">
+                <span className="text-zinc-400">Prompt for the video generator</span>
+                <textarea
+                  name="creativePrompt"
+                  rows={3}
+                  placeholder="Example: Focus on pain-point to transformation, keep language simple, and end with urgency."
+                  className={`mt-1.5 ${field}`}
+                />
+              </label>
+
+              <label className="block text-sm">
+                <span className="text-zinc-400">Key points to include</span>
+                <textarea
+                  name="keyPoints"
+                  rows={3}
+                  placeholder="Example: Fast delivery, dermatologist-tested, before/after confidence"
+                  className={`mt-1.5 ${field}`}
+                />
+              </label>
+
+              <label className="block text-sm">
+                <span className="text-zinc-400">Call to action preference</span>
+                <input
+                  name="cta"
+                  placeholder="Example: Send us a WhatsApp message now"
+                  className={`mt-1.5 ${field}`}
+                />
+              </label>
+
+              <label className="block text-sm">
+                <span className="text-zinc-400">Must avoid / constraints</span>
+                <textarea
+                  name="mustAvoid"
+                  rows={2}
+                  placeholder="Example: No discount claims, no medical guarantees, no flashy transitions"
+                  className={`mt-1.5 ${field}`}
+                />
+              </label>
+
+              <label className="block text-sm">
+                <span className="text-zinc-400">Approximate length</span>
+                <select name="sceneCount" className={`mt-1.5 ${field}`} defaultValue="3">
+                  <option value="2">Short (2 scenes)</option>
+                  <option value="3">Standard (3 scenes)</option>
+                  <option value="4">Detailed (4 scenes)</option>
+                  <option value="5">Long (5 scenes)</option>
+                </select>
+              </label>
+            </div>
 
             <button className="w-full rounded-xl bg-amber-400 px-5 py-3 text-sm font-bold text-zinc-950 shadow shadow-amber-500/20 transition-colors hover:bg-amber-300">
               Generate video →

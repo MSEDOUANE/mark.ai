@@ -72,7 +72,12 @@ export default async function PagesPage({
 
             {products.length > 0 ? (
               <label className="block text-sm">
-                <span className="text-zinc-400">Catalog product</span>
+                <div className="flex items-center justify-between">
+                  <span className="text-zinc-400">Catalog product</span>
+                  <Link href="/dashboard/products/new" className="text-xs text-amber-400 hover:underline">
+                    + New product
+                  </Link>
+                </div>
                 <select name="productId" className={`mt-1.5 ${field}`} defaultValue="">
                   <option value="">— pick a product —</option>
                   {products.map((p) => (

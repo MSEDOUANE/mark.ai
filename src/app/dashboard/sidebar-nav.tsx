@@ -14,6 +14,7 @@ const navItems = [
   { href: "/dashboard/creatives", label: "Creatives" },
   { href: "/dashboard/videos", label: "Videos" },
   { href: "/dashboard/pages", label: "Pages" },
+  { href: "/dashboard/products", label: "Products" },
   { href: "/dashboard/brands", label: "Brands" },
   { href: "/dashboard/settings", label: "Settings" },
 ];

@@ -2,8 +2,41 @@ import { eq } from "drizzle-orm";
 import { inngest } from "../client";
 import { db, schema } from "@/db";
 import { generateVideoScript, type VideoScript } from "@/lib/ai/video-script";
+import type { VideoScriptInput } from "@/lib/ai/video-script";
 import { TEXT_MODELS, DEFAULT_TEXT_MODEL, VIDEO_MODEL } from "@/lib/creative/image-models/registry";
 import { ttsGenerate, composeVideo, avatarGenerate, omnihumanGenerate, AVATARS } from "@/lib/creative/image-models/fal-audio-video";
+
+function wordCount(text: string): number {
+  return text.trim().split(/\s+/).filter(Boolean).length;
+}
+
+function trimToWords(text: string, maxWords: number): string {
+  if (maxWords <= 0) return "";
+  const words = text.trim().split(/\s+/).filter(Boolean);
+  if (words.length <= maxWords) return words.join(" ");
+  return `${words.slice(0, maxWords).join(" ")}...`;
+}
+
+/**
+ * OmniHuman rejects audio >30s. We keep the CTA and trim body copy to fit a
+ * conservative spoken-length budget.
+ */
+function buildOmniHumanNarration(script: VideoScript, maxWords: number): string {
+  const body = script.scenes.map((s) => s.voiceover).filter(Boolean).join(" ");
+  const cta = (script.ctaLine ?? "").trim();
+  const full = [body, cta].filter(Boolean).join(" ").trim();
+  if (!full) return "";
+  if (wordCount(full) <= maxWords) return full;
+
+  const ctaMax = Math.min(16, Math.max(6, maxWords));
+  const ctaTrimmed = cta ? trimToWords(cta, ctaMax) : "";
+  const ctaWords = wordCount(ctaTrimmed);
+  const bodyBudget = Math.max(0, maxWords - ctaWords);
+  const bodyTrimmed = trimToWords(body, bodyBudget);
+  const combined = [bodyTrimmed, ctaTrimmed].filter(Boolean).join(" ").trim();
+
+  return combined || trimToWords(full, maxWords);
+}
 
 /**
  * Video Studio render pipeline. Steps, each memoized so retries don't re-pay:
@@ -26,6 +59,8 @@ export const generateVideoProject = inngest.createFunction(
   async ({ event, step }) => {
     const projectId = event.data.projectId as string;
     const resetScenes = (event.data.resetScenes as number[] | undefined) ?? [];
+    const scriptInput =
+      (event.data.scriptInput as Partial<VideoScriptInput> | undefined) ?? {};
 
     const [project] = await db
       .select()
@@ -80,6 +115,12 @@ export const generateVideoProject = inngest.createFunction(
             style: project.style,
             language: project.language,
             dialect: project.dialect,
+            objective: scriptInput.objective,
+            userPrompt: scriptInput.userPrompt,
+            keyPoints: scriptInput.keyPoints,
+            callToAction: scriptInput.callToAction,
+            mustAvoid: scriptInput.mustAvoid,
+            sceneCount: scriptInput.sceneCount,
           }),
         );
         await save({ script });
@@ -99,21 +140,44 @@ export const generateVideoProject = inngest.createFunction(
         if (project.avatarImageUrl) {
           // Bring-your-own avatar: voice the script (any language incl.
           // Arabic), then drive the user's photo with OmniHuman.
+          const omnihumanNarration = buildOmniHumanNarration(script, 55);
           const audioUrl = await step.run("avatar-voice", () =>
             ttsGenerate({
-              text: spoken,
+              text: omnihumanNarration,
               language: project.language,
               voice: project.voice,
               apiKey,
             }),
           );
-          finalUrl = await step.run("avatar-omnihuman", () =>
-            omnihumanGenerate({
-              imageUrl: project.avatarImageUrl!,
-              audioUrl,
-              apiKey,
-            }),
-          );
+          try {
+            finalUrl = await step.run("avatar-omnihuman", () =>
+              omnihumanGenerate({
+                imageUrl: project.avatarImageUrl!,
+                audioUrl,
+                apiKey,
+              }),
+            );
+          } catch (err) {
+            const msg = err instanceof Error ? err.message : String(err);
+            if (!msg.includes("audio_duration_too_long")) throw err;
+
+            const shorterNarration = buildOmniHumanNarration(script, 32);
+            const shortAudioUrl = await step.run("avatar-voice-short", () =>
+              ttsGenerate({
+                text: shorterNarration,
+                language: project.language,
+                voice: project.voice,
+                apiKey,
+              }),
+            );
+            finalUrl = await step.run("avatar-omnihuman-short", () =>
+              omnihumanGenerate({
+                imageUrl: project.avatarImageUrl!,
+                audioUrl: shortAudioUrl,
+                apiKey,
+              }),
+            );
+          }
         } else {
           // Preset VEED avatar (voice baked in by the model).
           finalUrl = await step.run("avatar", () =>

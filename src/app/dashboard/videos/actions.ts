@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { db, schema } from "@/db";
 import { inngest } from "@/inngest/client";
-import type { VideoScript } from "@/lib/ai/video-script";
+import type { VideoScript, VideoScriptInput } from "@/lib/ai/video-script";
 
 function clean(formData: FormData, key: string): string | null {
   const v = String(formData.get(key) ?? "").trim();
@@ -33,7 +33,11 @@ async function ownedProject(id: string, orgId: string) {
   return project;
 }
 
-async function enqueueRender(projectId: string, resetScenes?: number[]) {
+async function enqueueRender(
+  projectId: string,
+  resetScenes?: number[],
+  scriptInput?: Partial<VideoScriptInput>,
+) {
   await db
     .update(schema.videoProjects)
     .set({ status: "rendering", error: null, updatedAt: new Date() })
@@ -41,7 +45,11 @@ async function enqueueRender(projectId: string, resetScenes?: number[]) {
   try {
     await inngest.send({
       name: "video/render.requested",
-      data: { projectId, ...(resetScenes?.length ? { resetScenes } : {}) },
+      data: {
+        projectId,
+        ...(resetScenes?.length ? { resetScenes } : {}),
+        ...(scriptInput ? { scriptInput } : {}),
+      },
     });
   } catch (err) {
     console.error("[videos] enqueue failed:", err);
@@ -66,6 +74,16 @@ export async function createVideoProject(formData: FormData) {
   const dialect = clean(formData, "dialect");
   const voice = clean(formData, "voice") ?? "female";
   const avatar = clean(formData, "avatar");
+  const objective = clean(formData, "objective");
+  const creativePrompt = clean(formData, "creativePrompt");
+  const keyPoints = clean(formData, "keyPoints");
+  const cta = clean(formData, "cta");
+  const mustAvoid = clean(formData, "mustAvoid");
+  const sceneCountRaw = Number(formData.get("sceneCount"));
+  const sceneCount =
+    Number.isInteger(sceneCountRaw) && sceneCountRaw >= 2 && sceneCountRaw <= 5
+      ? sceneCountRaw
+      : 3;
   // User-uploaded avatar photo (data URI from /api/upload-asset). Only kept
   // for the avatar style; drives the OmniHuman custom-avatar path.
   const avatarImageUrl = clean(formData, "avatarImageUrl");
@@ -101,7 +119,14 @@ export async function createVideoProject(formData: FormData) {
     })
     .returning();
 
-  await enqueueRender(project.id);
+  await enqueueRender(project.id, undefined, {
+    objective,
+    userPrompt: creativePrompt,
+    keyPoints,
+    callToAction: cta,
+    mustAvoid,
+    sceneCount,
+  });
   redirect(`/dashboard/videos/${project.id}`);
 }
 
