@@ -50,6 +50,12 @@ export type VideoScript = {
   scenes: VideoScene[];
 };
 
+const LANGUAGE_LABEL: Record<string, string> = {
+  en: "English",
+  fr: "French",
+  ar: "Arabic",
+};
+
 const STYLE_DIRECTION: Record<string, string> = {
   avatar:
     "UGC creator monologue spoken to camera in ONE continuous take by a lip-synced " +
@@ -93,7 +99,7 @@ export async function generateVideoScript(
       "duration (~2.5 words/second). Never invent prices or discounts.",
     prompt: [
       `Style: ${STYLE_DIRECTION[input.style] ?? STYLE_DIRECTION.ugc}`,
-      `Voiceover language: ${input.language === "fr" ? "French" : "English"} (write ALL voiceover lines in it)`,
+      `Voiceover language: ${LANGUAGE_LABEL[input.language] ?? "English"} (write ALL voiceover lines natively in it — for Arabic use Modern Standard Arabic or natural Darija as fits the brand)`,
       input.brandName ? `Brand: ${input.brandName}` : null,
       input.tone ? `Brand voice: ${input.tone}` : null,
       `Product: ${input.productName}`,

@@ -187,7 +187,7 @@ export default async function VideoEditorPage({
                       )}
                       <label className="block text-xs text-zinc-500">
                         {isAvatar ? "Spoken line" : "Voiceover line"}
-                        <textarea name="voiceover" rows={2} defaultValue={scene.voiceover} className={`mt-1 ${field}`} />
+                        <textarea name="voiceover" rows={2} dir="auto" defaultValue={scene.voiceover} className={`mt-1 ${field}`} />
                       </label>
                       <div className="flex flex-wrap items-center gap-3">
                         {!isAvatar && (

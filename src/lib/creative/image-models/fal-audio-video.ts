@@ -1,47 +1,92 @@
 /**
  * Audio + assembly models for the Video Studio, all on fal.ai:
- *   • ttsGenerate    — Kokoro TTS (per-language endpoints) → voiceover audio URL
- *   • composeVideo   — fal ffmpeg compose: scene clips + voiceover → final mp4
- *   • avatarGenerate — VEED talking avatars: script → lip-synced UGC creator video
+ *   • ttsGenerate     — voiceover audio URL. Kokoro for en/fr; ElevenLabs
+ *                       multilingual-v2 for ar (Kokoro has no Arabic).
+ *   • composeVideo    — fal ffmpeg compose: scene clips + voiceover → final mp4
+ *   • avatarGenerate  — VEED preset talking avatars: script → lip-synced video
+ *   • omnihumanGenerate — ByteDance OmniHuman: user's OWN photo + audio →
+ *                       realistic talking-head video (bring-your-own avatar)
  *
  * Endpoint ids are pinned here so a model swap is a one-line change.
  */
 
-const TTS_ENDPOINTS: Record<string, string> = {
+/** Languages offered in the studio. Arabic routes through ElevenLabs. */
+export const VOICE_LANGUAGES: Array<{ id: string; label: string }> = [
+  { id: "en", label: "English" },
+  { id: "fr", label: "Français" },
+  { id: "ar", label: "العربية (Arabic)" },
+];
+
+const KOKORO_ENDPOINTS: Record<string, string> = {
   en: "fal-ai/kokoro/american-english",
   fr: "fal-ai/kokoro/french",
 };
 
-/** Voice presets per language (Kokoro voice ids). */
-export const TTS_VOICES: Record<string, Record<string, string>> = {
+/** Kokoro voice ids per language (en/fr). */
+const KOKORO_VOICES: Record<string, Record<string, string>> = {
   en: { female: "af_heart", male: "am_michael" },
   fr: { female: "ff_siwis", male: "ff_siwis" },
 };
 
+/** ElevenLabs multilingual voice names (speak any language incl. Arabic). */
+const ELEVEN_VOICES: Record<string, string> = {
+  female: "Rachel",
+  male: "Brian",
+};
+
+async function kokoroTts(args: {
+  text: string;
+  language: string;
+  voice: string;
+  apiKey: string;
+}): Promise<string> {
+  const endpoint = KOKORO_ENDPOINTS[args.language] ?? KOKORO_ENDPOINTS.en;
+  const voiceId =
+    KOKORO_VOICES[args.language]?.[args.voice] ?? KOKORO_VOICES.en.female;
+  const res = await fetch(`https://fal.run/${endpoint}`, {
+    method: "POST",
+    headers: { Authorization: `Key ${args.apiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ prompt: args.text, voice: voiceId }),
+  });
+  if (!res.ok) throw new Error(`tts(kokoro): ${res.status} ${(await res.text()).slice(0, 200)}`);
+  const data = (await res.json()) as { audio?: { url?: string } };
+  if (!data.audio?.url) throw new Error("tts(kokoro): no audio URL");
+  return data.audio.url;
+}
+
+async function elevenTts(args: {
+  text: string;
+  language: string;
+  voice: string;
+  apiKey: string;
+}): Promise<string> {
+  const res = await fetch("https://fal.run/fal-ai/elevenlabs/tts/multilingual-v2", {
+    method: "POST",
+    headers: { Authorization: `Key ${args.apiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      text: args.text,
+      voice: ELEVEN_VOICES[args.voice] ?? ELEVEN_VOICES.female,
+      language_code: args.language, // ISO 639-1, e.g. "ar"
+    }),
+  });
+  if (!res.ok) throw new Error(`tts(elevenlabs): ${res.status} ${(await res.text()).slice(0, 200)}`);
+  const data = (await res.json()) as { audio?: { url?: string } };
+  if (!data.audio?.url) throw new Error("tts(elevenlabs): no audio URL");
+  return data.audio.url;
+}
+
+/** Voiceover audio URL, routed to the right engine per language. */
 export async function ttsGenerate(args: {
   text: string;
   language: string;
   voice: string; // "female" | "male"
   apiKey: string;
 }): Promise<string> {
-  const endpoint = TTS_ENDPOINTS[args.language] ?? TTS_ENDPOINTS.en;
-  const voiceId =
-    TTS_VOICES[args.language]?.[args.voice] ?? TTS_VOICES.en.female;
-
-  const res = await fetch(`https://fal.run/${endpoint}`, {
-    method: "POST",
-    headers: {
-      Authorization: `Key ${args.apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ prompt: args.text, voice: voiceId }),
-  });
-  if (!res.ok) {
-    throw new Error(`tts: ${res.status} ${(await res.text()).slice(0, 200)}`);
-  }
-  const data = (await res.json()) as { audio?: { url?: string } };
-  if (!data.audio?.url) throw new Error("tts: no audio URL in response");
-  return data.audio.url;
+  // Kokoro covers en/fr well and cheaply; Arabic (and any non-Kokoro lang)
+  // goes to ElevenLabs multilingual.
+  return args.language in KOKORO_ENDPOINTS
+    ? kokoroTts(args)
+    : elevenTts(args);
 }
 
 /**
@@ -109,6 +154,55 @@ export async function avatarGenerate(args: {
   }
   const data = (await result.json()) as { video?: { url?: string } };
   if (!data.video?.url) throw new Error("avatar: no video URL in response");
+  return data.video.url;
+}
+
+/**
+ * Bring-your-own avatar: ByteDance OmniHuman turns the user's OWN photo +
+ * a voiceover audio track into a realistic lip-synced talking-head video.
+ * The photo may be a public URL or a data: URI (fal accepts both).
+ */
+export async function omnihumanGenerate(args: {
+  imageUrl: string;
+  audioUrl: string;
+  apiKey: string;
+}): Promise<string> {
+  const headers = {
+    Authorization: `Key ${args.apiKey}`,
+    "Content-Type": "application/json",
+  };
+  const submit = await fetch("https://queue.fal.run/fal-ai/bytedance/omnihuman", {
+    method: "POST",
+    headers,
+    body: JSON.stringify({ image_url: args.imageUrl, audio_url: args.audioUrl }),
+  });
+  if (!submit.ok) {
+    throw new Error(`omnihuman submit: ${submit.status} ${(await submit.text()).slice(0, 200)}`);
+  }
+  const job = (await submit.json()) as { status_url?: string; response_url?: string };
+  if (!job.status_url || !job.response_url) {
+    throw new Error("omnihuman: queue response missing status/response URLs");
+  }
+
+  const deadline = Date.now() + 12 * 60_000;
+  for (;;) {
+    if (Date.now() > deadline) throw new Error("omnihuman: timed out");
+    await new Promise((r) => setTimeout(r, 6000));
+    const st = await fetch(job.status_url, { headers });
+    if (!st.ok) continue;
+    const s = (await st.json()) as { status?: string };
+    if (s.status === "COMPLETED") break;
+    if (s.status === "FAILED" || s.status === "CANCELLED") {
+      throw new Error(`omnihuman: generation ${s.status}`);
+    }
+  }
+
+  const result = await fetch(job.response_url, { headers });
+  if (!result.ok) {
+    throw new Error(`omnihuman result: ${result.status} ${(await result.text()).slice(0, 200)}`);
+  }
+  const data = (await result.json()) as { video?: { url?: string } };
+  if (!data.video?.url) throw new Error("omnihuman: no video URL in response");
   return data.video.url;
 }
 

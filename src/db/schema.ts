@@ -446,6 +446,9 @@ export const videoProjects = pgTable("video_projects", {
   voice: text("voice").notNull().default("female"),
   // VEED avatar id — used by the "avatar" style (lip-synced UGC creator).
   avatar: text("avatar"),
+  // User's own avatar photo (data URI or URL). When set on an "avatar" style
+  // project, the custom OmniHuman path renders it instead of a VEED preset.
+  avatarImageUrl: text("avatar_image_url"),
   // "draft" | "rendering" | "ready" | "failed"
   status: text("status").notNull().default("draft"),
   script: jsonb("script").notNull().default(sql`'{}'::jsonb`),

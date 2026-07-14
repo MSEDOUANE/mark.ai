@@ -101,7 +101,7 @@ Status: ✅ built & verified · 🔶 partial · ❌ not built
 | Service | Status | Notes |
 |---|---|---|
 | **WhatsApp follow-up / lead handling** | 🔶 | Click-to-WhatsApp launches ✅ (destination toggle on brief → WHATSAPP ad set + CTA); AI lead responder scaffold ✅ (webhook + message store + brand-voice auto-reply) — activates once WHATSAPP_TOKEN/PHONE_NUMBER_ID are set and the Page has a WA Business number |
-| Darija/FR/AR content generation | 🔶 | Models can; no first-class language selector or RTL rendering in creatives |
+| Darija/FR/AR content generation | 🔶 | Video Studio has EN/FR/AR voiceover (ElevenLabs multilingual for Arabic) + RTL script editing; other surfaces (creatives/copy/captions) still lack a first-class language selector |
 | Local payments (CMI/PayZone billing) | ❌ | Phase 5 SaaS |
 | COD-friendly funnel patterns | ❌ | Cart-abandonment research insight (85%+) → COD/WhatsApp checkout flows |
 

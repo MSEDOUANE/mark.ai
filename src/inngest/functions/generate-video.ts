@@ -3,7 +3,7 @@ import { inngest } from "../client";
 import { db, schema } from "@/db";
 import { generateVideoScript, type VideoScript } from "@/lib/ai/video-script";
 import { TEXT_MODELS, DEFAULT_TEXT_MODEL, VIDEO_MODEL } from "@/lib/creative/image-models/registry";
-import { ttsGenerate, composeVideo, avatarGenerate, AVATARS } from "@/lib/creative/image-models/fal-audio-video";
+import { ttsGenerate, composeVideo, avatarGenerate, omnihumanGenerate, AVATARS } from "@/lib/creative/image-models/fal-audio-video";
 
 /**
  * Video Studio render pipeline. Steps, each memoized so retries don't re-pay:
@@ -85,7 +85,7 @@ export const generateVideoProject = inngest.createFunction(
       }
 
       // Avatar style: one lip-synced talking-creator video speaks the whole
-      // script — no per-scene filming, no separate voiceover, no assembly.
+      // script — no per-scene filming, no assembly.
       if (project.style === "avatar") {
         const spoken = [
           ...script.scenes.map((s) => s.voiceover),
@@ -93,13 +93,37 @@ export const generateVideoProject = inngest.createFunction(
         ]
           .filter(Boolean)
           .join(" ");
-        const finalUrl = await step.run("avatar", () =>
-          avatarGenerate({
-            text: spoken,
-            avatarId: project.avatar ?? AVATARS[0].id,
-            apiKey,
-          }),
-        );
+
+        let finalUrl: string;
+        if (project.avatarImageUrl) {
+          // Bring-your-own avatar: voice the script (any language incl.
+          // Arabic), then drive the user's photo with OmniHuman.
+          const audioUrl = await step.run("avatar-voice", () =>
+            ttsGenerate({
+              text: spoken,
+              language: project.language,
+              voice: project.voice,
+              apiKey,
+            }),
+          );
+          finalUrl = await step.run("avatar-omnihuman", () =>
+            omnihumanGenerate({
+              imageUrl: project.avatarImageUrl!,
+              audioUrl,
+              apiKey,
+            }),
+          );
+        } else {
+          // Preset VEED avatar (voice baked in by the model).
+          finalUrl = await step.run("avatar", () =>
+            avatarGenerate({
+              text: spoken,
+              avatarId: project.avatar ?? AVATARS[0].id,
+              apiKey,
+            }),
+          );
+        }
+
         await save({ status: "ready", finalUrl, script });
         return { projectId, status: "ready", style: "avatar" };
       }

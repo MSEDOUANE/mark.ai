@@ -5,7 +5,8 @@ import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { db, schema } from "@/db";
 import { createVideoProject } from "./actions";
-import { AVATARS } from "@/lib/creative/image-models/fal-audio-video";
+import { AVATARS, VOICE_LANGUAGES } from "@/lib/creative/image-models/fal-audio-video";
+import { AvatarPicker } from "./avatar-picker";
 
 const field =
   "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500";
@@ -109,25 +110,19 @@ export default async function VideosPage({
               </div>
             </div>
 
-            <label className="block text-sm">
-              <span className="text-zinc-400">Avatar <span className="text-zinc-600">(UGC Avatar style)</span></span>
-              <select name="avatar" className={`mt-1.5 ${field}`} defaultValue={AVATARS[0].id}>
-                {AVATARS.map((a) => (
-                  <option key={a.id} value={a.id}>{a.label}</option>
-                ))}
-              </select>
-            </label>
+            <AvatarPicker presets={AVATARS} />
 
             <div className="grid grid-cols-2 gap-3 text-sm">
               <label className="block">
                 <span className="text-zinc-400">Voiceover language</span>
                 <select name="language" className={`mt-1.5 ${field}`} defaultValue="en">
-                  <option value="en">English</option>
-                  <option value="fr">Français</option>
+                  {VOICE_LANGUAGES.map((l) => (
+                    <option key={l.id} value={l.id}>{l.label}</option>
+                  ))}
                 </select>
               </label>
               <label className="block">
-                <span className="text-zinc-400">Voice <span className="text-zinc-600">(voiceover styles)</span></span>
+                <span className="text-zinc-400">Voice</span>
                 <select name="voice" className={`mt-1.5 ${field}`} defaultValue="female">
                   <option value="female">Female</option>
                   <option value="male">Male</option>
