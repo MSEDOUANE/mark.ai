@@ -14,6 +14,8 @@ import {
   deleteVideoProject,
 } from "../actions";
 import type { VideoScript } from "@/lib/ai/video-script";
+import { ARABIC_DIALECTS } from "@/lib/ai/video-script";
+import { VOICE_LANGUAGES } from "@/lib/creative/image-models/fal-audio-video";
 
 const field =
   "w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500";
@@ -55,7 +57,12 @@ export default async function VideoEditorPage({
           <div>
             <h1 className="text-2xl font-bold">{project.title}</h1>
             <p className="mt-0.5 text-sm capitalize text-zinc-400">
-              {project.style} · {project.language === "fr" ? "Français" : "English"} · {project.voice} voice
+              {project.style} ·{" "}
+              {VOICE_LANGUAGES.find((l) => l.id === project.language)?.label ?? project.language}
+              {project.language === "ar" && project.dialect
+                ? ` (${ARABIC_DIALECTS.find((d) => d.id === project.dialect)?.label ?? project.dialect})`
+                : ""}{" "}
+              · {project.voice} voice
             </p>
           </div>
           <div className="flex items-center gap-2">

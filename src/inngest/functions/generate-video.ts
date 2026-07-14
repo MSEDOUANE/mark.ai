@@ -79,6 +79,7 @@ export const generateVideoProject = inngest.createFunction(
             tone: brand?.tone,
             style: project.style,
             language: project.language,
+            dialect: project.dialect,
           }),
         );
         await save({ script });

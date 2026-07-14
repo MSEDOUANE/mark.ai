@@ -441,8 +441,11 @@ export const videoProjects = pgTable("video_projects", {
   title: text("title").notNull(),
   // "ugc" | "storytelling" | "showcase"
   style: text("style").notNull().default("ugc"),
-  // BCP-47-ish language for voiceover: "en" | "fr"
+  // BCP-47-ish language for voiceover: "en" | "fr" | "ar"
   language: text("language").notNull().default("en"),
+  // Arabic dialect id (darija | msa | egyptian | gulf | levantine) — only
+  // meaningful when language = "ar". Drives how the script is written.
+  dialect: text("dialect"),
   voice: text("voice").notNull().default("female"),
   // VEED avatar id — used by the "avatar" style (lip-synced UGC creator).
   avatar: text("avatar"),

@@ -63,6 +63,7 @@ export async function createVideoProject(formData: FormData) {
   const productId = clean(formData, "productId");
   const style = clean(formData, "style") ?? "ugc";
   const language = clean(formData, "language") ?? "en";
+  const dialect = clean(formData, "dialect");
   const voice = clean(formData, "voice") ?? "female";
   const avatar = clean(formData, "avatar");
   // User-uploaded avatar photo (data URI from /api/upload-asset). Only kept
@@ -93,6 +94,7 @@ export async function createVideoProject(formData: FormData) {
       title: title!,
       style,
       language,
+      dialect: language === "ar" ? dialect : null,
       voice,
       avatar: style === "avatar" ? avatar : null,
       avatarImageUrl: style === "avatar" ? avatarImageUrl : null,

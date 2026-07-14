@@ -6,7 +6,9 @@ import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { db, schema } from "@/db";
 import { createVideoProject } from "./actions";
 import { AVATARS, VOICE_LANGUAGES } from "@/lib/creative/image-models/fal-audio-video";
+import { ARABIC_DIALECTS } from "@/lib/ai/video-script";
 import { AvatarPicker } from "./avatar-picker";
+import { VoicePicker } from "./voice-picker";
 
 const field =
   "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500";
@@ -112,23 +114,10 @@ export default async function VideosPage({
 
             <AvatarPicker presets={AVATARS} />
 
-            <div className="grid grid-cols-2 gap-3 text-sm">
-              <label className="block">
-                <span className="text-zinc-400">Voiceover language</span>
-                <select name="language" className={`mt-1.5 ${field}`} defaultValue="en">
-                  {VOICE_LANGUAGES.map((l) => (
-                    <option key={l.id} value={l.id}>{l.label}</option>
-                  ))}
-                </select>
-              </label>
-              <label className="block">
-                <span className="text-zinc-400">Voice</span>
-                <select name="voice" className={`mt-1.5 ${field}`} defaultValue="female">
-                  <option value="female">Female</option>
-                  <option value="male">Male</option>
-                </select>
-              </label>
-            </div>
+            <VoicePicker
+              languages={VOICE_LANGUAGES}
+              dialects={ARABIC_DIALECTS.map((d) => ({ id: d.id, label: d.label }))}
+            />
 
             <button className="w-full rounded-xl bg-amber-400 px-5 py-3 text-sm font-bold text-zinc-950 shadow shadow-amber-500/20 transition-colors hover:bg-amber-300">
               Generate video →
