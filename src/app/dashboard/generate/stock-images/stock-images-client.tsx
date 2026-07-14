@@ -46,8 +46,6 @@ export function StockImagesClient() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [query]);
 
-  useEffect(() => { search(query, 1); /* eslint-disable-next-line react-hooks/exhaustive-deps */ }, []);
-
   function loadMore() {
     const next = page + 1;
     setPage(next);

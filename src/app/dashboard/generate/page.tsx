@@ -113,6 +113,30 @@ const ASSETS: AssetType[] = [
     ),
   },
   {
+    href: "/dashboard/generate/product-photos",
+    icon: "📸",
+    label: "Product Photo Ads",
+    description: "Turn one product photo into professional studio shots — clean background, lifestyle, editorial, and more.",
+    badge: "New",
+    categories: ["All", "Images"],
+    preview: (
+      <div className="grid h-full w-full grid-cols-2 gap-0.5 overflow-hidden rounded-lg bg-zinc-950">
+        <div className="flex items-center justify-center bg-gradient-to-br from-zinc-200 to-zinc-400">
+          <span className="text-lg">👟</span>
+        </div>
+        <div className="flex items-center justify-center bg-gradient-to-br from-amber-900/50 to-zinc-900">
+          <span className="text-lg">👟</span>
+        </div>
+        <div className="flex items-center justify-center bg-gradient-to-br from-emerald-900/40 to-zinc-900">
+          <span className="text-lg">👟</span>
+        </div>
+        <div className="flex items-center justify-center bg-gradient-to-br from-zinc-800 to-black">
+          <span className="text-lg">👟</span>
+        </div>
+      </div>
+    ),
+  },
+  {
     href: "/dashboard/generate/stock-images",
     icon: "🖼️",
     label: "Stock Images",
