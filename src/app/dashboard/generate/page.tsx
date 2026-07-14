@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const CATEGORIES = ["All", "Images", "Text", "Audience"] as const;
+const CATEGORIES = ["All", "Images", "Video", "Text", "Audience"] as const;
 type Category = (typeof CATEGORIES)[number];
 
 interface AssetType {
@@ -151,12 +151,29 @@ const ASSETS: AssetType[] = [
     ),
   },
   {
+    href: "/dashboard/generate/stock-videos",
+    icon: "🎥",
+    label: "Stock Videos",
+    description: "Search millions of free stock video clips for your ads and content.",
+    badge: "New",
+    categories: ["All", "Video"],
+    preview: (
+      <div className="relative h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-sky-900/40 to-zinc-900 flex items-center justify-center">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
+          <svg className="h-5 w-5 translate-x-0.5 text-white/80" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5.14v14l11-7-11-7z" />
+          </svg>
+        </div>
+      </div>
+    ),
+  },
+  {
     href: "/dashboard/videos",
     icon: "🎬",
     label: "Video Ads",
     description: "Lip-synced UGC creator, storytelling, and showcase videos — AI scripts, voices, films, and cuts them; you edit any scene.",
     badge: "New",
-    categories: ["All", "Images"],
+    categories: ["All", "Video"],
     preview: (
       <div className="relative h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-rose-900/50 to-zinc-900 flex items-center justify-center">
         <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/90 shadow-lg">
