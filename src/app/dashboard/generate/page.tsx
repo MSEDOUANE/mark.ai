@@ -1,6 +1,17 @@
 import Link from "next/link";
 
-const CATEGORIES = ["All", "Images", "Video", "Text", "Audience", "Audio"] as const;
+const CATEGORIES = [
+  "Most Popular",
+  "Images",
+  "Videos",
+  "Product Ads",
+  "Social Posts",
+  "Text",
+  "Audience",
+  "Voice",
+  "Audio",
+  "Animation",
+] as const;
 type Category = (typeof CATEGORIES)[number];
 
 interface AssetType {
@@ -37,7 +48,7 @@ const ASSETS: AssetType[] = [
     label: "Copy & Content",
     description: "Ad copy, product descriptions, and marketing content — AIDA, PAS, Hook-Story-Offer and more.",
     badge: "New",
-    categories: ["All", "Text"],
+    categories: ["All", "Text", "Most Popular"],
     preview: (
       <div className="h-full w-full overflow-hidden rounded-lg bg-zinc-800 p-3">
         <div className="mb-2 flex items-center gap-1.5">
@@ -63,7 +74,7 @@ const ASSETS: AssetType[] = [
     label: "Social Captions",
     description: "Platform-optimized captions with hashtags for Instagram, TikTok, LinkedIn and more.",
     badge: "New",
-    categories: ["All", "Text"],
+    categories: ["All", "Text", "Social Posts", "Most Popular"],
     preview: (
       <div className="h-full w-full overflow-hidden rounded-lg bg-zinc-800 p-3">
         <div className="mb-2 flex items-center gap-2">
@@ -89,7 +100,7 @@ const ASSETS: AssetType[] = [
     label: "Buyer Personas",
     description: "AI-crafted buyer personas to sharpen targeting, messaging and audience segments.",
     badge: "New",
-    categories: ["All", "Audience"],
+    categories: ["All", "Audience", "Most Popular"],
     preview: (
       <div className="h-full w-full overflow-hidden rounded-lg bg-zinc-800 p-3">
         <div className="flex items-center gap-2">
@@ -139,7 +150,7 @@ const ASSETS: AssetType[] = [
     label: "Product Photo Ads",
     description: "Turn one product photo into professional studio shots — clean background, lifestyle, editorial, and more.",
     badge: "New",
-    categories: ["All", "Images"],
+    categories: ["All", "Images", "Product Ads"],
     preview: (
       <div className="grid h-full w-full grid-cols-2 gap-0.5 overflow-hidden rounded-lg bg-zinc-950">
         <div className="flex items-center justify-center bg-gradient-to-br from-zinc-200 to-zinc-400">
@@ -162,7 +173,7 @@ const ASSETS: AssetType[] = [
     icon: "🖼️",
     label: "Stock Images",
     description: "Search millions of free stock photos and use them as creative backgrounds.",
-    categories: ["All", "Images"],
+    categories: ["All", "Images", "Most Popular"],
     preview: (
       <div className="h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-sky-900/40 to-zinc-900 flex items-center justify-center">
         <svg className="h-10 w-10 text-zinc-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1}>
@@ -177,7 +188,7 @@ const ASSETS: AssetType[] = [
     label: "Stock Videos",
     description: "Search millions of free stock video clips for your ads and content.",
     badge: "New",
-    categories: ["All", "Video"],
+    categories: ["All", "Videos", "Most Popular"],
     preview: (
       <div className="relative h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-sky-900/40 to-zinc-900 flex items-center justify-center">
         <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/15">
@@ -194,7 +205,7 @@ const ASSETS: AssetType[] = [
     label: "Video Ads",
     description: "Lip-synced UGC creator, storytelling, and showcase videos — AI scripts, voices, films, and cuts them; you edit any scene.",
     badge: "New",
-    categories: ["All", "Video"],
+    categories: ["All", "Videos", "Animation", "Most Popular"],
     preview: (
       <div className="relative h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-rose-900/50 to-zinc-900 flex items-center justify-center">
         <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white/90 shadow-lg">
@@ -211,7 +222,7 @@ const ASSETS: AssetType[] = [
     icon: "📰",
     label: "Headlines & CTAs",
     description: "Punchy, scroll-stopping headlines, primary text and call-to-actions — generated with your Ad Copy.",
-    categories: ["All", "Text"],
+    categories: ["All", "Text", "Most Popular"],
     preview: (
       <div className="h-full w-full overflow-hidden rounded-lg bg-zinc-800 p-3">
         <div className="space-y-2">
@@ -229,7 +240,7 @@ const ASSETS: AssetType[] = [
     icon: "🛍️",
     label: "Product Videos",
     description: "Turn a product into a polished showcase video — AI writes, films and cuts it. Uses the Showcase style.",
-    categories: ["All", "Video"],
+    categories: ["All", "Videos", "Product Ads"],
     preview: (
       <div className="relative h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-teal-900/50 to-zinc-900 flex items-center justify-center">
         <span className="text-3xl">🛍️</span>
@@ -247,7 +258,7 @@ const ASSETS: AssetType[] = [
     icon: "✨",
     label: "Motion Effects",
     description: "Animate any static image creative into a ~5s video ad with a single click.",
-    categories: ["All", "Video"],
+    categories: ["All", "Videos", "Animation"],
     preview: (
       <div className="relative h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-fuchsia-900/40 to-zinc-900 flex items-center justify-center">
         <span className="text-3xl">✨</span>
@@ -265,7 +276,7 @@ const ASSETS: AssetType[] = [
     label: "Fashion Photoshoots",
     description: "Put your product on AI models — on-figure fashion and lifestyle shots from a single photo.",
     badge: "New",
-    categories: ["All", "Images"],
+    categories: ["All", "Images", "Product Ads"],
     preview: (
       <div className="h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-pink-900/40 to-zinc-900 flex items-center justify-center">
         <span className="text-3xl">👗</span>
@@ -278,7 +289,7 @@ const ASSETS: AssetType[] = [
     label: "Batch Generation",
     description: "One shared brief applied across every product you pick — each gets its own scored creative.",
     badge: "New",
-    categories: ["All", "Images"],
+    categories: ["All", "Images", "Product Ads"],
     preview: (
       <div className="grid h-full w-full grid-cols-3 gap-0.5 overflow-hidden rounded-lg bg-zinc-950">
         {[0, 1, 2].map((i) => (
@@ -310,7 +321,7 @@ const ASSETS: AssetType[] = [
     label: "Voiceover & Audio",
     description: "AI voiceovers (incl. Arabic dialects), background music and sound effects for your videos.",
     badge: "New",
-    categories: ["All", "Audio"],
+    categories: ["All", "Audio", "Voice"],
     preview: (
       <div className="h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-indigo-900/50 to-zinc-900 flex items-center justify-center gap-1">
         {["h-4", "h-8", "h-5", "h-10", "h-6", "h-9", "h-4"].map((h, i) => (
@@ -321,37 +332,51 @@ const ASSETS: AssetType[] = [
   },
 ];
 
-export default function GeneratePage({
+export default async function GeneratePage({
   searchParams,
 }: {
   searchParams: Promise<{ cat?: string }>;
 }) {
-  // Next.js 16 requires awaiting searchParams even in server components
-  // We use a Suspense-free approach: render synchronously with default
-  const cat: string = "All"; // default; JS-filtered client-side via the tab links
+  const { cat: requestedCategory } = await searchParams;
+  const cat = CATEGORIES.includes(requestedCategory as Category)
+    ? (requestedCategory as Category)
+    : "Most Popular";
 
   return (
     <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-400/15 text-2xl">
-            ✦
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">AI-Generated Assets</h1>
-            <p className="mt-0.5 text-sm text-zinc-400">
-              Select the asset type you want to generate.
-            </p>
+        <div className="rounded-3xl border border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(251,191,36,0.12),_transparent_35%),linear-gradient(180deg,rgba(24,24,27,0.95),rgba(9,9,11,0.98))] p-6 shadow-2xl shadow-black/30 sm:p-8">
+          <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-amber-300">Generate workspace</p>
+              <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
+                Create images, videos, copy, and audience intelligence in one place.
+              </h1>
+              <p className="mt-3 max-w-xl text-sm leading-relaxed text-zinc-400 sm:text-base">
+                Start from a brand, choose a workflow, and keep every generation inside the same project context.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:w-[28rem]">
+              {[
+                ["Brand-aware", "Always uses your saved brand kits"],
+                ["Fast start", "Most workflows open in one click"],
+                ["Background jobs", "Keep working while renders run"],
+                ["Versioned", "Every output stays reusable"],
+              ].map(([title, text]) => (
+                <div key={title} className="rounded-2xl border border-white/10 bg-zinc-950/70 p-3">
+                  <div className="text-sm font-semibold text-zinc-50">{title}</div>
+                  <div className="mt-1 text-[11px] leading-relaxed text-zinc-500">{text}</div>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Category tabs */}
-        <div className="mt-6 flex flex-wrap gap-2">
+        <div className="mt-4 flex flex-wrap gap-2">
           {CATEGORIES.map((c) => (
-            <Link key={c} href={`/dashboard/generate?cat=${c}`}
+            <Link key={c} href={`/dashboard/generate?cat=${encodeURIComponent(c)}`}
               className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
-                cat === c || (c === "All" && !cat)
+                cat === c
                   ? "border-amber-400 bg-amber-400/10 text-amber-400"
                   : "border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
               }`}>
@@ -360,9 +385,38 @@ export default function GeneratePage({
           ))}
         </div>
 
+        <section className="mt-6 rounded-2xl border border-white/10 bg-zinc-900/70 p-4">
+          <div className="flex items-center justify-between gap-3">
+            <div>
+              <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500">Quick start</h2>
+              <p className="mt-1 text-sm text-zinc-400">Jump into the highest-frequency workflows.</p>
+            </div>
+            <Link href="/dashboard/assistant" className="text-sm text-amber-300 hover:text-amber-200">
+              Ask assistant →
+            </Link>
+          </div>
+          <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              ["New campaign", "/dashboard/campaigns/new", "From brief to launch"],
+              ["Product ads", "/dashboard/generate/product-ads", "Lifestyle shots, CTA, and export"],
+              ["Voice", "/dashboard/generate/voice", "Voiceovers, narration, and cloning"],
+              ["Animation", "/dashboard/generate/animation", "Turn stills into motion clips"],
+            ].map(([title, href, text]) => (
+              <Link key={title} href={href as string} className="rounded-xl border border-white/10 bg-zinc-950 px-4 py-3 hover:border-white/20">
+                <div className="text-sm font-semibold text-zinc-50">{title}</div>
+                <div className="mt-1 text-xs text-zinc-500">{text}</div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
         {/* Asset grid */}
         <div className="mt-7 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {ASSETS.map((a) => (
+          {ASSETS.filter((asset) =>
+            cat === "Most Popular"
+              ? asset.categories.includes("All") || asset.categories.includes("Most Popular")
+              : asset.categories.includes(cat),
+          ).map((a) => (
             <AssetCard key={a.href} asset={a} />
           ))}
         </div>

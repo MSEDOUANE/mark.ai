@@ -16,8 +16,7 @@ interface NavSection {
   items: NavItem[];
 }
 
-// AdCreative-style grouping: a small top cluster, then the service sections
-// (Create / Projects / Brand / Analyze / Predict / Retouch), Settings last.
+// MarkAI-style grouping: home, creation, analysis, and workspace admin.
 const navSections: NavSection[] = [
   {
     items: [
@@ -27,7 +26,7 @@ const navSections: NavSection[] = [
     ],
   },
   {
-    heading: "Create",
+    heading: "Generate",
     items: [
       { href: "/dashboard/generate", label: "Generate" },
       { href: "/dashboard/creatives", label: "Creatives" },
@@ -61,7 +60,14 @@ const navSections: NavSection[] = [
     items: [{ href: "/dashboard/retouch", label: "Retouch" }],
   },
   {
-    items: [{ href: "/dashboard/settings", label: "Settings" }],
+    heading: "Admin",
+    items: [
+      { href: "/dashboard/billing", label: "Billing" },
+      { href: "/dashboard/team", label: "Team Management" },
+      { href: "/dashboard/notifications", label: "Notifications" },
+      { href: "/dashboard/profile", label: "Profile" },
+      { href: "/dashboard/settings", label: "Settings" },
+    ],
   },
 ];
 
