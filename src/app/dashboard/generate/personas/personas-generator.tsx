@@ -108,6 +108,28 @@ function PersonaCard({ persona, index, isPrimary }: { persona: Persona; index: n
             <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-600">Ad receptiveness</p>
             <p className="text-sm text-zinc-300">{persona.adReceptiveness}</p>
           </div>
+
+          <div className="sm:col-span-2 rounded-xl border border-blue-400/20 bg-blue-950/20 p-4">
+            <p className="mb-2 flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-blue-400">
+              <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" /></svg>
+              Meta Ads targeting spec
+            </p>
+            <p className="text-sm text-zinc-300">
+              Ages {persona.metaTargeting.ageMin}–{persona.metaTargeting.ageMax} ·{" "}
+              {persona.metaTargeting.genders.join(", ")} ·{" "}
+              {persona.metaTargeting.placements.join(", ")}
+            </p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {persona.metaTargeting.interests.map((i) => (
+                <span key={i} className="rounded-full bg-blue-900/30 px-2 py-0.5 text-[11px] text-blue-300">{i}</span>
+              ))}
+            </div>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {persona.metaTargeting.detailedTargeting.map((d) => (
+                <span key={d} className="rounded-full bg-zinc-800 px-2 py-0.5 text-[11px] text-zinc-400">{d}</span>
+              ))}
+            </div>
+          </div>
         </div>
       )}
     </article>

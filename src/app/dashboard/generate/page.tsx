@@ -34,8 +34,8 @@ const ASSETS: AssetType[] = [
   {
     href: "/dashboard/generate/ad-copy",
     icon: "✍️",
-    label: "Ad Copy",
-    description: "Generate sales-driven copy using proven frameworks — AIDA, PAS, Hook-Story-Offer and more.",
+    label: "Copy & Content",
+    description: "Ad copy, product descriptions, and marketing content — AIDA, PAS, Hook-Story-Offer and more.",
     badge: "New",
     categories: ["All", "Text"],
     preview: (
@@ -107,6 +107,27 @@ const ASSETS: AssetType[] = [
         <div className="mt-2 flex gap-1">
           {["Meta", "TikTok", "Google"].map((p) => (
             <span key={p} className="rounded bg-zinc-700 px-1.5 py-0.5 text-[9px] text-zinc-400">{p}</span>
+          ))}
+        </div>
+      </div>
+    ),
+  },
+  {
+    href: "/dashboard/generate/audience-insights",
+    icon: "🔎",
+    label: "Audience Insights",
+    description: "Break your market into actionable segments — demographics, behavior, and channels.",
+    badge: "New",
+    categories: ["All", "Audience"],
+    preview: (
+      <div className="h-full w-full overflow-hidden rounded-lg bg-zinc-800 p-3">
+        <div className="grid grid-cols-3 gap-1.5">
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="rounded-lg bg-zinc-700/60 p-1.5">
+              <div className="h-4 w-4 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600" />
+              <div className="mt-1 h-1 w-full rounded bg-zinc-600" />
+              <div className="mt-0.5 h-1 w-2/3 rounded bg-zinc-600" />
+            </div>
           ))}
         </div>
       </div>

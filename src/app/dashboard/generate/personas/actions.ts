@@ -24,6 +24,14 @@ const personaSchema = z.object({
   messagingAngles: z.array(z.string()).min(2).max(3).describe("Most effective ad angles for this persona"),
   exampleHook: z.string().describe("A scroll-stopping ad hook written specifically for this persona"),
   quote: z.string().describe("A candid quote this persona might say about the problem your product solves"),
+  metaTargeting: z.object({
+    ageMin: z.number().int().min(13).max(65),
+    ageMax: z.number().int().min(13).max(65),
+    genders: z.array(z.enum(["all", "male", "female"])).min(1),
+    interests: z.array(z.string()).min(4).max(10).describe("Meta Ads interest-targeting keywords (e.g. 'Online shopping', 'Sustainable living')"),
+    detailedTargeting: z.array(z.string()).min(2).max(6).describe("Behaviors or demographics Meta lets you layer in (e.g. 'Engaged shoppers', 'Frequent travelers')"),
+    placements: z.array(z.enum(["Feed", "Stories", "Reels", "Marketplace", "Right column", "Audience Network"])).min(2),
+  }).describe("A ready-to-use Meta Ads Manager targeting spec for this persona"),
 });
 
 const personasResultSchema = z.object({
@@ -71,6 +79,9 @@ export async function generatePersonas(
     `Each persona must be a real archetype — not a demographic bucket.`,
     `Make them feel like actual people: specific, vivid, internally consistent.`,
     `The messaging angles and example hook must be directly actionable for ad campaigns.`,
+    `For each persona, also produce a realistic Meta Ads Manager targeting spec: an age ` +
+      `range, genders, 4-10 specific interest-targeting keywords Meta actually offers, ` +
+      `and 2-6 detailed-targeting behaviors/demographics — ready to paste into an ad set.`,
   ].filter(Boolean).join("\n");
 
   try {

@@ -4,9 +4,9 @@ import { desc, eq } from "drizzle-orm";
 import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { db, schema } from "@/db";
-import { ContentGenerator } from "./content-generator";
+import { AudienceInsightsGenerator } from "./audience-insights-generator";
 
-export default async function AdCopyPage() {
+export default async function AudienceInsightsPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
@@ -33,17 +33,17 @@ export default async function AdCopyPage() {
             ← Generate
           </Link>
           <div className="mt-2 flex items-center gap-3">
-            <span className="text-3xl">✍️</span>
+            <span className="text-3xl">🔎</span>
             <div>
-              <h1 className="text-2xl font-bold">Copy & Content</h1>
+              <h1 className="text-2xl font-bold">Audience Insights</h1>
               <p className="mt-0.5 text-sm text-zinc-400">
-                Ad copy, product descriptions, and marketing content — headlines and CTAs included.
+                Break your market into actionable segments — demographics, behavior, and channels.
               </p>
             </div>
           </div>
         </div>
 
-        <ContentGenerator brands={brands} />
+        <AudienceInsightsGenerator brands={brands} />
       </div>
     </main>
   );
