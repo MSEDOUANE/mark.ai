@@ -1,6 +1,7 @@
 import { generateObject } from "ai";
 import { z } from "zod";
 import { strategistModel } from "./models";
+import { languageDirective } from "./languages";
 
 /**
  * Structured landing-page content — the AI fills this schema; the fixed
@@ -50,6 +51,10 @@ export interface LandingInput {
   tone?: string | null;
   /** "whatsapp" biases CTA copy toward chat-to-order. */
   ctaKind: "whatsapp" | "link";
+  /** Content language — defaults to Arabic. */
+  language?: string | null;
+  /** Arabic dialect id (only used when language === "ar"). */
+  dialect?: string | null;
 }
 
 export async function generateLandingContent(
@@ -63,6 +68,7 @@ export async function generateLandingContent(
       "concrete benefits over features, one clear action, zero filler. Never invent " +
       "prices, discounts, reviews, or statistics. Write in the brand voice given.",
     prompt: [
+      languageDirective(input.language, input.dialect),
       input.brandName ? `Brand: ${input.brandName}` : null,
       input.tone ? `Brand voice (write everything in this voice): ${input.tone}` : null,
       input.brandDescription ? `Brand context: ${input.brandDescription}` : null,

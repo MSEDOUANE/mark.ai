@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { strategistModel } from "@/lib/ai/models";
 import { readBrandContext, saveGeneration } from "@/lib/ai/tool-context";
+import { languageDirective } from "@/lib/ai/languages";
 
 /* ── Product Descriptions ─────────────────────────────────────────────── */
 
@@ -45,8 +46,11 @@ export async function generateProductDescription(
   if (!productName) return { status: "error", message: "Product name is required." };
 
   const brand = readBrandContext(formData);
+  const language = field("language") ?? "ar";
+  const dialect = field("dialect");
 
   const prompt = [
+    languageDirective(language, dialect),
     ...brand.lines,
     `Product: ${productName}`,
     field("features")  && `Key features / materials: ${field("features")}`,
@@ -70,7 +74,7 @@ export async function generateProductDescription(
       orgId: org.id,
       tool: "product-description",
       brandProfileId: brand.brandProfileId,
-      input: { productName, features: field("features"), audience: field("audience"), keywords: field("keywords") },
+      input: { productName, features: field("features"), audience: field("audience"), keywords: field("keywords"), language, dialect },
       output: object,
     });
 
@@ -121,8 +125,11 @@ export async function generateMarketingCopy(
   if (formats.length === 0) return { status: "error", message: "Select at least one format." };
 
   const brand = readBrandContext(formData);
+  const language = field("language") ?? "ar";
+  const dialect = field("dialect");
 
   const prompt = [
+    languageDirective(language, dialect),
     ...brand.lines,
     `Product / campaign: ${productName}`,
     field("goal")   && `Goal: ${field("goal")}`,
@@ -146,7 +153,7 @@ export async function generateMarketingCopy(
       orgId: org.id,
       tool: "marketing-copy",
       brandProfileId: brand.brandProfileId,
-      input: { productName, goal: field("goal"), offer: field("offer"), audience: field("audience"), formats },
+      input: { productName, goal: field("goal"), offer: field("offer"), audience: field("audience"), formats, language, dialect },
       output: object,
     });
 

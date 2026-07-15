@@ -3,6 +3,7 @@
 import { useActionState } from "react";
 import { generateAudienceInsights, type AudienceInsightsState, type AudienceSegment } from "./actions";
 import { BrandContextPicker, type BrandContextOption } from "@/components/brand-context-picker";
+import { LanguagePicker } from "@/components/language-picker";
 
 const SIZE_COLORS: Record<string, string> = {
   Large: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
@@ -103,6 +104,7 @@ export function AudienceInsightsGenerator({ brands = [] }: { brands?: BrandConte
       <div>
         <form action={action} className="space-y-5">
           <BrandContextPicker brands={brands} />
+          <LanguagePicker />
 
           <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 space-y-4">
             <h3 className="font-semibold">About your product</h3>

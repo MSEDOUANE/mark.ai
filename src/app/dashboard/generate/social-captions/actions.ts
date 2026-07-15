@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { strategistModel } from "@/lib/ai/models";
 import { readBrandContext, saveGeneration } from "@/lib/ai/tool-context";
+import { languageDirective } from "@/lib/ai/languages";
 
 const captionVariantSchema = z.object({
   caption: z.string().describe("Full caption text — natural, platform-appropriate, without hashtags"),
@@ -58,8 +59,11 @@ export async function generateSocialCaptions(
 
   const guidance = PLATFORM_GUIDANCE[platform] ?? "";
   const brand = readBrandContext(formData);
+  const language = field("language") ?? "ar";
+  const dialect = field("dialect");
 
   const prompt = [
+    languageDirective(language, dialect),
     ...brand.lines,
     `Product / brand: ${productName}`,
     field("description") && `Description: ${field("description")}`,
@@ -94,6 +98,8 @@ export async function generateSocialCaptions(
         keyMessage: field("keyMessage"),
         audience: field("audience"),
         tone: field("tone"),
+        language,
+        dialect,
       },
       output: object,
     });

@@ -80,6 +80,9 @@ export async function createLandingPage(formData: FormData) {
     photoUrl?: string | null;
   };
 
+  const language = clean(formData, "language") ?? "ar";
+  const dialect = clean(formData, "dialect");
+
   try {
     const content = await generateLandingContent({
       productName: productName!,
@@ -89,6 +92,8 @@ export async function createLandingPage(formData: FormData) {
       brandDescription: brand?.description,
       tone: brand?.tone,
       ctaKind,
+      language,
+      dialect,
     });
 
     const [page] = await db
@@ -107,6 +112,7 @@ export async function createLandingPage(formData: FormData) {
           photoUrl: visuals.photoUrl ?? null,
         },
         ctaHref,
+        language,
       })
       .returning();
 

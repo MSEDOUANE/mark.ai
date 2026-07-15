@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { generateMarketingCopy, type MarketingCopyState } from "./content-actions";
 import { MARKETING_FORMATS } from "./marketing-formats";
 import { BrandContextPicker, type BrandContextOption } from "@/components/brand-context-picker";
+import { LanguagePicker } from "@/components/language-picker";
 
 function SubmitButton({ pending }: { pending: boolean }) {
   return (
@@ -51,6 +52,7 @@ export function MarketingCopyGenerator({ brands = [] }: { brands?: BrandContextO
       <form action={action} className="space-y-5">
         {selectedFormats.map((f) => <input key={f} type="hidden" name="formats" value={f} />)}
         <BrandContextPicker brands={brands} />
+        <LanguagePicker />
 
         <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 space-y-4">
           <h3 className="font-semibold">Product / campaign</h3>

@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import { generateAdCopy, type AdCopyState, type AdCopyVariant } from "./actions";
 import { BrandContextPicker, type BrandContextOption } from "@/components/brand-context-picker";
+import { LanguagePicker } from "@/components/language-picker";
 
 const FRAMEWORKS = [
   { id: "AIDA",              label: "AIDA",              desc: "Attention · Interest · Desire · Action" },
@@ -158,7 +159,7 @@ export function AdCopyGenerator({ brands = [] }: { brands?: BrandContextOption[]
         ))}
 
         <BrandContextPicker brands={brands} />
-
+        <LanguagePicker />
 
         {/* Import from URL */}
         <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">

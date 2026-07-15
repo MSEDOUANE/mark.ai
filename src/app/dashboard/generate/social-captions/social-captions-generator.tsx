@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import { generateSocialCaptions, type SocialCaptionsState, type CaptionVariant } from "./actions";
 import { BrandContextPicker, type BrandContextOption } from "@/components/brand-context-picker";
+import { LanguagePicker } from "@/components/language-picker";
 
 const PLATFORMS = [
   { id: "Instagram", icon: "📸", color: "from-pink-500 to-orange-500" },
@@ -115,6 +116,7 @@ export function SocialCaptionsGenerator({ brands = [] }: { brands?: BrandContext
         <input type="hidden" name="platform" value={platform} />
 
         <BrandContextPicker brands={brands} />
+        <LanguagePicker />
 
         {/* Platform picker */}
         <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">

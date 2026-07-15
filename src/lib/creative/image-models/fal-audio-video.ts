@@ -14,9 +14,9 @@
 
 /** Languages offered in the studio. Arabic routes through ElevenLabs. */
 export const VOICE_LANGUAGES: Array<{ id: string; label: string }> = [
+  { id: "ar", label: "العربية (Arabic)" },
   { id: "en", label: "English" },
   { id: "fr", label: "Français" },
-  { id: "ar", label: "العربية (Arabic)" },
 ];
 
 const KOKORO_ENDPOINTS: Record<string, string> = {

@@ -445,6 +445,8 @@ export const landingPages = pgTable("landing_pages", {
   brand: jsonb("brand").notNull().default(sql`'{}'::jsonb`),
   /** Where the CTA points: a URL or a wa.me link. */
   ctaHref: text("cta_href").notNull(),
+  /** Content language ("ar" | "en" | "fr") — drives dir="rtl" on the public page. */
+  language: text("language").notNull().default("en"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),

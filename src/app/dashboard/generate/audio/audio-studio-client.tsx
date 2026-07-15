@@ -35,7 +35,7 @@ const MODES: { id: Mode; label: string; icon: string; blurb: string; placeholder
 export function AudioStudioClient() {
   const [mode, setMode] = useState<Mode>("voice");
   const [text, setText] = useState("");
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState("ar");
   const [voice, setVoice] = useState("female");
   const [duration, setDuration] = useState(10);
   const [generating, setGenerating] = useState(false);

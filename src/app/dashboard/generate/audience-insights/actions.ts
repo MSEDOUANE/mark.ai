@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { strategistModel } from "@/lib/ai/models";
 import { readBrandContext, saveGeneration } from "@/lib/ai/tool-context";
+import { languageDirective } from "@/lib/ai/languages";
 
 const segmentSchema = z.object({
   name: z.string().describe("Short label for this audience segment, e.g. 'Budget-conscious new parents'"),
@@ -57,8 +58,11 @@ export async function generateAudienceInsights(
   if (!productName) return { status: "error", message: "Product name is required." };
 
   const brand = readBrandContext(formData);
+  const language = field("language") ?? "ar";
+  const dialect = field("dialect");
 
   const prompt = [
+    languageDirective(language, dialect),
     ...brand.lines,
     `Product / brand: ${productName}`,
     field("description") && `Description: ${field("description")}`,
@@ -89,6 +93,8 @@ export async function generateAudienceInsights(
         description: field("description"),
         market: field("market"),
         competitors: field("competitors"),
+        language,
+        dialect,
       },
       output: object,
     });

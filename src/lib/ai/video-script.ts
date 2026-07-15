@@ -1,6 +1,10 @@
 import { generateObject } from "ai";
 import { z } from "zod";
 import { strategistModel } from "./models";
+import { ARABIC_DIALECTS, arabicDialectHint } from "./languages";
+
+// Re-exported for existing importers (videos/page.tsx, videos/[id]/page.tsx).
+export { ARABIC_DIALECTS };
 
 /**
  * Video Studio script — the editable heart of a video project. The AI writes
@@ -55,62 +59,6 @@ const LANGUAGE_LABEL: Record<string, string> = {
   fr: "French",
   ar: "Arabic",
 };
-
-/**
- * Arabic dialects — the difference that makes or breaks an Arabic ad. Each
- * carries authentic vocabulary guidance so the AI writes how that audience
- * actually speaks (not generic Fusha). id → UI label + prompt direction.
- * Moroccan Darija is the default, given the primary market.
- */
-export const ARABIC_DIALECTS: Array<{
-  id: string;
-  label: string;
-  hint: string;
-}> = [
-  {
-    id: "darija",
-    label: "🇲🇦 Moroccan Darija",
-    hint:
-      "Moroccan Darija (الدارجة المغربية) — the everyday spoken Moroccan dialect, NOT " +
-      "Modern Standard Arabic. Use authentic Moroccan words and expressions such as " +
-      "بزاف (a lot), دابا (now), واخا (okay), مزيان (good/nice), دروك (right now), " +
-      "شحال (how much), ديال (of), خاصك (you need). Warm, casual, exactly how Moroccans " +
-      "talk to each other. Write in Arabic script.",
-  },
-  {
-    id: "msa",
-    label: "Standard Arabic (فصحى)",
-    hint:
-      "Modern Standard Arabic (الفصحى) — formal, pan-Arab, polished. Suits premium/" +
-      "corporate tone and audiences across all Arab countries.",
-  },
-  {
-    id: "egyptian",
-    label: "🇪🇬 Egyptian",
-    hint:
-      "Egyptian Arabic (المصرية) — the most widely understood dialect across the Arab " +
-      "world thanks to media. Use Egyptian vocabulary (e.g. أوي، دلوقتي، عايز، كده).",
-  },
-  {
-    id: "gulf",
-    label: "🇸🇦 Gulf / Khaleeji",
-    hint:
-      "Gulf/Khaleeji Arabic (الخليجية) — for Saudi/UAE/Gulf audiences. Use Gulf " +
-      "vocabulary (e.g. وايد، الحين، أبغى، زين).",
-  },
-  {
-    id: "levantine",
-    label: "🇱🇧 Levantine",
-    hint:
-      "Levantine Arabic (الشامية) — Syria/Lebanon/Jordan/Palestine. Use Levantine " +
-      "vocabulary (e.g. كتير، هلق، بدي، منيح).",
-  },
-];
-
-function arabicDirection(dialect?: string | null): string {
-  const d = ARABIC_DIALECTS.find((x) => x.id === dialect) ?? ARABIC_DIALECTS[0];
-  return d.hint;
-}
 
 const STYLE_DIRECTION: Record<string, string> = {
   avatar:
@@ -168,7 +116,7 @@ export async function generateVideoScript(
     prompt: [
       `Style: ${STYLE_DIRECTION[input.style] ?? STYLE_DIRECTION.ugc}`,
       input.language === "ar"
-        ? `Voiceover language: ${arabicDirection(input.dialect)} Write ALL voiceover lines natively in this exact dialect — an audience will immediately reject the wrong dialect.`
+        ? `Voiceover language: ${arabicDialectHint(input.dialect)} Write ALL voiceover lines natively in this exact dialect — an audience will immediately reject the wrong dialect.`
         : `Voiceover language: ${LANGUAGE_LABEL[input.language] ?? "English"} (write ALL voiceover lines natively in it)`,
       input.brandName ? `Brand: ${input.brandName}` : null,
       input.tone ? `Brand voice: ${input.tone}` : null,

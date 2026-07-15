@@ -17,7 +17,7 @@ export function VoicePicker({
   languages: Array<{ id: string; label: string }>;
   dialects: Array<{ id: string; label: string }>;
 }) {
-  const [language, setLanguage] = useState("en");
+  const [language, setLanguage] = useState("ar");
 
   return (
     <div className="space-y-3">

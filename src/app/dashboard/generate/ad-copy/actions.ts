@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { strategistModel } from "@/lib/ai/models";
 import { readBrandContext, saveGeneration } from "@/lib/ai/tool-context";
+import { languageDirective } from "@/lib/ai/languages";
 
 const copyVariantSchema = z.object({
   framework: z.string().describe("Framework name, e.g. 'AIDA', 'PAS'"),
@@ -52,8 +53,11 @@ export async function generateAdCopy(
     : ["AIDA", "PAS", "Hook-Story-Offer", "Benefit-Led", "Social Proof"];
 
   const brand = readBrandContext(formData);
+  const language = field("language") ?? "ar";
+  const dialect = field("dialect");
 
   const prompt = [
+    languageDirective(language, dialect),
     ...brand.lines,
     `Product: ${productName}`,
     field("productDescription") && `Description: ${field("productDescription")}`,
@@ -89,6 +93,8 @@ export async function generateAdCopy(
         offer: field("offer"),
         tone: field("tone"),
         frameworks,
+        language,
+        dialect,
       },
       output: object,
     });

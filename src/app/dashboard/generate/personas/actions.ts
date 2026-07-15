@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { strategistModel } from "@/lib/ai/models";
 import { readBrandContext, saveGeneration } from "@/lib/ai/tool-context";
+import { languageDirective } from "@/lib/ai/languages";
 
 const personaSchema = z.object({
   name:         z.string().describe("Fictional first name that feels real for this demographic"),
@@ -67,8 +68,13 @@ export async function generatePersonas(
   if (!productName) return { status: "error", message: "Product name is required." };
 
   const brand = readBrandContext(formData);
+  const language = field("language") ?? "ar";
+  const dialect = field("dialect");
 
   const prompt = [
+    `${languageDirective(language, dialect)} Applies to names, quotes, hooks, and messaging ` +
+      `angles — but keep metaTargeting.interests and detailedTargeting in English exactly as ` +
+      `Meta Ads Manager defines them, since those are pasted directly into ad set targeting.`,
     ...brand.lines,
     `Product / brand: ${productName}`,
     field("description")  && `Description: ${field("description")}`,
@@ -105,6 +111,8 @@ export async function generatePersonas(
         market: field("market"),
         pricePoint: field("pricePoint"),
         audience: field("audience"),
+        language,
+        dialect,
       },
       output: object,
     });

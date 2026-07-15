@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import { generateProductDescription, type ProductDescriptionState } from "./content-actions";
 import { BrandContextPicker, type BrandContextOption } from "@/components/brand-context-picker";
+import { LanguagePicker } from "@/components/language-picker";
 
 function SubmitButton({ pending }: { pending: boolean }) {
   return (
@@ -44,6 +45,7 @@ export function ProductDescriptionGenerator({ brands = [] }: { brands?: BrandCon
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_340px]">
       <form action={action} className="space-y-5">
         <BrandContextPicker brands={brands} />
+        <LanguagePicker />
         <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 space-y-4">
           <h3 className="font-semibold">Product</h3>
           <div>

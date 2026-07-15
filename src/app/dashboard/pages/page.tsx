@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { db, schema } from "@/db";
 import { createLandingPage, deleteLandingPage } from "./actions";
+import { LanguagePicker } from "@/components/language-picker";
 
 const field =
   "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500";
@@ -101,6 +102,8 @@ export default async function PagesPage({
               <textarea name="productDescription" rows={2} className={`mt-1.5 ${field}`}
                 placeholder="Anything the page should emphasize" />
             </label>
+
+            <LanguagePicker />
 
             <div className="text-sm">
               <span className="text-zinc-400">Call to action</span>

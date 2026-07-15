@@ -57,9 +57,10 @@ export default async function LandingPage({
   const kit = (page.brand ?? {}) as Kit;
   const primary = hex(kit.primaryColor, "#18181b");
   const accent = hex(kit.accentColor, "#f59e0b");
+  const isRtl = page.language === "ar";
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-zinc-100">
+    <main dir={isRtl ? "rtl" : "ltr"} lang={page.language} className="min-h-screen bg-zinc-950 text-zinc-100">
       {/* Hero */}
       <section
         className="px-6 pb-20 pt-14 text-center"
@@ -117,7 +118,7 @@ export default async function LandingPage({
 
       {/* FAQ */}
       <section className="mx-auto max-w-2xl px-6 pb-16">
-        <h2 className="text-center text-2xl font-bold">Questions</h2>
+        <h2 className="text-center text-2xl font-bold">{isRtl ? "الأسئلة الشائعة" : "Questions"}</h2>
         <div className="mt-8 space-y-4">
           {c.faq.map((f, i) => (
             <details key={i} className="group rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">

@@ -3,6 +3,7 @@
 import { useActionState, useState } from "react";
 import { generatePersonas, type PersonasState, type Persona } from "./actions";
 import { BrandContextPicker, type BrandContextOption } from "@/components/brand-context-picker";
+import { LanguagePicker } from "@/components/language-picker";
 
 const PLATFORM_ICONS: Record<string, string> = {
   Instagram: "📸", TikTok: "🎵", Facebook: "👥",
@@ -165,6 +166,7 @@ export function PersonasGenerator({ brands = [] }: { brands?: BrandContextOption
       <div>
         <form action={action} className="space-y-5">
           <BrandContextPicker brands={brands} />
+          <LanguagePicker />
 
           <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 space-y-4">
             <h3 className="font-semibold">About your product</h3>
