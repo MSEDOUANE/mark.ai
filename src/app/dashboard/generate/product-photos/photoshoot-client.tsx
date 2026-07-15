@@ -1,26 +1,47 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { PHOTOSHOOT_STYLES } from "@/lib/ai/photoshoot-styles";
+import { useSearchParams } from "next/navigation";
+import { PHOTOSHOOT_STYLES, type PhotoshootStyle } from "@/lib/ai/photoshoot-styles";
 
 type ResultItem = {
   styleId: string;
   label: string;
   url?: string;
   error?: string;
+  /** Set once an "Animate" request for this result has been kicked off/resolved. */
+  video?: { status: "generating" | "done" | "error"; url?: string; error?: string };
 };
 
+const CATEGORIES: { id: PhotoshootStyle["category"]; label: string }[] = [
+  { id: "product", label: "Product" },
+  { id: "fashion", label: "Fashion" },
+];
+
 export function PhotoshootClient() {
+  const searchParams = useSearchParams();
+  const initialCategory = searchParams.get("category") === "fashion" ? "fashion" : "product";
+
+  const [category, setCategory] = useState<PhotoshootStyle["category"]>(initialCategory);
   const [photoUrl, setPhotoUrl] = useState("");
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const stylesForCategory = PHOTOSHOOT_STYLES.filter((s) => s.category === initialCategory);
   const [selected, setSelected] = useState<string[]>(
-    PHOTOSHOOT_STYLES.slice(0, 3).map((s) => s.id),
+    stylesForCategory.slice(0, 3).map((s) => s.id),
   );
   const [generating, setGenerating] = useState(false);
   const [genError, setGenError] = useState<string | null>(null);
   const [results, setResults] = useState<ResultItem[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
+
+  const visibleStyles = PHOTOSHOOT_STYLES.filter((s) => s.category === category);
+
+  function switchCategory(next: PhotoshootStyle["category"]) {
+    setCategory(next);
+    setSelected(PHOTOSHOOT_STYLES.filter((s) => s.category === next).slice(0, 3).map((s) => s.id));
+    setResults([]);
+  }
 
   async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -66,6 +87,30 @@ export function PhotoshootClient() {
     }
   }
 
+  async function handleAnimate(r: ResultItem) {
+    if (!r.url) return;
+    setResults((prev) =>
+      prev.map((x) => (x.styleId === r.styleId ? { ...x, video: { status: "generating" } } : x)),
+    );
+    try {
+      const res = await fetch("/api/animate-photo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ imageUrl: r.url }),
+      });
+      const json = (await res.json()) as { url?: string; error?: string };
+      if (!res.ok || !json.url) throw new Error(json.error ?? "Animation failed");
+      setResults((prev) =>
+        prev.map((x) => (x.styleId === r.styleId ? { ...x, video: { status: "done", url: json.url } } : x)),
+      );
+    } catch (err) {
+      const message = err instanceof Error ? err.message : "Animation failed";
+      setResults((prev) =>
+        prev.map((x) => (x.styleId === r.styleId ? { ...x, video: { status: "error", error: message } } : x)),
+      );
+    }
+  }
+
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-[380px_1fr]">
       {/* ── Controls ─────────────────────────────────────────────────────── */}
@@ -105,8 +150,21 @@ export function PhotoshootClient() {
           <h2 className="font-semibold">2. Pick shoot styles</h2>
           <p className="mt-1 text-sm text-zinc-400">Select one or more — each generates its own variant.</p>
 
+          <div className="mt-3 flex gap-1.5">
+            {CATEGORIES.map((c) => (
+              <button key={c.id} type="button" onClick={() => switchCategory(c.id)}
+                className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
+                  category === c.id
+                    ? "border-amber-400 bg-amber-400/10 text-amber-400"
+                    : "border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
+                }`}>
+                {c.label}
+              </button>
+            ))}
+          </div>
+
           <div className="mt-4 grid grid-cols-2 gap-2">
-            {PHOTOSHOOT_STYLES.map((s) => {
+            {visibleStyles.map((s) => {
               const on = selected.includes(s.id);
               return (
                 <button key={s.id} type="button" onClick={() => toggleStyle(s.id)}
@@ -171,6 +229,30 @@ export function PhotoshootClient() {
                   <div className="flex aspect-square w-full flex-col items-center justify-center gap-1 bg-zinc-950 px-4 text-center">
                     <span className="text-2xl">⚠️</span>
                     <p className="text-xs text-red-400">{r.error ?? "Failed to generate"}</p>
+                  </div>
+                )}
+                {r.url && (
+                  <div className="border-t border-zinc-800 px-4 py-2.5">
+                    {!r.video ? (
+                      <button type="button" onClick={() => handleAnimate(r)}
+                        className="flex items-center gap-1.5 text-xs font-semibold text-zinc-400 hover:text-amber-400">
+                        <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7z" /></svg>
+                        Animate → video
+                      </button>
+                    ) : r.video.status === "generating" ? (
+                      <span className="flex items-center gap-1.5 text-xs text-zinc-500">
+                        <svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
+                        Animating…
+                      </span>
+                    ) : r.video.status === "done" && r.video.url ? (
+                      <a href={r.video.url} download target="_blank" rel="noreferrer"
+                        className="flex items-center gap-1.5 text-xs font-semibold text-emerald-400 hover:underline">
+                        <svg className="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>
+                        Video ready — Download
+                      </a>
+                    ) : (
+                      <span className="text-xs text-red-400">{r.video.error ?? "Animation failed"}</span>
+                    )}
                   </div>
                 )}
               </div>

@@ -1,9 +1,9 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { PhotoshootClient } from "./photoshoot-client";
+import { ImageStudioClient } from "./image-studio-client";
 
-export default async function ProductPhotosPage() {
+export default async function ImageStudioPage() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
@@ -16,18 +16,17 @@ export default async function ProductPhotosPage() {
             ← Generate
           </Link>
           <div className="mt-3 flex items-center gap-3">
-            <span className="text-3xl">📸</span>
+            <span className="text-3xl">🧪</span>
             <div>
-              <h1 className="text-2xl font-bold">Product & Fashion Photoshoots</h1>
+              <h1 className="text-2xl font-bold">Image Studio</h1>
               <p className="mt-0.5 text-sm text-zinc-400">
-                Upload one photo — get back professional studio shots, or put
-                a garment on an AI model. No studio, no photographer.
+                Generate variations, swap backgrounds, or edit any image with a text instruction.
               </p>
             </div>
           </div>
         </div>
 
-        <PhotoshootClient />
+        <ImageStudioClient />
       </div>
     </main>
   );

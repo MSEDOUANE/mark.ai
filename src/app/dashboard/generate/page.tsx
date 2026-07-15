@@ -239,15 +239,30 @@ const ASSETS: AssetType[] = [
     ),
   },
   {
-    href: "/dashboard/generate/image-studio",
+    href: "/dashboard/generate/product-photos?category=fashion",
     icon: "👗",
     label: "Fashion Photoshoots",
     description: "Put your product on AI models — on-figure fashion and lifestyle shots from a single photo.",
-    badge: "Soon",
+    badge: "New",
     categories: ["All", "Images"],
     preview: (
       <div className="h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-pink-900/40 to-zinc-900 flex items-center justify-center">
         <span className="text-3xl">👗</span>
+      </div>
+    ),
+  },
+  {
+    href: "/dashboard/generate/image-studio",
+    icon: "🧪",
+    label: "Image Studio",
+    description: "Generate variations, swap backgrounds, or edit any image with a text instruction.",
+    badge: "New",
+    categories: ["All", "Images"],
+    preview: (
+      <div className="grid h-full w-full grid-cols-3 gap-0.5 overflow-hidden rounded-lg bg-zinc-950">
+        <div className="flex items-center justify-center bg-gradient-to-br from-cyan-900/50 to-zinc-900"><span className="text-sm">🔀</span></div>
+        <div className="flex items-center justify-center bg-gradient-to-br from-purple-900/50 to-zinc-900"><span className="text-sm">🖼️</span></div>
+        <div className="flex items-center justify-center bg-gradient-to-br from-emerald-900/50 to-zinc-900"><span className="text-sm">✏️</span></div>
       </div>
     ),
   },
