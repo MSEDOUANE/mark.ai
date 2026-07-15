@@ -5,6 +5,8 @@ export const CREATIVE_SIZES: Record<string, { w: number; h: number }> = {
   portrait: { w: 1080, h: 1350 },
   story: { w: 1080, h: 1920 },
   link: { w: 1200, h: 628 },
+  // 16:9 — YouTube in-stream, LinkedIn video, Twitter/X landscape.
+  landscape: { w: 1600, h: 900 },
 };
 
 export type CreativeTemplate = "overlay" | "split" | "bold";

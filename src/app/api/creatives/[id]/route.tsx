@@ -3,25 +3,8 @@ import { and, eq } from "drizzle-orm";
 import { db, schema } from "@/db";
 import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
-import {
-  CREATIVE_SIZES,
-  creativeArtwork,
-  loadBrandFonts,
-  type CreativeArtworkOptions,
-  type CreativeBrand,
-  type CreativeTemplate,
-  type PlacedImage,
-} from "@/lib/creative/design";
-
-type CreativeMeta = {
-  concept?: string;
-  template?: CreativeTemplate;
-  headline?: string;
-  primaryText?: string;
-  callToAction?: string;
-  brand?: CreativeBrand;
-  placedImages?: PlacedImage[];
-};
+import { CREATIVE_SIZES, creativeArtwork, loadBrandFonts } from "@/lib/creative/design";
+import { resolveCreativeArtwork, type CreativeMeta } from "@/lib/creative/resolve-artwork";
 
 export async function GET(
   request: Request,
@@ -49,60 +32,7 @@ export async function GET(
   if (!creative) return new Response("Not found", { status: 404 });
 
   const meta = (creative.meta ?? {}) as CreativeMeta;
-
-  // Brand from associated product (if any), merged with any inline meta.brand.
-  let brand: CreativeBrand = {};
-  let defaultTemplate: CreativeTemplate | null = null;
-  if (creative.productId) {
-    const [product] = await db
-      .select({ brand: schema.products.brand, brandProfileId: schema.products.brandProfileId })
-      .from(schema.products)
-      .where(eq(schema.products.id, creative.productId))
-      .limit(1);
-    brand = (product?.brand ?? {}) as CreativeBrand;
-
-    // Brand Kit v2 fields (font, secondary color, default template) live on
-    // the brand profile, not the per-product snapshot — fill gaps only, the
-    // product snapshot and meta.brand below still win for logo/primary/accent.
-    if (product?.brandProfileId) {
-      const [bp] = await db
-        .select({
-          fontFamily: schema.brandProfiles.fontFamily,
-          secondaryColor: schema.brandProfiles.secondaryColor,
-          accentColor: schema.brandProfiles.accentColor,
-          defaultTemplate: schema.brandProfiles.defaultTemplate,
-        })
-        .from(schema.brandProfiles)
-        .where(eq(schema.brandProfiles.id, product.brandProfileId))
-        .limit(1);
-      if (bp) {
-        brand = {
-          fontFamily: brand.fontFamily ?? bp.fontFamily,
-          secondaryColor: brand.secondaryColor ?? bp.secondaryColor,
-          accentColor: brand.accentColor ?? bp.accentColor,
-          ...brand,
-        };
-        defaultTemplate = (bp.defaultTemplate as CreativeTemplate | null) ?? null;
-      }
-    }
-  }
-  // Composer-mode creatives store brand inline in meta; merge (meta wins).
-  if (meta.brand) {
-    brand = { ...brand, ...meta.brand };
-  }
-
-  const bgImageUrl = creative.status === "ready" ? creative.assetUrl : null;
-
-  const artworkOpts: CreativeArtworkOptions = {
-    headline: meta.headline,
-    primaryText: meta.primaryText,
-    callToAction: meta.callToAction,
-    concept: meta.concept,
-    template: meta.template ?? defaultTemplate ?? "overlay",
-    brand,
-    bgImageUrl,
-    placedImages: meta.placedImages,
-  };
+  const artworkOpts = await resolveCreativeArtwork(creative);
 
   const headers: Record<string, string> = {
     "Content-Type": "image/png",
@@ -128,7 +58,7 @@ export async function GET(
   // A broken image (corrupt logo/photo) degrades to a text-only design
   // instead of taking the whole creative down.
   const fontText = [meta.headline, meta.primaryText, meta.callToAction].filter(Boolean).join(" ");
-  const fonts = await loadBrandFonts(brand.fontFamily, fontText);
+  const fonts = await loadBrandFonts(artworkOpts.brand?.fontFamily, fontText);
 
   try {
     const png = await new ImageResponse(creativeArtwork(artworkOpts, sizeKey).element, {
@@ -142,7 +72,7 @@ export async function GET(
     const fallback = creativeArtwork(
       {
         ...artworkOpts,
-        brand: { ...brand, logoUrl: null },
+        brand: { ...artworkOpts.brand, logoUrl: null },
         bgImageUrl: null,
         placedImages: [],
       },

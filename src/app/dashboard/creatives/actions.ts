@@ -689,3 +689,37 @@ export async function assignCreativeToCampaign(formData: FormData) {
 
   revalidatePath("/dashboard/creatives");
 }
+
+/** Replace a creative's tags (freeform, stored in meta.tags — no schema migration needed). */
+export async function updateCreativeTags(formData: FormData) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+  const { org } = await ensureProfile(user);
+
+  const creativeId = clean(formData, "creativeId");
+  if (!creativeId) return;
+
+  const [creative] = await db
+    .select({ id: schema.creatives.id, meta: schema.creatives.meta })
+    .from(schema.creatives)
+    .where(and(eq(schema.creatives.id, creativeId), eq(schema.creatives.orgId, org.id)))
+    .limit(1);
+  if (!creative) return;
+
+  const tags = String(formData.get("tags") ?? "")
+    .split(",")
+    .map((t) => t.trim())
+    .filter(Boolean)
+    .slice(0, 10);
+
+  const meta = (creative.meta ?? {}) as Record<string, unknown>;
+  await db
+    .update(schema.creatives)
+    .set({ meta: { ...meta, tags } })
+    .where(eq(schema.creatives.id, creativeId));
+
+  revalidatePath("/dashboard/creatives");
+}

@@ -4,13 +4,14 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { regenerateCreative, applyScoreTips } from "@/app/dashboard/creatives/actions";
 
-type Size = "portrait" | "square" | "story" | "link";
+type Size = "portrait" | "square" | "story" | "link" | "landscape";
 
 const SIZES: { key: Size; label: string; aspect: string; w: number; h: number }[] = [
-  { key: "portrait", label: "4:5",  aspect: "aspect-[4/5]",    w: 4,  h: 5  },
-  { key: "square",   label: "1:1",  aspect: "aspect-square",    w: 1,  h: 1  },
-  { key: "story",    label: "9:16", aspect: "aspect-[9/16]",    w: 9,  h: 16 },
-  { key: "link",     label: "Link", aspect: "aspect-[1.91/1]",  w: 19, h: 10 },
+  { key: "portrait",  label: "4:5",   aspect: "aspect-[4/5]",   w: 4,  h: 5  },
+  { key: "square",    label: "1:1",   aspect: "aspect-square",  w: 1,  h: 1  },
+  { key: "story",     label: "9:16",  aspect: "aspect-[9/16]",  w: 9,  h: 16 },
+  { key: "link",      label: "Link",  aspect: "aspect-[1.91/1]", w: 19, h: 10 },
+  { key: "landscape", label: "16:9",  aspect: "aspect-video",   w: 16, h: 9  },
 ];
 
 interface CreativeCardProps {
@@ -158,12 +159,21 @@ export function CreativeCard({
           opacity-0 transition-opacity duration-200 group-hover:opacity-100">
           <div className="flex gap-1.5">
             {/* Download */}
-            <a href={downloadUrl} download title="Download"
+            <a href={downloadUrl} download title="Download this size"
               className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition-colors hover:bg-white/25">
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
               </svg>
             </a>
+            {/* Download all sizes (zip) */}
+            {status === "ready" && type !== "video" && (
+              <a href={`/api/creatives/${id}/zip`} download title="Download all sizes (.zip)"
+                className="flex h-8 w-8 items-center justify-center rounded-full bg-white/15 text-white backdrop-blur-sm transition-colors hover:bg-white/25">
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                </svg>
+              </a>
+            )}
             {/* Regenerate (AI variation) */}
             <button
               type="button"

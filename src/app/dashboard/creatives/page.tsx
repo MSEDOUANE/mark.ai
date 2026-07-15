@@ -11,6 +11,7 @@ import { animateCreative } from "./actions";
 import { CreativesToolbar } from "./creatives-toolbar";
 import { RetrySelector } from "./retry-selector";
 import { CreativesPoller } from "./creatives-poller";
+import { TagEditor } from "./tag-editor";
 
 const STATUS_LABEL: Record<string, string> = {
   pending:    "pending",
@@ -24,6 +25,7 @@ type SearchParams = {
   error?: string;
   status?: string;
   sort?: string;
+  tag?: string;
 };
 
 export default async function CreativesPage({
@@ -36,7 +38,7 @@ export default async function CreativesPage({
   if (!user) redirect("/login");
   const { org } = await ensureProfile(user);
 
-  const { generated, error, status: statusFilter, sort = "newest" } = await searchParams;
+  const { generated, error, status: statusFilter, sort = "newest", tag: tagFilter } = await searchParams;
 
   // Build order
   const orderBy = sort === "score"
@@ -93,6 +95,24 @@ export default async function CreativesPage({
       const sa = ((a.meta as Record<string, unknown>)?.score as number) ?? -1;
       const sb = ((b.meta as Record<string, unknown>)?.score as number) ?? -1;
       return sb - sa;
+    });
+  }
+
+  // Tags live in meta.tags (JSON) — collect the distinct set for the filter
+  // chips, and filter in JS same as the score sort above.
+  const allTags = Array.from(
+    new Set(
+      allCreatives.flatMap((c) => {
+        const t = (c.meta as Record<string, unknown>)?.tags;
+        return Array.isArray(t) ? (t as string[]) : [];
+      }),
+    ),
+  ).sort();
+
+  if (tagFilter && tagFilter !== "all") {
+    creatives = creatives.filter((c) => {
+      const t = (c.meta as Record<string, unknown>)?.tags;
+      return Array.isArray(t) && (t as string[]).includes(tagFilter);
     });
   }
 
@@ -157,6 +177,7 @@ export default async function CreativesPage({
               total={allCreatives.length}
               generating={generatingCount}
               ready={readyCount}
+              tags={allTags}
             />
           </Suspense>
         ) : null}
@@ -209,6 +230,8 @@ export default async function CreativesPage({
                     assetVersion={c.assetUrl?.slice(0, 12) ?? null}
                     assetUrl={c.assetUrl}
                   />
+
+                  <TagEditor creativeId={c.id} tags={Array.isArray(meta.tags) ? (meta.tags as string[]) : []} />
 
                   {/* Campaign assignment */}
                   <div className="rounded-xl border border-zinc-800 bg-zinc-900/70 p-3">

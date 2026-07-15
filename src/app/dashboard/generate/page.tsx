@@ -273,6 +273,23 @@ const ASSETS: AssetType[] = [
     ),
   },
   {
+    href: "/dashboard/generate/batch",
+    icon: "⚡",
+    label: "Batch Generation",
+    description: "One shared brief applied across every product you pick — each gets its own scored creative.",
+    badge: "New",
+    categories: ["All", "Images"],
+    preview: (
+      <div className="grid h-full w-full grid-cols-3 gap-0.5 overflow-hidden rounded-lg bg-zinc-950">
+        {[0, 1, 2].map((i) => (
+          <div key={i} className="flex items-center justify-center bg-gradient-to-br from-amber-900/40 to-zinc-900">
+            <span className="text-sm">⚡</span>
+          </div>
+        ))}
+      </div>
+    ),
+  },
+  {
     href: "/dashboard/generate/image-studio",
     icon: "🧪",
     label: "Image Studio",

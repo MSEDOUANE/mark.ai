@@ -41,6 +41,7 @@ const navSections: NavSection[] = [
       { href: "/dashboard/campaigns", label: "Campaigns" },
       { href: "/dashboard/campaigns/new", label: "New brief", nested: true },
       { href: "/dashboard/products", label: "Products" },
+      { href: "/dashboard/library", label: "Library" },
     ],
   },
   {

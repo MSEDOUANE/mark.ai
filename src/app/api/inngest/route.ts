@@ -11,6 +11,7 @@ import { refreshMetaTokens } from "@/inngest/functions/refresh-tokens";
 import { generateWeeklyReports } from "@/inngest/functions/weekly-report";
 import { proposeWeeklyAllocation } from "@/inngest/functions/budget-allocation";
 import { generateVideoProject } from "@/inngest/functions/generate-video";
+import { batchGenerateCreatives } from "@/inngest/functions/batch-generate";
 
 export const { GET, POST, PUT } = serve({
   client: inngest,
@@ -24,5 +25,6 @@ export const { GET, POST, PUT } = serve({
     generateWeeklyReports,
     proposeWeeklyAllocation,
     generateVideoProject,
+    batchGenerateCreatives,
   ],
 });

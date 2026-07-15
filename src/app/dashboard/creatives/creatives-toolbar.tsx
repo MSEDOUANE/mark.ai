@@ -7,15 +7,17 @@ interface ToolbarProps {
   total: number;
   generating: number;
   ready: number;
+  tags?: string[];
 }
 
-export function CreativesToolbar({ total, generating, ready }: ToolbarProps) {
+export function CreativesToolbar({ total, generating, ready, tags = [] }: ToolbarProps) {
   const router      = useRouter();
   const pathname    = usePathname();
   const searchParams = useSearchParams();
 
   const status = searchParams.get("status") ?? "all";
   const sort   = searchParams.get("sort")   ?? "newest";
+  const tag    = searchParams.get("tag")    ?? "all";
 
   const update = useCallback((key: string, value: string) => {
     const p = new URLSearchParams(searchParams.toString());
@@ -65,6 +67,20 @@ export function CreativesToolbar({ total, generating, ready }: ToolbarProps) {
           Ready <span className="ml-0.5 text-zinc-500">{ready}</span>
         </button>
       </div>
+
+      {/* Tags */}
+      {tags.length > 0 && (
+        <div className="flex flex-wrap items-center gap-1.5">
+          {tags.map((t) => (
+            <button key={t} type="button" onClick={() => update("tag", tag === t ? "all" : t)}
+              className={`rounded-full border px-2.5 py-1 text-xs transition-colors ${
+                tag === t ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-zinc-700 text-zinc-500 hover:text-zinc-300"
+              }`}>
+              {t}
+            </button>
+          ))}
+        </div>
+      )}
 
       {/* Sort */}
       <div className="ml-auto flex items-center gap-2">
