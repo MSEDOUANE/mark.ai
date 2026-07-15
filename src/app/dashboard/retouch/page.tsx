@@ -1,6 +1,7 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { ComingSoon } from "../coming-soon";
+import { RetouchClient } from "./retouch-client";
 
 export default async function RetouchPage() {
   const supabase = await createClient();
@@ -8,15 +9,25 @@ export default async function RetouchPage() {
   if (!user) redirect("/login");
 
   return (
-    <ComingSoon
-      icon="🪄"
-      title="Retouch"
-      blurb="One-click photo cleanup — remove backgrounds, upscale, enhance, and erase objects from any image."
-      bullets={[
-        "Background removal & object erasing",
-        "Image upscaling, enhancement, and restoration",
-        "AI cleanup for polished product shots",
-      ]}
-    />
+    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-8">
+          <Link href="/dashboard/generate" className="text-sm text-zinc-400 hover:text-zinc-200">
+            ← Generate
+          </Link>
+          <div className="mt-3 flex items-center gap-3">
+            <span className="text-3xl">🪄</span>
+            <div>
+              <h1 className="text-2xl font-bold">Retouch</h1>
+              <p className="mt-0.5 text-sm text-zinc-400">
+                One-click photo cleanup — remove backgrounds, upscale, enhance, and erase objects.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <RetouchClient />
+      </div>
+    </main>
   );
 }

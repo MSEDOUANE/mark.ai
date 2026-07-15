@@ -16,13 +16,16 @@
  * Change the IMG2IMG_MODEL export to point to a different implementation.
  */
 
-import type { TextToImageFn, ImageToImageFn, ComposeFn, ImageToVideoFn } from "./types";
+import type { TextToImageFn, ImageToImageFn, ComposeFn, ImageToVideoFn, RetouchFn } from "./types";
 
 import { generate as falNanoBanana } from "./fal-nano-banana";
 import { generate as falNanoBananaEdit } from "./fal-nano-banana-edit";
 import { generate as falFluxSchnell } from "./fal-flux-schnell";
 import { generate as falFluxRedux } from "./fal-flux-redux";
 import { generate as falKlingVideo } from "./fal-kling-video";
+import { generate as falBgRemove } from "./fal-bg-remove";
+import { generate as falClarityUpscaler } from "./fal-clarity-upscaler";
+import { generate as falEraser } from "./fal-eraser";
 
 /** Text-to-image models selectable from the UI via the `imageModel` field. */
 export const TEXT_MODELS: Record<string, TextToImageFn> = {
@@ -41,3 +44,8 @@ export const COMPOSE_MODEL: ComposeFn = falNanoBananaEdit;
 
 /** Image-to-video model for video ad creatives (animates the ad scene). */
 export const VIDEO_MODEL: ImageToVideoFn = falKlingVideo;
+
+/** Retouch/cleanup models (Phase 2 — Retouch suite). See retouch-tools.ts for presets. */
+export const BG_REMOVE_MODEL: RetouchFn = falBgRemove;
+export const UPSCALE_MODEL: RetouchFn = falClarityUpscaler;
+export const ERASER_MODEL: RetouchFn = falEraser;

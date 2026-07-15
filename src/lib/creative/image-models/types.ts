@@ -38,6 +38,20 @@ export interface ImageToVideoParams {
   durationSeconds?: number;
 }
 
+export interface RetouchParams {
+  /** Source image to edit — data URL or http URL. */
+  imageUrl: string;
+  apiKey: string;
+  /** Mask (white = area to act on) for eraser-style tools — data URL or http URL. */
+  maskUrl?: string;
+  /** Clarity upscaler: output size multiplier (1–4). */
+  upscaleFactor?: number;
+  /** Clarity upscaler: how much the model may deviate from the source (0–1). */
+  creativity?: number;
+  /** Clarity upscaler: how strongly to preserve the original (0–1). */
+  resemblance?: number;
+}
+
 /** Returns the generated image URL on success; throws on failure. */
 export type TextToImageFn = (params: TextToImageParams) => Promise<string>;
 export type ImageToImageFn = (params: ImageToImageParams) => Promise<string>;
@@ -45,3 +59,5 @@ export type ImageToImageFn = (params: ImageToImageParams) => Promise<string>;
 export type ComposeFn = (params: ComposeParams) => Promise<string>;
 /** Animates a still into a short clip; returns the video URL. */
 export type ImageToVideoFn = (params: ImageToVideoParams) => Promise<string>;
+/** Retouch/cleanup: edits one image (optionally guided by a mask); returns the result URL. */
+export type RetouchFn = (params: RetouchParams) => Promise<string>;
