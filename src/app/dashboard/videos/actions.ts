@@ -87,6 +87,7 @@ export async function createVideoProject(formData: FormData) {
   // User-uploaded avatar photo (data URI from /api/upload-asset). Only kept
   // for the avatar style; drives the OmniHuman custom-avatar path.
   const avatarImageUrl = clean(formData, "avatarImageUrl");
+  const musicPrompt = clean(formData, "musicPrompt");
 
   let product: typeof schema.products.$inferSelect | undefined;
   if (productId) {
@@ -116,6 +117,7 @@ export async function createVideoProject(formData: FormData) {
       voice,
       avatar: style === "avatar" ? avatar : null,
       avatarImageUrl: style === "avatar" ? avatarImageUrl : null,
+      musicPrompt,
     })
     .returning();
 

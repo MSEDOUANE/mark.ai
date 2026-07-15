@@ -197,6 +197,18 @@ export default async function VideosPage({
                   <option value="5">Long (5 scenes)</option>
                 </select>
               </label>
+
+              <label className="block text-sm">
+                <span className="text-zinc-400">Background music (optional)</span>
+                <input
+                  name="musicPrompt"
+                  placeholder="Example: upbeat lo-fi hip hop, warm and optimistic"
+                  className={`mt-1.5 ${field}`}
+                />
+                <span className="mt-1 block text-xs text-zinc-600">
+                  Leave blank for voiceover only. Not used on the Avatar style.
+                </span>
+              </label>
             </div>
 
             <button className="w-full rounded-xl bg-amber-400 px-5 py-3 text-sm font-bold text-zinc-950 shadow shadow-amber-500/20 transition-colors hover:bg-amber-300">

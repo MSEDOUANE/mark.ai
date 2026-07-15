@@ -4,7 +4,7 @@ import { db, schema } from "@/db";
 import { generateVideoScript, type VideoScript } from "@/lib/ai/video-script";
 import type { VideoScriptInput } from "@/lib/ai/video-script";
 import { TEXT_MODELS, DEFAULT_TEXT_MODEL, VIDEO_MODEL } from "@/lib/creative/image-models/registry";
-import { ttsGenerate, composeVideo, avatarGenerate, omnihumanGenerate, AVATARS } from "@/lib/creative/image-models/fal-audio-video";
+import { ttsGenerate, composeVideo, avatarGenerate, omnihumanGenerate, musicGenerate, AVATARS } from "@/lib/creative/image-models/fal-audio-video";
 
 function wordCount(text: string): number {
   return text.trim().split(/\s+/).filter(Boolean).length;
@@ -247,6 +247,22 @@ export const generateVideoProject = inngest.createFunction(
         }),
       );
 
+      // 3b. Optional background music bed (stable-audio, capped at 47s).
+      let musicUrl: string | null = null;
+      if (project.musicPrompt) {
+        const totalSeconds = script.scenes.reduce(
+          (sum, s) => sum + (s.durationSeconds === 10 ? 10 : 5),
+          0,
+        );
+        musicUrl = await step.run("music", () =>
+          musicGenerate({
+            prompt: project.musicPrompt!,
+            durationSeconds: Math.min(totalSeconds, 47),
+            apiKey,
+          }),
+        );
+      }
+
       // 4. Assembly.
       const finalUrl = await step.run("compose", () =>
         composeVideo({
@@ -255,6 +271,7 @@ export const generateVideoProject = inngest.createFunction(
             durationSeconds: s.durationSeconds === 10 ? 10 : 5,
           })),
           audioUrl,
+          musicUrl,
           apiKey,
         }),
       );

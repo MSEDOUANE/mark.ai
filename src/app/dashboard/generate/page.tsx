@@ -292,7 +292,7 @@ const ASSETS: AssetType[] = [
     icon: "🎙️",
     label: "Voiceover & Audio",
     description: "AI voiceovers (incl. Arabic dialects), background music and sound effects for your videos.",
-    badge: "Soon",
+    badge: "New",
     categories: ["All", "Audio"],
     preview: (
       <div className="h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-indigo-900/50 to-zinc-900 flex items-center justify-center gap-1">
