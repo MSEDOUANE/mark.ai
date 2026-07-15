@@ -9,7 +9,7 @@ import { BriefForm } from "./brief-form";
 export default async function NewCampaignPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string }>;
+  searchParams: Promise<{ error?: string; productName?: string; description?: string; websiteUrl?: string }>;
 }) {
   const supabase = await createClient();
   const {
@@ -17,7 +17,7 @@ export default async function NewCampaignPage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
   const { org } = await ensureProfile(user);
-  const { error } = await searchParams;
+  const { error, productName, description, websiteUrl } = await searchParams;
 
   const [brands, productRows, adAccounts] = await Promise.all([
     db
@@ -96,6 +96,9 @@ export default async function NewCampaignPage({
           products={products}
           billingCurrency={billingCurrency}
           error={error}
+          initialProductName={productName}
+          initialProductDescription={description}
+          initialWebsiteUrl={websiteUrl}
         />
       </div>
     </main>

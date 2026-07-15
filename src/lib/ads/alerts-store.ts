@@ -26,6 +26,7 @@ export async function checkCampaignAnomalies(campaignId: string): Promise<number
       clicks: schema.metricsSnapshots.clicks,
       spendMinor: schema.metricsSnapshots.spendMinor,
       conversions: schema.metricsSnapshots.conversions,
+      reach: schema.metricsSnapshots.reach,
     })
     .from(schema.metricsSnapshots)
     .where(eq(schema.metricsSnapshots.campaignId, campaignId))

@@ -489,6 +489,7 @@ export async function applyScoreTips(formData: FormData) {
   let best: {
     headline: string; primaryText: string;
     score: number; rationale: string; tips: string[];
+    predictedCtrBand: string; conversionLikelihood: string;
   } | null = null;
 
   for (let i = 0; i < MAX_REFINE_ITERATIONS; i++) {
@@ -525,7 +526,15 @@ export async function applyScoreTips(formData: FormData) {
     });
 
     if (!best || scored.score > best.score) {
-      best = { headline, primaryText, score: scored.score, rationale: scored.rationale, tips: scored.tips };
+      best = {
+        headline,
+        primaryText,
+        score: scored.score,
+        rationale: scored.rationale,
+        tips: scored.tips,
+        predictedCtrBand: scored.predictedCtrBand,
+        conversionLikelihood: scored.conversionLikelihood,
+      };
     }
     if (scored.score >= TARGET_SCORE) break;
 
@@ -560,6 +569,8 @@ export async function applyScoreTips(formData: FormData) {
         score:          best.score,
         scoreRationale: best.rationale,
         scoreTips:      best.tips,
+        predictedCtrBand: best.predictedCtrBand,
+        conversionLikelihood: best.conversionLikelihood,
       },
     })
     .returning();

@@ -71,6 +71,8 @@ export const generateCreative = inngest.createFunction(
             score: score.score,
             scoreRationale: score.rationale,
             scoreTips: score.tips,
+            predictedCtrBand: score.predictedCtrBand,
+            conversionLikelihood: score.conversionLikelihood,
           },
         })
         .where(eq(schema.creatives.id, creativeId));

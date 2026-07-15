@@ -41,23 +41,30 @@ export function BriefForm({
   products,
   billingCurrency,
   error,
+  initialProductName,
+  initialProductDescription,
+  initialWebsiteUrl,
 }: {
   brands: BriefBrand[];
   products: BriefProduct[];
   billingCurrency?: string | null;
   error?: string;
+  /** Prefill from Website Analysis' "Start a campaign" hand-off — still editable. */
+  initialProductName?: string;
+  initialProductDescription?: string;
+  initialWebsiteUrl?: string;
 }) {
   const [brandId, setBrandId] = useState<string | null>(null);
   const [productId, setProductId] = useState<string | null>(null);
 
-  const [productName, setProductName] = useState("");
-  const [productDescription, setProductDescription] = useState("");
+  const [productName, setProductName] = useState(initialProductName ?? "");
+  const [productDescription, setProductDescription] = useState(initialProductDescription ?? "");
   const [audience, setAudience] = useState("");
   const [tone, setTone] = useState("");
   const [brandColor, setBrandColor] = useState("");
   const [logoUrl, setLogoUrl] = useState("");
   const [photoUrl, setPhotoUrl] = useState("");
-  const [websiteUrl, setWebsiteUrl] = useState("");
+  const [websiteUrl, setWebsiteUrl] = useState(initialWebsiteUrl ?? "");
   const [destination, setDestination] = useState<"website" | "whatsapp">("website");
 
   const brandProducts = brandId

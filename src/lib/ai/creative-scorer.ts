@@ -14,6 +14,12 @@ export const creativeScoreSchema = z.object({
     .array(z.string())
     .max(3)
     .describe("0-3 concrete changes that would raise the score. Empty when already excellent."),
+  predictedCtrBand: z
+    .enum(["Below average", "Average", "Above average", "Excellent"])
+    .describe("AI ESTIMATE (not measured data): where this creative's CTR would likely land vs. typical performance ads in this category."),
+  conversionLikelihood: z
+    .enum(["Low", "Medium", "High"])
+    .describe("AI ESTIMATE (not measured data): likelihood this creative drives conversions once clicked, based on message-to-offer alignment."),
 });
 export type CreativeScore = z.infer<typeof creativeScoreSchema>;
 
@@ -42,7 +48,10 @@ const SYSTEM =
   "because trivial wording tweaks are imaginable; real ads rarely need them. Reserve " +
   "98-100 for flawless copy. Do not inflate weak copy.\n\n" +
   "List 0-3 concrete improvements — return an EMPTY list when the copy is already " +
-  "excellent (90+).";
+  "excellent (90+).\n\n" +
+  "Also give a predictedCtrBand and conversionLikelihood. These are estimates from " +
+  "copy quality alone (no historical data) — calibrate them honestly and consistently " +
+  "with the numeric score, don't just default to the top band.";
 
 /** Score one ad creative's copy for conversion potential using Claude. */
 export async function scoreCreative(

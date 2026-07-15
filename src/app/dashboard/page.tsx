@@ -28,6 +28,7 @@ export default async function DashboardPage() {
     [{ accountCount }],
     [{ brandCount }],
     [latestReport],
+    [suggestedProduct],
   ] = await Promise.all([
     db
       .select({ campaignCount: count() })
@@ -50,6 +51,14 @@ export default async function DashboardPage() {
       .from(schema.reports)
       .where(eq(schema.reports.orgId, org.id))
       .orderBy(desc(schema.reports.createdAt))
+      .limit(1),
+    // Most recent catalog product — used for the "Suggested campaign" nudge
+    // when the org hasn't launched anything yet.
+    db
+      .select({ id: schema.products.id, name: schema.products.name })
+      .from(schema.products)
+      .where(eq(schema.products.orgId, org.id))
+      .orderBy(desc(schema.products.createdAt))
       .limit(1),
   ]);
 
@@ -127,6 +136,22 @@ export default async function DashboardPage() {
             Change →
           </Link>
         </div>
+
+        {/* Suggested campaign — nudge toward the first launch using an existing product. */}
+        {campaignCount === 0 && suggestedProduct && (
+          <div className="mt-4 flex items-center gap-3 rounded-xl border border-amber-400/20 bg-amber-950/20 px-4 py-3">
+            <span className="text-lg">💡</span>
+            <p className="min-w-0 flex-1 text-sm text-amber-100">
+              Suggested: launch a campaign for <strong>{suggestedProduct.name}</strong>.
+            </p>
+            <Link
+              href={`/dashboard/campaigns/new?${new URLSearchParams({ productName: suggestedProduct.name }).toString()}`}
+              className="shrink-0 rounded-lg bg-amber-400 px-3 py-1.5 text-xs font-bold text-zinc-950 hover:bg-amber-300"
+            >
+              Start →
+            </Link>
+          </div>
+        )}
 
         {/* Open anomaly alerts */}
         {openAlerts.length > 0 && (

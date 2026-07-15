@@ -13,10 +13,11 @@ export interface DailyMetrics {
   clicks: number;
   spendMinor: number;
   conversions: number;
+  reach?: number;
 }
 
 export interface AnomalyCandidate {
-  type: "spend_spike" | "ctr_collapse" | "delivery_stop" | "conversion_stop";
+  type: "spend_spike" | "ctr_collapse" | "delivery_stop" | "conversion_stop" | "ad_fatigue";
   severity: "warning" | "critical";
   message: string;
   data: Record<string, unknown>;
@@ -102,6 +103,40 @@ export function detectAnomalies(args: {
         recentCtr: +(recentCtr * 100).toFixed(3),
         baselineCtr: +(baseCtr * 100).toFixed(3),
         recentImpressions: recentImpr,
+      },
+    });
+  }
+
+  // ── Ad fatigue: frequency (impressions/reach) climbing while CTR declines —
+  // the audience has seen the ad too many times. Distinct from ctr_collapse:
+  // fatigue is a gradual trend with a frequency signal, not a sudden drop.
+  const freq = (rows: DailyMetrics[]) => {
+    const impr = rows.reduce((s, d) => s + d.impressions, 0);
+    const reach = rows.reduce((s, d) => s + (d.reach ?? 0), 0);
+    return reach > 0 ? impr / reach : 0;
+  };
+  const recentFreq = freq(recent3);
+  const baseFreq = freq(base);
+  if (
+    base.length >= 3 &&
+    recentImpr >= 500 &&
+    baseFreq > 0 &&
+    recentFreq >= 3 &&
+    recentFreq > baseFreq * 1.3 &&
+    baseCtr > 0 &&
+    recentCtr < baseCtr * 0.85
+  ) {
+    out.push({
+      type: "ad_fatigue",
+      severity: "warning",
+      message:
+        `“${campaignName}” frequency climbed to ${recentFreq.toFixed(1)}x (was ${baseFreq.toFixed(1)}x) ` +
+        `while CTR softened to ${(recentCtr * 100).toFixed(2)}% — the audience may be tiring of this creative. Consider refreshing it.`,
+      data: {
+        recentFrequency: +recentFreq.toFixed(2),
+        baselineFrequency: +baseFreq.toFixed(2),
+        recentCtr: +(recentCtr * 100).toFixed(3),
+        baselineCtr: +(baseCtr * 100).toFixed(3),
       },
     });
   }
