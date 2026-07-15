@@ -259,7 +259,7 @@ export function AdCopyGenerator({ brands = [] }: { brands?: BrandContextOption[]
       </form>
 
       {/* ── Results / sidebar ────────────────────────────────────────────── */}
-      <div className="space-y-4">
+      <div id="headlines" className="space-y-4 scroll-mt-6">
         {state.status === "idle" && !pending && (
           <div className="rounded-2xl border border-dashed border-zinc-800 p-8 text-center">
             <p className="text-2xl">✍️</p>

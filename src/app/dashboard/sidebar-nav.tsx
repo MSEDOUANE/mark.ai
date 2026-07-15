@@ -4,19 +4,64 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
-const navItems = [
-  { href: "/dashboard", label: "Overview" },
-  { href: "/dashboard/assistant", label: "Assistant ✦" },
-  { href: "/dashboard/approvals", label: "Approvals", badgeKey: "approvals" as const },
-  { href: "/dashboard/campaigns", label: "Campaigns" },
-  { href: "/dashboard/campaigns/new", label: "New brief", nested: true },
-  { href: "/dashboard/generate", label: "Generate" },
-  { href: "/dashboard/creatives", label: "Creatives" },
-  { href: "/dashboard/videos", label: "Videos" },
-  { href: "/dashboard/pages", label: "Pages" },
-  { href: "/dashboard/products", label: "Products" },
-  { href: "/dashboard/brands", label: "Brands" },
-  { href: "/dashboard/settings", label: "Settings" },
+interface NavItem {
+  href: string;
+  label: string;
+  badgeKey?: "approvals";
+  nested?: boolean;
+}
+
+interface NavSection {
+  heading?: string;
+  items: NavItem[];
+}
+
+// AdCreative-style grouping: a small top cluster, then the service sections
+// (Create / Projects / Brand / Analyze / Predict / Retouch), Settings last.
+const navSections: NavSection[] = [
+  {
+    items: [
+      { href: "/dashboard", label: "Overview" },
+      { href: "/dashboard/assistant", label: "Assistant ✦" },
+      { href: "/dashboard/approvals", label: "Approvals", badgeKey: "approvals" },
+    ],
+  },
+  {
+    heading: "Create",
+    items: [
+      { href: "/dashboard/generate", label: "Generate" },
+      { href: "/dashboard/creatives", label: "Creatives" },
+      { href: "/dashboard/videos", label: "Videos" },
+      { href: "/dashboard/pages", label: "Pages" },
+    ],
+  },
+  {
+    heading: "Projects",
+    items: [
+      { href: "/dashboard/campaigns", label: "Campaigns" },
+      { href: "/dashboard/campaigns/new", label: "New brief", nested: true },
+      { href: "/dashboard/products", label: "Products" },
+    ],
+  },
+  {
+    heading: "Brand",
+    items: [{ href: "/dashboard/brands", label: "Brands" }],
+  },
+  {
+    heading: "Analyze",
+    items: [{ href: "/dashboard/analyze", label: "Analyze" }],
+  },
+  {
+    heading: "Predict",
+    items: [{ href: "/dashboard/predict", label: "Predict" }],
+  },
+  {
+    heading: "Retouch",
+    items: [{ href: "/dashboard/retouch", label: "Retouch" }],
+  },
+  {
+    items: [{ href: "/dashboard/settings", label: "Settings" }],
+  },
 ];
 
 function isCurrent(pathname: string, href: string) {
@@ -37,36 +82,47 @@ export function SidebarNav({
 }) {
   const pathname = usePathname();
 
+  function renderItem(item: NavItem) {
+    const current = isCurrent(pathname, item.href);
+    const sectionActive = isSectionActive(pathname, item.href);
+    const badge =
+      item.badgeKey === "approvals" && approvalsCount > 0 ? approvalsCount : null;
+    return (
+      <Link
+        key={item.href}
+        href={item.href}
+        aria-current={current ? "page" : undefined}
+        onClick={onNavigate}
+        className={
+          current
+            ? `flex items-center justify-between rounded-lg border border-amber-300/25 bg-amber-950/25 px-3 py-2 text-sm font-medium text-zinc-50 ${item.nested ? "ml-3" : ""}`
+            : sectionActive
+              ? `flex items-center justify-between rounded-lg border border-transparent bg-zinc-900/70 px-3 py-2 text-sm font-medium text-zinc-100 ${item.nested ? "ml-3" : ""}`
+              : `flex items-center justify-between rounded-lg border border-transparent px-3 py-2 text-sm text-zinc-300 hover:border-white/10 hover:bg-zinc-900 hover:text-zinc-50 ${item.nested ? "ml-3" : ""}`
+        }
+      >
+        <span>{item.label}</span>
+        {badge ? (
+          <span className="ml-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-400 px-1.5 text-[11px] font-bold text-zinc-950">
+            {badge}
+          </span>
+        ) : null}
+      </Link>
+    );
+  }
+
   return (
-    <nav aria-label="Main navigation" className="flex-1 space-y-1 px-2 py-3">
-      {navItems.map((item) => {
-        const current = isCurrent(pathname, item.href);
-        const sectionActive = isSectionActive(pathname, item.href);
-        const badge =
-          item.badgeKey === "approvals" && approvalsCount > 0 ? approvalsCount : null;
-        return (
-          <Link
-            key={item.href}
-            href={item.href}
-            aria-current={current ? "page" : undefined}
-            onClick={onNavigate}
-            className={
-              current
-                ? `flex items-center justify-between rounded-lg border border-amber-300/25 bg-amber-950/25 px-3 py-2 text-sm font-medium text-zinc-50 ${item.nested ? "ml-3" : ""}`
-                : sectionActive
-                  ? `flex items-center justify-between rounded-lg border border-transparent bg-zinc-900/70 px-3 py-2 text-sm font-medium text-zinc-100 ${item.nested ? "ml-3" : ""}`
-                  : `flex items-center justify-between rounded-lg border border-transparent px-3 py-2 text-sm text-zinc-300 hover:border-white/10 hover:bg-zinc-900 hover:text-zinc-50 ${item.nested ? "ml-3" : ""}`
-            }
-          >
-            <span>{item.label}</span>
-            {badge ? (
-              <span className="ml-2 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-amber-400 px-1.5 text-[11px] font-bold text-zinc-950">
-                {badge}
-              </span>
-            ) : null}
-          </Link>
-        );
-      })}
+    <nav aria-label="Main navigation" className="flex-1 px-2 py-3">
+      {navSections.map((section, si) => (
+        <div key={section.heading ?? `group-${si}`} className={si > 0 ? "mt-4" : ""}>
+          {section.heading ? (
+            <p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+              {section.heading}
+            </p>
+          ) : null}
+          <div className="space-y-1">{section.items.map(renderItem)}</div>
+        </div>
+      ))}
     </nav>
   );
 }

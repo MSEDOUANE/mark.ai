@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const CATEGORIES = ["All", "Images", "Video", "Text", "Audience"] as const;
+const CATEGORIES = ["All", "Images", "Video", "Text", "Audience", "Audio"] as const;
 type Category = (typeof CATEGORIES)[number];
 
 interface AssetType {
@@ -182,6 +182,87 @@ const ASSETS: AssetType[] = [
           </svg>
         </div>
         <span className="absolute bottom-2 left-2 rounded bg-black/60 px-1.5 py-0.5 text-[9px] font-bold uppercase tracking-wide text-white">UGC · Voiced</span>
+      </div>
+    ),
+  },
+  {
+    href: "/dashboard/generate/ad-copy#headlines",
+    icon: "📰",
+    label: "Headlines & CTAs",
+    description: "Punchy, scroll-stopping headlines, primary text and call-to-actions — generated with your Ad Copy.",
+    categories: ["All", "Text"],
+    preview: (
+      <div className="h-full w-full overflow-hidden rounded-lg bg-zinc-800 p-3">
+        <div className="space-y-2">
+          <div className="h-2.5 w-4/5 rounded bg-zinc-300" />
+          <div className="h-2 w-3/5 rounded bg-zinc-500" />
+        </div>
+        <div className="mt-4 inline-flex rounded-full bg-amber-400 px-2 py-1 text-[9px] font-bold text-zinc-950">
+          Shop Now →
+        </div>
+      </div>
+    ),
+  },
+  {
+    href: "/dashboard/videos",
+    icon: "🛍️",
+    label: "Product Videos",
+    description: "Turn a product into a polished showcase video — AI writes, films and cuts it. Uses the Showcase style.",
+    categories: ["All", "Video"],
+    preview: (
+      <div className="relative h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-teal-900/50 to-zinc-900 flex items-center justify-center">
+        <span className="text-3xl">🛍️</span>
+        <div className="absolute inset-x-0 bottom-0 flex items-center gap-1 p-2">
+          <div className="h-1 flex-1 rounded-full bg-white/20">
+            <div className="h-1 w-1/3 rounded-full bg-teal-400" />
+          </div>
+          <span className="text-[8px] text-white/60">0:15</span>
+        </div>
+      </div>
+    ),
+  },
+  {
+    href: "/dashboard/creatives",
+    icon: "✨",
+    label: "Motion Effects",
+    description: "Animate any static image creative into a ~5s video ad with a single click.",
+    categories: ["All", "Video"],
+    preview: (
+      <div className="relative h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-fuchsia-900/40 to-zinc-900 flex items-center justify-center">
+        <span className="text-3xl">✨</span>
+        <div className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-white/90">
+          <svg className="h-3 w-3 translate-x-px text-zinc-900" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5.14v14l11-7-11-7z" />
+          </svg>
+        </div>
+      </div>
+    ),
+  },
+  {
+    href: "/dashboard/generate/image-studio",
+    icon: "👗",
+    label: "Fashion Photoshoots",
+    description: "Put your product on AI models — on-figure fashion and lifestyle shots from a single photo.",
+    badge: "Soon",
+    categories: ["All", "Images"],
+    preview: (
+      <div className="h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-pink-900/40 to-zinc-900 flex items-center justify-center">
+        <span className="text-3xl">👗</span>
+      </div>
+    ),
+  },
+  {
+    href: "/dashboard/generate/audio",
+    icon: "🎙️",
+    label: "Voiceover & Audio",
+    description: "AI voiceovers (incl. Arabic dialects), background music and sound effects for your videos.",
+    badge: "Soon",
+    categories: ["All", "Audio"],
+    preview: (
+      <div className="h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-indigo-900/50 to-zinc-900 flex items-center justify-center gap-1">
+        {["h-4", "h-8", "h-5", "h-10", "h-6", "h-9", "h-4"].map((h, i) => (
+          <div key={i} className={`w-1 rounded-full bg-indigo-400/70 ${h}`} />
+        ))}
       </div>
     ),
   },
