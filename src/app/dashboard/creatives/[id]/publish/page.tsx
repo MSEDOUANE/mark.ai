@@ -5,6 +5,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { db, schema } from "@/db";
 import { publishCreativeAsAd } from "./actions";
+import { OrganicPostForm } from "./organic-post-form";
 
 const field =
   "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500";
@@ -142,6 +143,17 @@ export default async function PublishCreativePage({
                 Creates the launch request — you review and approve it on the campaign page before anything reaches Meta.
               </p>
             </form>
+          )}
+
+          {connected.length > 0 && creative.status === "ready" && (
+            <OrganicPostForm
+              creativeId={creative.id}
+              accounts={connected.map((a) => {
+                const m = (a.meta ?? {}) as { name?: string; currency?: string };
+                return { id: a.id, label: m.name ?? a.externalId };
+              })}
+              defaultCaption={headline}
+            />
           )}
         </div>
       </div>

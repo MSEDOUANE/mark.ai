@@ -15,6 +15,9 @@ const PUBLIC_PATHS = [
   "/api/whatsapp",
   // Published landing pages — the ad-click destination, public by design.
   "/p",
+  // Team invite accept links — must render for logged-out visitors so the
+  // page's own "log in or sign up to accept" branch can show.
+  "/invite",
 ];
 
 function isPublic(pathname: string) {

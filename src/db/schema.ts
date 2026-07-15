@@ -108,6 +108,26 @@ export const memberships = pgTable(
   (t) => [unique("memberships_user_org_unique").on(t.userId, t.orgId)],
 );
 
+/**
+ * Team invites — the app is currently single-tenant (ensureProfile bridges
+ * every new user into the one org as "owner"), so accepting an invite works
+ * by ensuring a membership exists via the normal auth bridge, then updating
+ * its role to what was invited. `token` is the unguessable accept-link id.
+ */
+export const pendingInvites = pgTable("pending_invites", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  orgId: uuid("org_id")
+    .notNull()
+    .references(() => organizations.id, { onDelete: "cascade" }),
+  email: text("email").notNull(),
+  role: membershipRoleEnum("role").notNull().default("member"),
+  invitedBy: uuid("invited_by").references(() => profiles.id, { onDelete: "set null" }),
+  token: text("token").notNull().unique(),
+  status: text("status").notNull().default("pending"), // "pending" | "accepted" | "revoked"
+  createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
+  expiresAt: timestamp("expires_at", { withTimezone: true }).notNull(),
+});
+
 // ---------------------------------------------------------------------------
 // Marketing domain
 // ---------------------------------------------------------------------------

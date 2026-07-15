@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { db, schema } from "@/db";
@@ -10,6 +10,8 @@ import {
   disconnectAdAccount,
   updateAutonomy,
 } from "./actions";
+import { inviteMember, cancelInvite, changeMemberRole, removeMember } from "./team-actions";
+import { emailEnabled } from "@/lib/notify/email";
 
 export default async function SettingsPage({
   searchParams,
@@ -30,6 +32,28 @@ export default async function SettingsPage({
     .from(schema.adAccounts)
     .where(eq(schema.adAccounts.orgId, org.id))
     .orderBy(desc(schema.adAccounts.createdAt));
+
+  const [members, invites] = await Promise.all([
+    db
+      .select({
+        id: schema.memberships.id,
+        userId: schema.memberships.userId,
+        role: schema.memberships.role,
+        email: schema.profiles.email,
+        createdAt: schema.memberships.createdAt,
+      })
+      .from(schema.memberships)
+      .innerJoin(schema.profiles, eq(schema.memberships.userId, schema.profiles.id))
+      .where(eq(schema.memberships.orgId, org.id))
+      .orderBy(schema.memberships.createdAt),
+    db
+      .select()
+      .from(schema.pendingInvites)
+      .where(and(eq(schema.pendingInvites.orgId, org.id), eq(schema.pendingInvites.status, "pending")))
+      .orderBy(desc(schema.pendingInvites.createdAt)),
+  ]);
+  const myRole = members.find((m) => m.userId === user.id)?.role ?? "member";
+  const canManageTeam = myRole === "owner" || myRole === "admin";
 
   const appUrl = (
     process.env.APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? ""
@@ -220,6 +244,95 @@ export default async function SettingsPage({
               </button>
             </div>
           </form>
+        </section>
+
+        {/* ── Team ──────────────────────────────────────────────────────── */}
+        <section className="mt-4 rounded-xl border border-white/10 bg-zinc-900/80 p-4">
+          <h2 className="text-lg font-medium">Team</h2>
+          <p className="mt-1 text-sm text-zinc-300">
+            Who has access to this workspace.
+          </p>
+
+          <div className="mt-4 space-y-2">
+            {members.map((m) => (
+              <div key={m.id} className="flex items-center justify-between gap-3 rounded-xl border border-white/10 bg-zinc-950 px-4 py-2.5">
+                <div className="min-w-0">
+                  <p className="truncate text-sm text-zinc-100">
+                    {m.email}
+                    {m.userId === user.id && <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-400">You</span>}
+                  </p>
+                </div>
+                {canManageTeam ? (
+                  <div className="flex shrink-0 items-center gap-2">
+                    <form action={changeMemberRole}>
+                      <input type="hidden" name="membershipId" value={m.id} />
+                      <select name="role" defaultValue={m.role}
+                        onChange={(e) => e.currentTarget.form?.requestSubmit()}
+                        className="rounded-lg border border-white/10 bg-zinc-900 px-2 py-1 text-xs text-zinc-200 outline-none focus:border-amber-300">
+                        <option value="owner">Owner</option>
+                        <option value="admin">Admin</option>
+                        <option value="member">Member</option>
+                      </select>
+                    </form>
+                    {m.userId !== user.id && (
+                      <form action={removeMember}>
+                        <input type="hidden" name="membershipId" value={m.id} />
+                        <button className="rounded-lg border border-red-400/25 px-2.5 py-1 text-xs text-red-300 hover:bg-red-950/40">
+                          Remove
+                        </button>
+                      </form>
+                    )}
+                  </div>
+                ) : (
+                  <span className="shrink-0 rounded-full bg-zinc-800 px-2.5 py-1 text-xs capitalize text-zinc-400">{m.role}</span>
+                )}
+              </div>
+            ))}
+          </div>
+
+          {invites.length > 0 && (
+            <div className="mt-4">
+              <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">Pending invites</p>
+              <div className="mt-2 space-y-2">
+                {invites.map((inv) => (
+                  <div key={inv.id} className="flex items-center justify-between gap-3 rounded-xl border border-dashed border-white/10 px-4 py-2.5">
+                    <span className="truncate text-sm text-zinc-300">{inv.email} <span className="text-zinc-600">· {inv.role}</span></span>
+                    {canManageTeam && (
+                      <form action={cancelInvite}>
+                        <input type="hidden" name="id" value={inv.id} />
+                        <button className="shrink-0 text-xs text-zinc-500 hover:text-red-300">Cancel</button>
+                      </form>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {canManageTeam && (
+            <form action={inviteMember} className="mt-5 flex flex-wrap items-end gap-2 border-t border-white/10 pt-4">
+              <label className="flex min-w-[200px] flex-1 flex-col gap-1 text-sm">
+                <span className="text-zinc-300">Invite by email</span>
+                <input name="email" type="email" required placeholder="teammate@company.com" className={field} />
+              </label>
+              <label className="flex flex-col gap-1 text-sm">
+                <span className="text-zinc-300">Role</span>
+                <select name="role" defaultValue="member" className={field}>
+                  <option value="member">Member</option>
+                  <option value="admin">Admin</option>
+                  <option value="owner">Owner</option>
+                </select>
+              </label>
+              <button className="rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-zinc-100">
+                Send invite
+              </button>
+            </form>
+          )}
+          {!emailEnabled() && canManageTeam && (
+            <p className="mt-2 text-xs text-zinc-500">
+              Email delivery isn&apos;t configured (RESEND_API_KEY) — invited teammates won&apos;t get an email, but the invite link still works if you share it directly.
+            </p>
+          )}
         </section>
       </div>
     </main>
