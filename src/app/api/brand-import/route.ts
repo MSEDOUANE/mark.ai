@@ -21,6 +21,17 @@ const schema = z.object({
       "Primary brand color as a hex code (#rrggbb). Prefer og:theme-color or prominent " +
         "CSS color. null if not identifiable.",
     ),
+  secondaryColor: z
+    .string()
+    .nullable()
+    .describe("A secondary/supporting brand color as a hex code (#rrggbb), distinct from the primary. null if not identifiable."),
+  fontFamily: z
+    .string()
+    .nullable()
+    .describe(
+      "The site's heading font family name, if it's a recognizable Google Font (e.g. " +
+        "'Poppins', 'Montserrat', 'Inter'). null if custom/unrecognized or not identifiable.",
+    ),
   logoUrl: z
     .string()
     .nullable()
@@ -102,7 +113,9 @@ export async function GET(req: NextRequest) {
       system:
         "You are a brand analyst. Extract brand identity from the HTML of a website. " +
         "Always return absolute URLs for logoUrl and photoUrl. " +
-        "For brandColor prefer a vivid, non-white hex (#rrggbb). " +
+        "For brandColor prefer a vivid, non-white hex (#rrggbb); secondaryColor should be a " +
+        "distinct supporting color if one is evident. Only set fontFamily when you recognize " +
+        "an actual Google Font name in the CSS — never guess. " +
         "If a field cannot be determined with confidence, return null.",
       prompt: `Page URL: ${target}\n\nHTML:\n${clean}`,
     });

@@ -9,6 +9,8 @@ export interface BrandContextOption {
   description: string | null;
   primaryColor: string | null;
   logoUrl: string | null;
+  /** AI-drafted (Brand Learning) or hand-written voice consistency notes. */
+  voiceNotes?: string | null;
 }
 
 /**
@@ -46,6 +48,7 @@ export function BrandContextPicker({
       <input type="hidden" name="brandName" value={selected?.name ?? ""} />
       <input type="hidden" name="brandTone" value={selected?.tone ?? ""} />
       <input type="hidden" name="brandDescription" value={selected?.description ?? ""} />
+      <input type="hidden" name="brandVoiceNotes" value={selected?.voiceNotes ?? ""} />
 
       <div className="mt-3 flex flex-wrap gap-2">
         {brands.map((b) => {

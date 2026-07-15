@@ -12,6 +12,25 @@ function clean(fd: FormData, key: string): string | null {
   return v.length > 0 ? v : null;
 }
 
+export interface BrandAsset {
+  url: string;
+  label: string;
+}
+
+function cleanAssets(fd: FormData): BrandAsset[] {
+  const raw = String(fd.get("assets") ?? "[]");
+  try {
+    const parsed = JSON.parse(raw) as unknown;
+    if (!Array.isArray(parsed)) return [];
+    return parsed
+      .filter((a): a is BrandAsset => !!a && typeof a === "object" && typeof (a as BrandAsset).url === "string")
+      .slice(0, 20)
+      .map((a) => ({ url: a.url, label: String(a.label ?? "").slice(0, 60) }));
+  } catch {
+    return [];
+  }
+}
+
 export async function saveBrandProfile(formData: FormData) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -32,23 +51,35 @@ export async function saveBrandProfile(formData: FormData) {
     if (!existing) redirect("/dashboard/brands");
 
     await db.update(schema.brandProfiles).set({
-      name:         name!,
-      primaryColor: clean(formData, "primaryColor"),
-      logoUrl:      clean(formData, "logoUrl"),
-      websiteUrl:   clean(formData, "websiteUrl"),
-      tone:         clean(formData, "tone"),
-      description:  clean(formData, "description"),
-      updatedAt:    new Date(),
+      name:            name!,
+      primaryColor:    clean(formData, "primaryColor"),
+      logoUrl:         clean(formData, "logoUrl"),
+      websiteUrl:      clean(formData, "websiteUrl"),
+      tone:            clean(formData, "tone"),
+      description:     clean(formData, "description"),
+      secondaryColor:  clean(formData, "secondaryColor"),
+      accentColor:     clean(formData, "accentColor"),
+      fontFamily:      clean(formData, "fontFamily"),
+      defaultTemplate: clean(formData, "defaultTemplate"),
+      voiceNotes:      clean(formData, "voiceNotes"),
+      assets:          cleanAssets(formData),
+      updatedAt:       new Date(),
     }).where(eq(schema.brandProfiles.id, id));
   } else {
     await db.insert(schema.brandProfiles).values({
-      orgId:        org.id,
-      name:         name!,
-      primaryColor: clean(formData, "primaryColor"),
-      logoUrl:      clean(formData, "logoUrl"),
-      websiteUrl:   clean(formData, "websiteUrl"),
-      tone:         clean(formData, "tone"),
-      description:  clean(formData, "description"),
+      orgId:           org.id,
+      name:            name!,
+      primaryColor:    clean(formData, "primaryColor"),
+      logoUrl:         clean(formData, "logoUrl"),
+      websiteUrl:      clean(formData, "websiteUrl"),
+      tone:            clean(formData, "tone"),
+      description:     clean(formData, "description"),
+      secondaryColor:  clean(formData, "secondaryColor"),
+      accentColor:     clean(formData, "accentColor"),
+      fontFamily:      clean(formData, "fontFamily"),
+      defaultTemplate: clean(formData, "defaultTemplate"),
+      voiceNotes:      clean(formData, "voiceNotes"),
+      assets:          cleanAssets(formData),
     });
   }
 

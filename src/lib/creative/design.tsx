@@ -13,6 +13,9 @@ export type CreativeBrand = {
   logoUrl?: string | null;
   primaryColor?: string | null;
   accentColor?: string | null;
+  secondaryColor?: string | null;
+  /** Google Fonts family name (e.g. "Poppins"). Falls back to the default sans if unset or unloadable. */
+  fontFamily?: string | null;
 };
 
 export type PlacementKey =
@@ -62,12 +65,20 @@ interface TP {
   h: number;
   primary: string;
   accent: string;
+  secondary: string | null;
+  fontFamilyCss: string;
   headline: string;
   body: string;
   cta: string;
   bgImage: string | null;
   logoUrl: string | null;
   placedImages: PlacedImage[];
+}
+
+/** Small decorative dot next to the accent bar — the one visible secondary-color touch in each template. */
+function SecondaryDot({ color }: { color: string | null }) {
+  if (!color) return null;
+  return <div style={{ width: 10, height: 10, borderRadius: 5, background: color, marginLeft: 8 }} />;
 }
 
 function BgImage({ src, w, h }: { src: string; w: number; h: number }) {
@@ -119,7 +130,7 @@ function PlacedImagesLayer({ images, w, h }: { images: PlacedImage[]; w: number;
 // Full-bleed background (image or gradient) with scrim, accent bar, text at bottom.
 // ---------------------------------------------------------------------------
 function overlayTemplate(p: TP): React.ReactElement {
-  const { w, h, primary, accent, headline, body, cta, bgImage, logoUrl, placedImages } = p;
+  const { w, h, primary, accent, secondary, fontFamilyCss, headline, body, cta, bgImage, logoUrl, placedImages } = p;
   const isLink = w > h;
   const pad = isLink ? 56 : 64;
   const hl = isLink ? 58 : 76;
@@ -128,7 +139,7 @@ function overlayTemplate(p: TP): React.ReactElement {
   const lh = 64;
 
   return (
-    <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "flex-end", position: "relative", background: bgImage ? "#000" : `linear-gradient(145deg, ${primary} 0%, #0b0b12 90%)`, fontFamily: "Geist, sans-serif" }}>
+    <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "flex-end", position: "relative", background: bgImage ? "#000" : `linear-gradient(145deg, ${primary} 0%, #0b0b12 90%)`, fontFamily: fontFamilyCss }}>
       {bgImage ? <BgImage src={bgImage} w={w} h={h} /> : null}
 
       {/* Scrim — stronger at bottom for legibility */}
@@ -142,7 +153,10 @@ function overlayTemplate(p: TP): React.ReactElement {
 
       {/* Content */}
       <div style={{ display: "flex", flexDirection: "column", padding: pad, position: "relative" }}>
-        <div style={{ width: 44, height: 4, background: accent, borderRadius: 2, marginBottom: 20 }} />
+        <div style={{ display: "flex", alignItems: "center", marginBottom: 20 }}>
+          <div style={{ width: 44, height: 4, background: accent, borderRadius: 2 }} />
+          <SecondaryDot color={secondary} />
+        </div>
         <div style={{ color: "#fff", fontSize: hl, fontWeight: 800, lineHeight: 1.05, letterSpacing: -1.5, maxWidth: "88%" }}>
           {headline.slice(0, 60)}
         </div>
@@ -165,7 +179,7 @@ function overlayTemplate(p: TP): React.ReactElement {
 // For story (portrait-extreme) switches to top image / bottom content.
 // ---------------------------------------------------------------------------
 function splitTemplate(p: TP): React.ReactElement {
-  const { w, h, primary, accent, headline, body, cta, bgImage, logoUrl, placedImages } = p;
+  const { w, h, primary, accent, secondary, fontFamilyCss, headline, body, cta, bgImage, logoUrl, placedImages } = p;
   const isStory = h > w * 1.3;
   const isLink = w > h;
 
@@ -173,7 +187,7 @@ function splitTemplate(p: TP): React.ReactElement {
     // Vertical split for story: image top 55%, content bottom
     const topH = Math.round(h * 0.54);
     return (
-      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", fontFamily: "Geist, sans-serif", position: "relative" }}>
+      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", fontFamily: fontFamilyCss, position: "relative" }}>
         <div style={{ width: "100%", height: topH, display: "flex", position: "relative", background: bgImage ? "#000" : `linear-gradient(135deg, ${primary}cc 0%, ${primary} 100%)`, overflow: "hidden" }}>
           {bgImage ? <BgImage src={bgImage} w={w} h={topH} /> : null}
           {logoUrl ? <Logo src={logoUrl} height={52} style={{ position: "absolute", top: 52, left: 60 }} /> : null}
@@ -183,7 +197,10 @@ function splitTemplate(p: TP): React.ReactElement {
         {/* Placed images — after image panel, before text panel (overlays image area, text panel renders on top) */}
         <PlacedImagesLayer images={placedImages} w={w} h={h} />
         <div style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "center", background: "#0b0b12", padding: "56px 68px" }}>
-          <div style={{ width: 40, height: 4, background: accent, borderRadius: 2, marginBottom: 24 }} />
+          <div style={{ display: "flex", alignItems: "center", marginBottom: 24 }}>
+            <div style={{ width: 40, height: 4, background: accent, borderRadius: 2 }} />
+            <SecondaryDot color={secondary} />
+          </div>
           <div style={{ color: "#fff", fontSize: 66, fontWeight: 800, lineHeight: 1.05, letterSpacing: -1 }}>{headline.slice(0, 50)}</div>
           {body ? <div style={{ color: "rgba(255,255,255,0.78)", fontSize: 30, marginTop: 16, lineHeight: 1.45, display: "flex" }}>{body.slice(0, 110)}</div> : null}
           <div style={{ display: "flex", marginTop: 40, background: accent, color: "#0b0b12", fontSize: 28, fontWeight: 700, padding: "18px 44px", borderRadius: 999, alignSelf: "flex-start" }}>{cta}</div>
@@ -203,7 +220,7 @@ function splitTemplate(p: TP): React.ReactElement {
   const lh = isLink ? 44 : 52;
 
   return (
-    <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "row", fontFamily: "Geist, sans-serif", position: "relative" }}>
+    <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "row", fontFamily: fontFamilyCss, position: "relative" }}>
       {/* Left: image panel */}
       <div style={{ width: leftW, height: "100%", display: "flex", position: "relative", background: bgImage ? "#000" : `linear-gradient(160deg, ${primary}99 0%, ${primary} 100%)`, overflow: "hidden" }}>
         {bgImage ? <BgImage src={bgImage} w={leftW} h={h} /> : null}
@@ -219,7 +236,10 @@ function splitTemplate(p: TP): React.ReactElement {
       {/* Right: content panel */}
       <div style={{ width: rightW, height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", background: "#0b0b12", padding: `${padR}px` }}>
         {logoUrl ? <Logo src={logoUrl} height={lh} style={{ marginBottom: 28 }} /> : null}
-        <div style={{ width: 36, height: 4, background: accent, borderRadius: 2, marginBottom: 18 }} />
+        <div style={{ display: "flex", alignItems: "center", marginBottom: 18 }}>
+          <div style={{ width: 36, height: 4, background: accent, borderRadius: 2 }} />
+          <SecondaryDot color={secondary} />
+        </div>
         <div style={{ color: "#fff", fontSize: hl, fontWeight: 800, lineHeight: 1.1, letterSpacing: -0.5 }}>{headline.slice(0, 55)}</div>
         {body ? <div style={{ color: "rgba(255,255,255,0.75)", fontSize: bl, marginTop: 14, lineHeight: 1.45, display: "flex" }}>{body.slice(0, 110)}</div> : null}
         <div style={{ display: "flex", marginTop: 32, background: accent, color: "#0b0b12", fontSize: cl, fontWeight: 700, padding: "14px 34px", borderRadius: 999, alignSelf: "flex-start" }}>{cta}</div>
@@ -233,7 +253,7 @@ function splitTemplate(p: TP): React.ReactElement {
 // Maximum-impact centered headline on a gradient. Image used as faint texture.
 // ---------------------------------------------------------------------------
 function boldTemplate(p: TP): React.ReactElement {
-  const { w, h, primary, accent, headline, body, cta, bgImage, logoUrl, placedImages } = p;
+  const { w, h, primary, accent, secondary, fontFamilyCss, headline, body, cta, bgImage, logoUrl, placedImages } = p;
   const isLink = w > h;
   const hl = isLink ? 68 : 96;
   const bl = isLink ? 26 : 34;
@@ -242,7 +262,7 @@ function boldTemplate(p: TP): React.ReactElement {
   const padX = isLink ? 80 : 96;
 
   return (
-    <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", position: "relative", background: `linear-gradient(145deg, #0b0b12 0%, ${primary} 100%)`, fontFamily: "Geist, sans-serif" }}>
+    <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", position: "relative", background: `linear-gradient(145deg, #0b0b12 0%, ${primary} 100%)`, fontFamily: fontFamilyCss }}>
       {/* Image as very faint texture */}
       {bgImage ? (
         <>
@@ -259,7 +279,10 @@ function boldTemplate(p: TP): React.ReactElement {
 
       {/* Centered content */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: `60px ${padX}px`, position: "relative", maxWidth: w }}>
-        <div style={{ width: 52, height: 5, background: accent, borderRadius: 3, marginBottom: 28 }} />
+        <div style={{ display: "flex", alignItems: "center", marginBottom: 28 }}>
+          <div style={{ width: 52, height: 5, background: accent, borderRadius: 3 }} />
+          <SecondaryDot color={secondary} />
+        </div>
         <div style={{ color: "#fff", fontSize: hl, fontWeight: 900, lineHeight: 1.0, letterSpacing: -2, textAlign: "center", display: "flex" }}>
           {headline.slice(0, 45)}
         </div>
@@ -289,6 +312,11 @@ export function creativeArtwork(
   const brand = opts.brand ?? {};
   const primary = brand.primaryColor || "#6d28d9";
   const accent = brand.accentColor || "#f59e0b";
+  const secondary = brand.secondaryColor || null;
+  // The `fonts` array passed to ImageResponse registers under this exact
+  // family name (see loadBrandFonts) — falls back to the default sans when
+  // no brand font is set or the Google Fonts lookup fails.
+  const fontFamilyCss = brand.fontFamily ? `"${brand.fontFamily}", sans-serif` : "sans-serif";
 
   const placedImages = (Array.isArray(opts.placedImages) ? opts.placedImages : [])
     .map((img) => ({ ...img, url: ogSafeImage(img.url) }))
@@ -299,6 +327,8 @@ export function creativeArtwork(
     h,
     primary,
     accent,
+    secondary,
+    fontFamilyCss,
     headline: opts.headline || opts.concept || "Your headline here",
     body: opts.primaryText || "",
     cta: opts.callToAction || "Learn more",
@@ -318,13 +348,64 @@ export function creativeArtwork(
   return { element, width: w, height: h };
 }
 
+/**
+ * Fetch one weight of a Google Font as raw TTF/OTF bytes, scoped to the
+ * characters actually used (keeps the download tiny). Satori can't resolve
+ * font family names on its own — it only renders glyphs from font data
+ * explicitly passed to ImageResponse's `fonts` option.
+ *
+ * Deliberately sends no browser User-Agent: Google Fonts serves modern
+ * browsers WOFF2 (which Satori's renderer doesn't support), but serves
+ * TTF/OTF to unrecognized clients — the default `fetch` UA included.
+ */
+async function loadGoogleFontWeight(
+  family: string,
+  weight: 400 | 700,
+  text: string,
+): Promise<{ name: string; data: ArrayBuffer; weight: 400 | 700; style: "normal" } | null> {
+  try {
+    const cssUrl = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(family)}:wght@${weight}&text=${encodeURIComponent(text)}`;
+    const cssRes = await fetch(cssUrl, { signal: AbortSignal.timeout(8_000) });
+    if (!cssRes.ok) return null;
+    const css = await cssRes.text();
+    const match = css.match(/src: url\(([^)]+)\) format\('(?:opentype|truetype)'\)/);
+    if (!match) return null;
+    const fontRes = await fetch(match[1], { signal: AbortSignal.timeout(8_000) });
+    if (!fontRes.ok) return null;
+    return { name: family, data: await fontRes.arrayBuffer(), weight, style: "normal" };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Loads a brand's font (400 + 700 weights, scoped to the actual creative
+ * text) for use as ImageResponse's `fonts` option. Returns an empty array
+ * when no brand font is set or the lookup fails — callers fall back to
+ * ImageResponse's built-in default sans.
+ */
+export async function loadBrandFonts(
+  fontFamily: string | null | undefined,
+  text: string,
+): Promise<Array<{ name: string; data: ArrayBuffer; weight: 400 | 700; style: "normal" }>> {
+  if (!fontFamily) return [];
+  const charset = [...new Set(text)].join("") || "Aa";
+  const [regular, bold] = await Promise.all([
+    loadGoogleFontWeight(fontFamily, 400, charset),
+    loadGoogleFontWeight(fontFamily, 700, charset),
+  ]);
+  return [regular, bold].filter((f): f is NonNullable<typeof f> => !!f);
+}
+
 /** Render the designed artwork to PNG bytes (for uploading to an ad platform). */
 export async function renderCreativeImageBytes(
   opts: CreativeArtworkOptions,
   sizeKey = "square",
 ): Promise<Uint8Array> {
   const { element, width, height } = creativeArtwork(opts, sizeKey);
-  const res = new ImageResponse(element, { width, height });
+  const text = [opts.headline, opts.primaryText, opts.callToAction].filter(Boolean).join(" ");
+  const fonts = await loadBrandFonts(opts.brand?.fontFamily, text);
+  const res = new ImageResponse(element, { width, height, ...(fonts.length ? { fonts } : {}) });
   const buf = await res.arrayBuffer();
   return new Uint8Array(buf);
 }

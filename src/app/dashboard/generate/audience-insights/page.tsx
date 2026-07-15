@@ -20,6 +20,7 @@ export default async function AudienceInsightsPage() {
       description: schema.brandProfiles.description,
       primaryColor: schema.brandProfiles.primaryColor,
       logoUrl: schema.brandProfiles.logoUrl,
+      voiceNotes: schema.brandProfiles.voiceNotes,
     })
     .from(schema.brandProfiles)
     .where(eq(schema.brandProfiles.orgId, org.id))

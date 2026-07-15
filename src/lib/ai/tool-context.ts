@@ -19,12 +19,14 @@ export function readBrandContext(formData: FormData): BrandContext {
   const name = get("brandName");
   const tone = get("brandTone");
   const description = get("brandDescription");
+  const voiceNotes = get("brandVoiceNotes");
   return {
     brandProfileId: get("brandProfileId"),
     lines: [
       name ? `Brand: ${name}` : null,
       tone ? `Brand voice (write everything in this voice): ${tone}` : null,
       description ? `Brand context: ${description}` : null,
+      voiceNotes ? `Consistency notes from past content (follow these patterns): ${voiceNotes}` : null,
     ].filter((l): l is string => !!l),
   };
 }

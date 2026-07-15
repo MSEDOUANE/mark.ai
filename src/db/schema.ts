@@ -228,6 +228,15 @@ export const brandProfiles = pgTable("brand_profiles", {
   websiteUrl: text("website_url"),
   tone: text("tone"),
   description: text("description"),
+  // Brand Kit v2 — secondary/accent palette, a display font for rendered
+  // creatives, a reusable asset gallery, a default template, and AI-drafted
+  // voice notes (from Brand Learning) layered on top of `tone`.
+  secondaryColor: text("secondary_color"),
+  accentColor: text("accent_color"),
+  fontFamily: text("font_family"),    // Google Fonts family name, e.g. "Poppins"
+  assets: jsonb("assets").notNull().default(sql`'[]'::jsonb`), // BrandAsset[]
+  defaultTemplate: text("default_template"), // "overlay" | "split" | "bold"
+  voiceNotes: text("voice_notes"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
