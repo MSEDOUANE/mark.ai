@@ -20,7 +20,7 @@ interface AssetType {
   label: string;
   description: string;
   badge?: "New" | "Soon";
-  categories: Category[];
+  categories: (Category | "All")[];
   preview: React.ReactNode;
 }
 
