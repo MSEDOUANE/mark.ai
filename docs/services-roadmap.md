@@ -52,7 +52,7 @@ Status: ✅ built & verified · 🔶 partial · ❌ not built
 | **Video ads** | ✅ | Two layers, all on fal.ai: (1) "Animate" turns any image creative into a 5s Kling clip; (2) **Video Studio** (/dashboard/videos) — UGC/storytelling/showcase styles, AI scene-by-scene script, per-scene image→video, Kokoro TTS voiceover (EN/FR), ffmpeg assembly, and a scene editor (edit visuals/motion/voiceover/length, reorder, delete, regenerate scene, re-render); plus **UGC Avatar** style — lip-synced talking creator (VEED avatars: Emily/Marcus/Mira/Elena/Jasmine/Aisha) speaking the script in one take |
 | **Landing pages** | ✅ | AI writes structured content in brand voice → fixed branded template at public /p/[slug]; Pages section in dashboard; CTA = WhatsApp (wa.me) or link |
 | Email marketing content | ✅ | /dashboard/generate/email — single emails + sequences (welcome/cart/launch/win-back) with A/B subjects. Content only; sending/ESP integration not built |
-| Organic content calendar + scheduling | ❌ | Captions exist; no posting/scheduling to socials |
+| Organic content calendar + scheduling | ✅ | /dashboard/generate/scheduler — Claude content planner + scheduled queue + Inngest processor that auto-publishes due posts to a connected Meta Page (skips gracefully when no Page connected) |
 
 ## 5. Campaign Execution
 
