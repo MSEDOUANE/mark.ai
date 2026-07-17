@@ -22,7 +22,7 @@ async function requireManager() {
     .limit(1);
 
   if (!membership || (membership.role !== "owner" && membership.role !== "admin")) {
-    redirect("/dashboard/settings?error=" + encodeURIComponent("Only owners and admins can manage the team."));
+    redirect("/dashboard/team?error=" + encodeURIComponent("Only owners and admins can manage the team."));
   }
   return { org, profile };
 }
@@ -33,10 +33,10 @@ export async function inviteMember(formData: FormData) {
   const email = String(formData.get("email") ?? "").trim().toLowerCase();
   const role = String(formData.get("role") ?? "member");
   if (!email || !email.includes("@")) {
-    redirect("/dashboard/settings?error=" + encodeURIComponent("Enter a valid email."));
+    redirect("/dashboard/team?error=" + encodeURIComponent("Enter a valid email."));
   }
   if (!["owner", "admin", "member"].includes(role)) {
-    redirect("/dashboard/settings?error=" + encodeURIComponent("Invalid role."));
+    redirect("/dashboard/team?error=" + encodeURIComponent("Invalid role."));
   }
 
   const token = randomBytes(24).toString("base64url");
@@ -62,7 +62,7 @@ export async function inviteMember(formData: FormData) {
     });
   }
 
-  revalidatePath("/dashboard/settings");
+  revalidatePath("/dashboard/team");
 }
 
 export async function cancelInvite(formData: FormData) {
@@ -75,7 +75,7 @@ export async function cancelInvite(formData: FormData) {
     .set({ status: "revoked" })
     .where(and(eq(schema.pendingInvites.id, id), eq(schema.pendingInvites.orgId, org.id)));
 
-  revalidatePath("/dashboard/settings");
+  revalidatePath("/dashboard/team");
 }
 
 export async function changeMemberRole(formData: FormData) {
@@ -91,7 +91,7 @@ export async function changeMemberRole(formData: FormData) {
       .from(schema.memberships)
       .where(and(eq(schema.memberships.orgId, org.id), eq(schema.memberships.role, "owner")));
     if (owners.length === 1 && owners[0].id === membershipId) {
-      redirect("/dashboard/settings?error=" + encodeURIComponent("The org must keep at least one owner."));
+      redirect("/dashboard/team?error=" + encodeURIComponent("The org must keep at least one owner."));
     }
   }
 
@@ -100,7 +100,7 @@ export async function changeMemberRole(formData: FormData) {
     .set({ role: role as "owner" | "admin" | "member" })
     .where(and(eq(schema.memberships.id, membershipId), eq(schema.memberships.orgId, org.id)));
 
-  revalidatePath("/dashboard/settings");
+  revalidatePath("/dashboard/team");
 }
 
 export async function removeMember(formData: FormData) {
@@ -121,10 +121,10 @@ export async function removeMember(formData: FormData) {
       .from(schema.memberships)
       .where(and(eq(schema.memberships.orgId, org.id), eq(schema.memberships.role, "owner")));
     if (owners.length <= 1) {
-      redirect("/dashboard/settings?error=" + encodeURIComponent("The org must keep at least one owner."));
+      redirect("/dashboard/team?error=" + encodeURIComponent("The org must keep at least one owner."));
     }
   }
 
   await db.delete(schema.memberships).where(eq(schema.memberships.id, membershipId));
-  revalidatePath("/dashboard/settings");
+  revalidatePath("/dashboard/team");
 }

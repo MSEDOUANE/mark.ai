@@ -4,14 +4,21 @@ import { and, desc, eq } from "drizzle-orm";
 import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { db, schema } from "@/db";
+import { emailEnabled } from "@/lib/notify/email";
 import {
   inviteMember,
   cancelInvite,
   changeMemberRole,
   removeMember,
-} from "../settings/team-actions";
+} from "./team-actions";
 
-export default async function TeamPage() {
+export default async function TeamPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ error?: string }>;
+}) {
+  const { error } = await searchParams;
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -61,6 +68,12 @@ export default async function TeamPage() {
           </p>
         </div>
 
+        {error ? (
+          <p className="mt-4 rounded-xl border border-red-300/25 bg-red-950/45 p-4 text-sm text-red-100">
+            {error}
+          </p>
+        ) : null}
+
         <section className="mt-4 rounded-xl border border-white/10 bg-zinc-900/80 p-4">
           <h2 className="text-lg font-medium">Invite member</h2>
           <form action={inviteMember} className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end">
@@ -89,6 +102,11 @@ export default async function TeamPage() {
               Send invite
             </button>
           </form>
+          {!emailEnabled() ? (
+            <p className="mt-2 text-xs text-zinc-500">
+              Email delivery isn&apos;t configured (RESEND_API_KEY) — invited teammates won&apos;t get an email, but the invite link still works if you share it directly.
+            </p>
+          ) : null}
         </section>
 
         <section className="mt-4 rounded-xl border border-white/10 bg-zinc-900/80 p-4">
