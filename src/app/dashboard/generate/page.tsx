@@ -330,6 +330,27 @@ const ASSETS: AssetType[] = [
       </div>
     ),
   },
+  {
+    href: "/dashboard/generate/calendar",
+    icon: "🗓️",
+    label: "Marketing Calendar",
+    description: "Plan campaigns around Ramadan, Eid, Black Friday, back-to-school and more — a prioritized seasonal calendar for your product.",
+    badge: "New",
+    categories: ["All", "Text", "Audience"],
+    preview: (
+      <div className="h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-amber-900/40 to-zinc-900 p-3">
+        <div className="grid grid-cols-7 gap-1">
+          {Array.from({ length: 21 }).map((_, i) => (
+            <div key={i} className={`h-3 rounded-sm ${[3, 4, 10, 17].includes(i) ? "bg-amber-400/80" : "bg-zinc-700/60"}`} />
+          ))}
+        </div>
+        <div className="mt-2 flex items-center gap-1">
+          <span className="text-sm">🌙</span>
+          <div className="h-1.5 flex-1 rounded-full bg-amber-400/40" />
+        </div>
+      </div>
+    ),
+  },
 ];
 
 export default async function GeneratePage({
