@@ -383,6 +383,27 @@ const ASSETS: AssetType[] = [
       </div>
     ),
   },
+  {
+    href: "/dashboard/generate/email",
+    icon: "✉️",
+    label: "Email Marketing",
+    description: "Write single emails or full sequences — welcome, abandoned-cart, launch, win-back — with A/B subject lines and CTAs.",
+    badge: "New",
+    categories: ["All", "Text"],
+    preview: (
+      <div className="h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-blue-900/40 to-zinc-900 p-3">
+        <div className="rounded-md bg-zinc-800/80 p-2">
+          <div className="h-1.5 w-1/2 rounded bg-blue-400/70" />
+          <div className="mt-1.5 space-y-1">
+            <div className="h-1 w-full rounded bg-zinc-600" />
+            <div className="h-1 w-5/6 rounded bg-zinc-600" />
+            <div className="h-1 w-2/3 rounded bg-zinc-600" />
+          </div>
+          <div className="mt-2 h-2 w-1/3 rounded-full bg-amber-400/80" />
+        </div>
+      </div>
+    ),
+  },
 ];
 
 export default async function GeneratePage({
