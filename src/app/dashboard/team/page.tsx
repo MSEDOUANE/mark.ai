@@ -132,18 +132,23 @@ export default async function TeamPage({
                 </div>
                 {canManageTeam ? (
                   <div className="flex shrink-0 items-center gap-2">
-                    <form action={changeMemberRole}>
+                    <form action={changeMemberRole} className="flex items-center gap-2">
                       <input type="hidden" name="membershipId" value={m.id} />
                       <select
                         name="role"
                         defaultValue={m.role}
-                        onChange={(event) => event.currentTarget.form?.requestSubmit()}
                         className="rounded-lg border border-white/10 bg-zinc-900 px-2 py-1 text-xs text-zinc-200 outline-none focus:border-amber-300"
                       >
                         <option value="owner">Owner</option>
                         <option value="admin">Admin</option>
                         <option value="member">Member</option>
                       </select>
+                      <button
+                        type="submit"
+                        className="rounded-lg border border-white/10 bg-zinc-800 px-2.5 py-1 text-xs text-zinc-200 hover:bg-zinc-700"
+                      >
+                        Save
+                      </button>
                     </form>
                     {m.userId !== user.id ? (
                       <form action={removeMember}>
