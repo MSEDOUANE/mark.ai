@@ -368,6 +368,21 @@ const ASSETS: AssetType[] = [
       </div>
     ),
   },
+  {
+    href: "/dashboard/generate/funnel",
+    icon: "🫙",
+    label: "Funnel Designer",
+    description: "Turn one product into a staged TOFU → MOFU → BOFU journey with a Morocco/COD-aware conversion playbook.",
+    badge: "New",
+    categories: ["All", "Text", "Audience"],
+    preview: (
+      <div className="h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-violet-900/40 to-zinc-900 flex flex-col items-center justify-center gap-1.5 p-4">
+        <div className="h-3 w-full rounded-sm bg-sky-400/70" />
+        <div className="h-3 w-2/3 rounded-sm bg-violet-400/70" />
+        <div className="h-3 w-1/3 rounded-sm bg-emerald-400/80" />
+      </div>
+    ),
+  },
 ];
 
 export default async function GeneratePage({
