@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { createCampaignFromBrief } from "../actions";
 import { SubmitButton } from "./submit-button";
+import { LanguagePicker } from "@/components/language-picker";
 
 const field =
   "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none transition-colors placeholder:text-zinc-600 focus:border-zinc-500";
@@ -380,6 +381,9 @@ export function BriefForm({
           </div>
         </div>
       </div>
+
+      {/* ── Language ──────────────────────────────────────────────────── */}
+      <LanguagePicker />
 
       {/* ── Brand overrides (auto-filled from the selected brand) ─────── */}
       <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">

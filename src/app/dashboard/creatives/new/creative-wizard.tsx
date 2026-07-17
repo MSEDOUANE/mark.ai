@@ -5,6 +5,7 @@ import { useFormStatus } from "react-dom";
 import { generateStandaloneCreatives } from "../actions";
 import { StockPhotoPicker, type StockPhoto } from "@/components/stock-photo-picker";
 import { logoFileToDataUrl } from "@/lib/client/logo-file";
+import { LanguagePicker } from "@/components/language-picker";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Utilities
@@ -936,6 +937,7 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                         className={`mt-1.5 ${field}`}
                         value={callToAction} onChange={(e) => setCallToAction(e.target.value)} />
                     </div>
+                    <LanguagePicker />
                   </div>
                 ) : (
                   <div className="mt-5 space-y-4">

@@ -2,6 +2,7 @@ import { generateObject } from "ai";
 import { strategistModel } from "./models";
 import { strategySchema, type Strategy } from "./strategy-schema";
 import type { MarketResearch } from "./research-schema";
+import { languageDirective } from "./languages";
 
 export interface BriefInput {
   productName: string;
@@ -24,6 +25,10 @@ export interface BriefInput {
   destination?: "website" | "whatsapp" | null;
   /** Target countries (ISO-3166 alpha-2), as an array or comma-separated string. */
   geoCountries?: string[] | string | null;
+  /** Output language for the strategy + ad copy (defaults to Arabic). */
+  language?: string | null;
+  /** Arabic dialect when language is Arabic (defaults to Moroccan Darija). */
+  dialect?: string | null;
 }
 
 const SYSTEM_PROMPT =
@@ -56,10 +61,32 @@ export async function generateStrategy(
   const { object } = await generateObject({
     model: strategistModel,
     schema: strategySchema,
-    system: SYSTEM_PROMPT,
+    system: SYSTEM_PROMPT + languageInstruction(brief),
     prompt: buildPrompt(brief, research),
   });
   return object;
+}
+
+/**
+ * Localization directive appended to the system prompt. Every human-readable
+ * field — positioning, audience, key messages, budget rationale, and each
+ * creative's headline/primaryText/callToAction — is written in the brief's
+ * language (Arabic/Moroccan Darija by default). The `creativePrompt` field is
+ * the one exception: it stays English because it's a technical instruction fed
+ * to the FLUX image model, not customer- or marketer-facing text.
+ */
+function languageInstruction(brief: BriefInput): string {
+  return (
+    "\n\nLANGUAGE: " +
+    languageDirective(brief.language, brief.dialect) +
+    " Write ALL human-readable fields in this language: positioning, " +
+    "targetAudience (summary and segments), channels rationale, keyMessages, " +
+    "budgetRationale, and every creative's concept, headline, primaryText, and " +
+    "callToAction. EXCEPTION: the `creativePrompt` field must ALWAYS be in " +
+    "English — it is a technical prompt for an image-generation model, not " +
+    "text any person reads. Keep `platform`, `type`, and `template` as their " +
+    "literal English enum values."
+  );
 }
 
 function summarizeResearch(r: MarketResearch): string {

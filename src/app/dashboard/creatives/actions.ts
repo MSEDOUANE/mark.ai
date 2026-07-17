@@ -258,6 +258,8 @@ export async function generateStandaloneCreatives(formData: FormData) {
           brandName,
           brandDescription,
           brandColor: clean(formData, "brandColor"),
+          language: clean(formData, "language"),
+          dialect: clean(formData, "dialect"),
         },
         null,
       );

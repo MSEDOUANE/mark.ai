@@ -74,6 +74,8 @@ export async function createCampaignFromBrief(formData: FormData) {
     destination:
       clean(formData, "destination") === "whatsapp" ? "whatsapp" : "website",
     geoCountries: clean(formData, "geoCountries"),
+    language: clean(formData, "language"),
+    dialect: clean(formData, "dialect"),
   };
 
   const brandVisuals = {
