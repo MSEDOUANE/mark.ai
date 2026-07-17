@@ -380,23 +380,47 @@ async function loadGoogleFontWeight(
   }
 }
 
+/** Any character in the Arabic Unicode blocks (base, supplement, extended, presentation forms). */
+const ARABIC_RE =
+  /[؀-ۿݐ-ݿࢠ-ࣿﭐ-﷿ﹰ-﻿]/;
+
 /**
- * Loads a brand's font (400 + 700 weights, scoped to the actual creative
- * text) for use as ImageResponse's `fonts` option. Returns an empty array
- * when no brand font is set or the lookup fails — callers fall back to
- * ImageResponse's built-in default sans.
+ * Arabic-capable Google Font included as a glyph fallback whenever the creative
+ * text contains Arabic. This is NOT cosmetic: next/og's built-in font has no
+ * Arabic glyphs and its shaper THROWS on Arabic text ("lookupType: 5 -
+ * substFormat: 3 is not yet supported"), taking the whole render down with a
+ * 500 — verified empirically. An Arabic font MUST be in the `fonts` array for
+ * Arabic creatives to render at all. Satori does per-glyph fallback across all
+ * loaded fonts, so Latin copy still uses the brand font while Arabic uses this.
+ */
+const ARABIC_FALLBACK_FAMILY = "Cairo";
+
+/**
+ * Loads the fonts (400 + 700 weights, scoped to the actual creative text) for
+ * ImageResponse's `fonts` option: the brand font when set, plus an Arabic
+ * fallback whenever the text contains Arabic. Returns an empty array only when
+ * there's no brand font AND no Arabic — callers then fall back to
+ * ImageResponse's built-in default sans (fine for Latin-only text).
  */
 export async function loadBrandFonts(
   fontFamily: string | null | undefined,
   text: string,
 ): Promise<Array<{ name: string; data: ArrayBuffer; weight: 400 | 700; style: "normal" }>> {
-  if (!fontFamily) return [];
   const charset = [...new Set(text)].join("") || "Aa";
-  const [regular, bold] = await Promise.all([
-    loadGoogleFontWeight(fontFamily, 400, charset),
-    loadGoogleFontWeight(fontFamily, 700, charset),
-  ]);
-  return [regular, bold].filter((f): f is NonNullable<typeof f> => !!f);
+  const families: string[] = [];
+  if (fontFamily) families.push(fontFamily);
+  if (ARABIC_RE.test(text) && fontFamily !== ARABIC_FALLBACK_FAMILY) {
+    families.push(ARABIC_FALLBACK_FAMILY);
+  }
+  if (families.length === 0) return [];
+
+  const loaded = await Promise.all(
+    families.flatMap((family) => [
+      loadGoogleFontWeight(family, 400, charset),
+      loadGoogleFontWeight(family, 700, charset),
+    ]),
+  );
+  return loaded.filter((f): f is NonNullable<typeof f> => !!f);
 }
 
 /** Render the designed artwork to PNG bytes (for uploading to an ad platform). */
