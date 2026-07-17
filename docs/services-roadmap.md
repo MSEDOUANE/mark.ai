@@ -16,7 +16,7 @@ Status: ✅ built & verified · 🔶 partial · ❌ not built
 | Competitor identification | ✅ | Part of research (found real competitors live) |
 | Audience personas | ✅ | Standalone tool, brand-aware, persisted |
 | **Competitor ad monitoring** | 🔶 | Ad Library client + assistant tool built ("what is X running in FR?"); activates after one-time identity confirmation at facebook.com/ads/library/api (EU countries only for commercial ads) |
-| **Trend & seasonality detection** | ❌ | Ramadan/Eid/fashion-week timing already surfaces in research; make it a calendar the agent plans around |
+| **Trend & seasonality detection** | ✅ | Marketing Calendar tool (/dashboard/generate/calendar) — date-anchored, weights Islamic-calendar moments for MENA |
 | Keyword / search intent research | ❌ | Only matters if/when Google Ads channel is added |
 
 ## 2. Strategy & Planning
@@ -27,8 +27,8 @@ Status: ✅ built & verified · 🔶 partial · ❌ not built
 | Channel recommendation | 🔶 | Strategist picks meta/tiktok; only Meta is executable |
 | Budget parsing + currency safety | ✅ | Auto-converts stated currency to account billing currency |
 | **Cross-campaign budget allocation** | ✅ | AI media buyer: weekly cron (+ assistant tool) proposes redistributing the total daily budget by 14-day performance; org-level approval card on Overview; approval pushes real ad-set budgets |
-| **Marketing calendar** | ❌ | Plan launches/drops around seasonal moments; agent proposes the quarter |
-| Funnel design (TOFU/MOFU/BOFU) | ❌ | Strategy is single-campaign; no funnel-stage orchestration |
+| **Marketing calendar** | ✅ | /dashboard/generate/calendar — prioritized 3/6/12-month calendar of seasonal/religious/retail moments per product |
+| Funnel design (TOFU/MOFU/BOFU) | ✅ | /dashboard/generate/funnel — 3-stage journey with per-stage angles/formats/hooks + Morocco COD playbook |
 
 ## 3. Brand Management
 
@@ -37,7 +37,7 @@ Status: ✅ built & verified · 🔶 partial · ❌ not built
 | Brand profiles (logo/colors/tone/voice) | ✅ | Single catalog feeding agent + all tools |
 | Website brand import | ✅ | Scan URL → name/colors/logo/tone |
 | Product catalog (brand-scoped, reusable) | ✅ | Auto-grows from briefs and wizard use |
-| Brand-safety check on generated content | ❌ | Cheap add: scorer-style pass that flags off-voice copy |
+| Brand-safety check on generated content | ✅ | /dashboard/generate/brand-safety — 0-100 score + pass/review/fail, flags off-voice/claims/policy/cultural issues |
 
 ## 4. Creative & Content Production
 
@@ -51,7 +51,7 @@ Status: ✅ built & verified · 🔶 partial · ❌ not built
 | Conversion scoring + refine loop | ✅ | Score → tips → AI rewrite to 90+ |
 | **Video ads** | ✅ | Two layers, all on fal.ai: (1) "Animate" turns any image creative into a 5s Kling clip; (2) **Video Studio** (/dashboard/videos) — UGC/storytelling/showcase styles, AI scene-by-scene script, per-scene image→video, Kokoro TTS voiceover (EN/FR), ffmpeg assembly, and a scene editor (edit visuals/motion/voiceover/length, reorder, delete, regenerate scene, re-render); plus **UGC Avatar** style — lip-synced talking creator (VEED avatars: Emily/Marcus/Mira/Elena/Jasmine/Aisha) speaking the script in one take |
 | **Landing pages** | ✅ | AI writes structured content in brand voice → fixed branded template at public /p/[slug]; Pages section in dashboard; CTA = WhatsApp (wa.me) or link |
-| Email marketing content | ❌ | New channel entirely |
+| Email marketing content | ✅ | /dashboard/generate/email — single emails + sequences (welcome/cart/launch/win-back) with A/B subjects. Content only; sending/ESP integration not built |
 | Organic content calendar + scheduling | ❌ | Captions exist; no posting/scheduling to socials |
 
 ## 5. Campaign Execution
@@ -101,9 +101,9 @@ Status: ✅ built & verified · 🔶 partial · ❌ not built
 | Service | Status | Notes |
 |---|---|---|
 | **WhatsApp follow-up / lead handling** | 🔶 | Click-to-WhatsApp launches ✅ (destination toggle on brief → WHATSAPP ad set + CTA); AI lead responder scaffold ✅ (webhook + message store + brand-voice auto-reply) — activates once WHATSAPP_TOKEN/PHONE_NUMBER_ID are set and the Page has a WA Business number |
-| Darija/FR/AR content generation | 🔶 | Video Studio has EN/FR/AR voiceover (ElevenLabs multilingual for Arabic) + RTL script editing; other surfaces (creatives/copy/captions) still lack a first-class language selector |
+| Darija/FR/AR content generation | ✅ | Shared LanguagePicker (default Arabic/Darija) across every text tool + campaign strategist; creative images render Arabic correctly (Cairo fallback font). UI-chrome translation/RTL still deferred |
 | Local payments (CMI/PayZone billing) | ❌ | Phase 5 SaaS |
-| COD-friendly funnel patterns | ❌ | Cart-abandonment research insight (85%+) → COD/WhatsApp checkout flows |
+| COD-friendly funnel patterns | 🔶 | Guidance built into the Funnel Designer's local playbook (COD trust, WhatsApp follow-up, cart recovery); actual COD checkout flow not built |
 
 ---
 
