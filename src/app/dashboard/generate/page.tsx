@@ -404,6 +404,25 @@ const ASSETS: AssetType[] = [
       </div>
     ),
   },
+  {
+    href: "/dashboard/generate/scheduler",
+    icon: "📆",
+    label: "Content Scheduler",
+    description: "Plan a week of organic posts and queue them to auto-publish to your Meta Page at the right time.",
+    badge: "New",
+    categories: ["All", "Text", "Social Posts"],
+    preview: (
+      <div className="h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-cyan-900/40 to-zinc-900 p-3">
+        <div className="grid grid-cols-4 gap-1">
+          {Array.from({ length: 8 }).map((_, i) => (
+            <div key={i} className={`flex h-6 items-center justify-center rounded ${[1, 4, 6].includes(i) ? "bg-cyan-400/70" : "bg-zinc-700/50"}`}>
+              {[1, 4, 6].includes(i) && <span className="text-[8px]">✓</span>}
+            </div>
+          ))}
+        </div>
+      </div>
+    ),
+  },
 ];
 
 export default async function GeneratePage({

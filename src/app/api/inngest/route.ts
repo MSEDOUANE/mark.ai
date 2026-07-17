@@ -12,6 +12,7 @@ import { generateWeeklyReports } from "@/inngest/functions/weekly-report";
 import { proposeWeeklyAllocation } from "@/inngest/functions/budget-allocation";
 import { generateVideoProject } from "@/inngest/functions/generate-video";
 import { batchGenerateCreatives } from "@/inngest/functions/batch-generate";
+import { publishScheduledPosts } from "@/inngest/functions/publish-scheduled";
 
 export const { GET, POST, PUT } = serve({
   client: inngest,
@@ -26,5 +27,6 @@ export const { GET, POST, PUT } = serve({
     proposeWeeklyAllocation,
     generateVideoProject,
     batchGenerateCreatives,
+    publishScheduledPosts,
   ],
 });

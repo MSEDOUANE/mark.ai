@@ -539,3 +539,44 @@ export const auditLog = pgTable("audit_log", {
     .defaultNow()
     .notNull(),
 });
+
+/**
+ * Organic content queue — posts the user has planned/scheduled to publish to a
+ * connected Meta Page. A cron processor (publish-scheduled) picks up rows whose
+ * `scheduledFor` is due and `status` = "scheduled", publishes them via the
+ * organic-publish path, and advances status. `imageUrl` is an absolute image
+ * URL (or a creative can be referenced via `creativeId`, rendered on publish).
+ * status: "draft" | "scheduled" | "publishing" | "published" | "failed" | "canceled".
+ */
+export const scheduledPosts = pgTable("scheduled_posts", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  orgId: uuid("org_id")
+    .notNull()
+    .references(() => organizations.id, { onDelete: "cascade" }),
+  brandProfileId: uuid("brand_profile_id").references(() => brandProfiles.id, {
+    onDelete: "set null",
+  }),
+  creativeId: uuid("creative_id").references(() => creatives.id, {
+    onDelete: "set null",
+  }),
+  caption: text("caption").notNull(),
+  /** Absolute image URL to post. When null, a linked creative is rendered at publish time. */
+  imageUrl: text("image_url"),
+  platform: text("platform").notNull().default("meta_page"),
+  status: text("status").notNull().default("scheduled"),
+  scheduledFor: timestamp("scheduled_for", { withTimezone: true }).notNull(),
+  publishedAt: timestamp("published_at", { withTimezone: true }),
+  postId: text("post_id"),
+  permalink: text("permalink"),
+  error: text("error"),
+  createdBy: uuid("created_by").references(() => profiles.id, {
+    onDelete: "set null",
+  }),
+  meta: jsonb("meta").notNull().default(sql`'{}'::jsonb`),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+  updatedAt: timestamp("updated_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
