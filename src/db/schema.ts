@@ -9,6 +9,7 @@ import {
   jsonb,
   date,
   unique,
+  boolean,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -580,3 +581,33 @@ export const scheduledPosts = pgTable("scheduled_posts", {
     .defaultNow()
     .notNull(),
 });
+
+/**
+ * Library organization metadata — favorites + folders for the unified Asset
+ * Library, which spans 4 heterogeneous tables (creatives, generations,
+ * video_projects, landing_pages) with no shared schema. Rather than add
+ * favorite/folder columns to each, one row here keyed by (org, kind, item_id)
+ * covers all of them; the Library page joins it in-memory against whichever
+ * table `kind` points to. kind: "image" | "video" | "text" | "page" (mirrors
+ * the Library's existing AssetItem.kind).
+ */
+export const libraryItemMeta = pgTable(
+  "library_item_meta",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    orgId: uuid("org_id")
+      .notNull()
+      .references(() => organizations.id, { onDelete: "cascade" }),
+    kind: text("kind").notNull(),
+    itemId: uuid("item_id").notNull(),
+    favorite: boolean("favorite").notNull().default(false),
+    folder: text("folder"),
+    createdAt: timestamp("created_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+    updatedAt: timestamp("updated_at", { withTimezone: true })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [unique().on(table.orgId, table.kind, table.itemId)],
+);
