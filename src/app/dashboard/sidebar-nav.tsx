@@ -17,7 +17,9 @@ interface NavSection {
 }
 
 // MarkAI-style grouping: home, creation, analysis, and workspace admin.
-const navSections: NavSection[] = [
+// Exported so the command palette can reuse this as its "jump to" list
+// instead of maintaining a second copy of every route.
+export const navSections: NavSection[] = [
   {
     items: [
       { href: "/dashboard", label: "Overview" },

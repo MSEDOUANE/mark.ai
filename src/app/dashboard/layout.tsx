@@ -3,6 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { db, schema } from "@/db";
 import { MobileNav, SidebarNav } from "./sidebar-nav";
+import { CommandPalette } from "./command-palette";
 
 export default async function DashboardLayout({
   children,
@@ -30,6 +31,7 @@ export default async function DashboardLayout({
 
   return (
     <div className="min-h-screen bg-zinc-950 text-zinc-50">
+      <CommandPalette />
       <MobileNav approvalsCount={approvalsCount} />
       <aside className="fixed inset-y-0 left-0 hidden w-56 overflow-y-auto border-r border-white/10 bg-zinc-950/90 backdrop-blur-xl md:flex md:flex-col lg:w-64">
         <div className="border-b border-white/10 px-4 py-3">
@@ -38,7 +40,10 @@ export default async function DashboardLayout({
         </div>
         <SidebarNav approvalsCount={approvalsCount} />
         <div className="border-t border-white/10 px-4 py-3 text-xs text-zinc-400">
-          AI recommendations stay gated by approval.
+          <p>AI recommendations stay gated by approval.</p>
+          <p className="mt-1.5 flex items-center gap-1.5 text-zinc-500">
+            Press <kbd className="rounded border border-white/10 bg-zinc-900 px-1.5 py-0.5 text-[10px]">⌘K</kbd> to search anything
+          </p>
         </div>
       </aside>
 
