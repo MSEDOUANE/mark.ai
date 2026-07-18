@@ -31,6 +31,50 @@ function cleanAssets(fd: FormData): BrandAsset[] {
   }
 }
 
+/** The editable fields captured in each brand_profile_history snapshot. */
+export interface BrandProfileSnapshot {
+  name: string;
+  primaryColor: string | null;
+  logoUrl: string | null;
+  websiteUrl: string | null;
+  tone: string | null;
+  description: string | null;
+  secondaryColor: string | null;
+  accentColor: string | null;
+  fontFamily: string | null;
+  defaultTemplate: string | null;
+  voiceNotes: string | null;
+  assets: BrandAsset[];
+}
+
+type BrandRow = typeof schema.brandProfiles.$inferSelect;
+
+function toSnapshot(row: BrandRow): BrandProfileSnapshot {
+  return {
+    name: row.name,
+    primaryColor: row.primaryColor,
+    logoUrl: row.logoUrl,
+    websiteUrl: row.websiteUrl,
+    tone: row.tone,
+    description: row.description,
+    secondaryColor: row.secondaryColor,
+    accentColor: row.accentColor,
+    fontFamily: row.fontFamily,
+    defaultTemplate: row.defaultTemplate,
+    voiceNotes: row.voiceNotes,
+    assets: (row.assets ?? []) as BrandAsset[],
+  };
+}
+
+/** Records the brand's current field values before an update overwrites them. */
+async function recordHistory(orgId: string, brandProfileId: string, row: BrandRow) {
+  await db.insert(schema.brandProfileHistory).values({
+    orgId,
+    brandProfileId,
+    snapshot: toSnapshot(row),
+  });
+}
+
 export async function saveBrandProfile(formData: FormData) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -43,12 +87,14 @@ export async function saveBrandProfile(formData: FormData) {
   const id = clean(formData, "id"); // present when editing
 
   if (id) {
-    // verify ownership
-    const [existing] = await db.select({ id: schema.brandProfiles.id })
+    // verify ownership; fetch the FULL row so we can snapshot it before overwriting.
+    const [existing] = await db.select()
       .from(schema.brandProfiles)
       .where(and(eq(schema.brandProfiles.id, id), eq(schema.brandProfiles.orgId, org.id)))
       .limit(1);
     if (!existing) redirect("/dashboard/brands");
+
+    await recordHistory(org.id, id, existing);
 
     await db.update(schema.brandProfiles).set({
       name:            name!,
@@ -130,4 +176,61 @@ export async function restoreBrandProfile(formData: FormData) {
 
   revalidatePath("/dashboard/brands");
   redirect("/dashboard/brands");
+}
+
+/**
+ * Restores a brand to a prior snapshot. Snapshots the CURRENT state first
+ * (same recordHistory() used by every edit), so restoring is itself
+ * reversible — the version you just left is always one click away too.
+ */
+export async function restoreBrandProfileVersion(formData: FormData) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+  const { org } = await ensureProfile(user);
+
+  const brandId = clean(formData, "brandId");
+  const historyId = clean(formData, "historyId");
+  if (!brandId || !historyId) return;
+
+  const [current] = await db.select()
+    .from(schema.brandProfiles)
+    .where(and(eq(schema.brandProfiles.id, brandId), eq(schema.brandProfiles.orgId, org.id)))
+    .limit(1);
+  if (!current) redirect("/dashboard/brands");
+
+  const [version] = await db.select({ snapshot: schema.brandProfileHistory.snapshot })
+    .from(schema.brandProfileHistory)
+    .where(
+      and(
+        eq(schema.brandProfileHistory.id, historyId),
+        eq(schema.brandProfileHistory.brandProfileId, brandId),
+        eq(schema.brandProfileHistory.orgId, org.id),
+      ),
+    )
+    .limit(1);
+  if (!version) redirect(`/dashboard/brands/${brandId}/edit`);
+
+  await recordHistory(org.id, brandId, current);
+
+  const snap = version.snapshot as BrandProfileSnapshot;
+  await db.update(schema.brandProfiles).set({
+    name: snap.name,
+    primaryColor: snap.primaryColor,
+    logoUrl: snap.logoUrl,
+    websiteUrl: snap.websiteUrl,
+    tone: snap.tone,
+    description: snap.description,
+    secondaryColor: snap.secondaryColor,
+    accentColor: snap.accentColor,
+    fontFamily: snap.fontFamily,
+    defaultTemplate: snap.defaultTemplate,
+    voiceNotes: snap.voiceNotes,
+    assets: snap.assets,
+    updatedAt: new Date(),
+  }).where(eq(schema.brandProfiles.id, brandId));
+
+  revalidatePath(`/dashboard/brands/${brandId}/edit`);
+  revalidatePath("/dashboard/brands");
+  redirect(`/dashboard/brands/${brandId}/edit?restored=1`);
 }

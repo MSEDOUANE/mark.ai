@@ -272,6 +272,31 @@ export const brandProfiles = pgTable("brand_profiles", {
   deletedAt: timestamp("deleted_at", { withTimezone: true }),
 });
 
+/**
+ * Version history for brand profile edits — brand edits (colors, tone, voice
+ * notes, logo, ...) overwrite the row in place with no way to see or recover
+ * a prior version. Each row is a full snapshot of the editable fields taken
+ * right before an update is applied, so "restore" is a simple field-spread
+ * back onto brand_profiles (and itself snapshots the current state first,
+ * so restoring is symmetric/reversible too).
+ */
+export const brandProfileHistory = pgTable("brand_profile_history", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  brandProfileId: uuid("brand_profile_id")
+    .notNull()
+    .references(() => brandProfiles.id, { onDelete: "cascade" }),
+  orgId: uuid("org_id")
+    .notNull()
+    .references(() => organizations.id, { onDelete: "cascade" }),
+  // BrandProfileSnapshot JSON: { name, primaryColor, logoUrl, websiteUrl,
+  // tone, description, secondaryColor, accentColor, fontFamily, assets,
+  // defaultTemplate, voiceNotes }.
+  snapshot: jsonb("snapshot").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
 // ---------------------------------------------------------------------------
 // Human-in-the-loop + observability
 // ---------------------------------------------------------------------------
