@@ -152,6 +152,9 @@ export const products = pgTable("products", {
   createdAt: timestamp("created_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
+  // Soft delete — lets the products list show an "Undo" affordance right
+  // after deleting instead of destroying the row immediately. NULL = active.
+  deletedAt: timestamp("deleted_at", { withTimezone: true }),
 });
 
 export const adAccounts = pgTable(
@@ -264,6 +267,9 @@ export const brandProfiles = pgTable("brand_profiles", {
   updatedAt: timestamp("updated_at", { withTimezone: true })
     .defaultNow()
     .notNull(),
+  // Soft delete — lets the brands list show an "Undo" affordance right
+  // after deleting instead of destroying the row immediately. NULL = active.
+  deletedAt: timestamp("deleted_at", { withTimezone: true }),
 });
 
 // ---------------------------------------------------------------------------

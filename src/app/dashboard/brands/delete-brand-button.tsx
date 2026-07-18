@@ -8,7 +8,7 @@ function DeleteBtn({ name }: { name: string }) {
   return (
     <button type="submit" disabled={pending}
       onClick={(e) => {
-        if (!confirm(`Delete brand "${name}"? This cannot be undone.`)) e.preventDefault();
+        if (!confirm(`Delete brand "${name}"? You can undo this right after.`)) e.preventDefault();
       }}
       className="flex h-7 w-7 items-center justify-center rounded-lg border border-app-border-strong text-app-text-subtle transition-colors hover:border-red-400/40 hover:text-red-400 disabled:opacity-50">
       {pending ? (
@@ -29,6 +29,7 @@ export function DeleteBrandButton({ id, name }: { id: string; name: string }) {
   return (
     <form action={deleteBrandProfile}>
       <input type="hidden" name="id" value={id} />
+      <input type="hidden" name="name" value={name} />
       <DeleteBtn name={name} />
     </form>
   );

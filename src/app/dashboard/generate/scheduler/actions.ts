@@ -151,7 +151,7 @@ export async function schedulePost(formData: FormData) {
   redirect("/dashboard/generate/scheduler?info=" + encodeURIComponent(mode === "draft" ? "Saved as draft." : "Post scheduled."));
 }
 
-/** Cancel (soft) a queued post the user owns. */
+/** Cancel a queued post the user owns — offers an "Undo" right after via restoreScheduledPost. */
 export async function cancelScheduledPost(formData: FormData) {
   const { org } = await currentOrg();
   const id = String(formData.get("id") ?? "");
@@ -163,4 +163,36 @@ export async function cancelScheduledPost(formData: FormData) {
     .where(and(eq(schema.scheduledPosts.id, id), eq(schema.scheduledPosts.orgId, org.id)));
 
   revalidatePath("/dashboard/generate/scheduler");
+  redirect(`/dashboard/generate/scheduler?undoId=${encodeURIComponent(id)}`);
+}
+
+/**
+ * Restores a canceled post. If its scheduled time already passed while
+ * canceled, restores to "draft" instead of "scheduled" so it doesn't
+ * immediately fire on the next processor tick with a stale time — the user
+ * picks a fresh time and re-schedules explicitly.
+ */
+export async function restoreScheduledPost(formData: FormData) {
+  const { org } = await currentOrg();
+  const id = String(formData.get("id") ?? "");
+  if (!id) return;
+
+  const [post] = await db
+    .select({ scheduledFor: schema.scheduledPosts.scheduledFor, status: schema.scheduledPosts.status })
+    .from(schema.scheduledPosts)
+    .where(and(eq(schema.scheduledPosts.id, id), eq(schema.scheduledPosts.orgId, org.id)))
+    .limit(1);
+  if (!post || post.status !== "canceled") {
+    revalidatePath("/dashboard/generate/scheduler");
+    return;
+  }
+
+  const stillFuture = post.scheduledFor.getTime() > Date.now();
+  await db
+    .update(schema.scheduledPosts)
+    .set({ status: stillFuture ? "scheduled" : "draft", updatedAt: new Date() })
+    .where(and(eq(schema.scheduledPosts.id, id), eq(schema.scheduledPosts.orgId, org.id)));
+
+  revalidatePath("/dashboard/generate/scheduler");
+  redirect("/dashboard/generate/scheduler");
 }

@@ -5,13 +5,14 @@ import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { db, schema } from "@/db";
 import { Scheduler, type QueueItem } from "./scheduler";
+import { restoreScheduledPost } from "./actions";
 
 export default async function SchedulerPage({
   searchParams,
 }: {
-  searchParams: Promise<{ info?: string; error?: string }>;
+  searchParams: Promise<{ info?: string; error?: string; undoId?: string }>;
 }) {
-  const { info, error } = await searchParams;
+  const { info, error, undoId } = await searchParams;
 
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
@@ -54,6 +55,9 @@ export default async function SchedulerPage({
     error: p.error,
   }));
 
+  // Reuses the already-fetched queue instead of a second lookup.
+  const undoPost = undoId ? posts.find((p) => p.id === undoId) : null;
+
   return (
     <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
@@ -71,6 +75,20 @@ export default async function SchedulerPage({
             </div>
           </div>
         </div>
+
+        {undoPost && undoPost.status === "canceled" ? (
+          <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-app-border-strong bg-app-surface-2 px-4 py-3 text-sm">
+            <span className="truncate text-app-text">
+              Canceled <span className="font-semibold">&ldquo;{undoPost.caption.slice(0, 60)}&rdquo;</span>.
+            </span>
+            <form action={restoreScheduledPost}>
+              <input type="hidden" name="id" value={undoPost.id} />
+              <button type="submit" className="shrink-0 font-semibold text-amber-400 hover:text-amber-300">
+                Undo
+              </button>
+            </form>
+          </div>
+        ) : null}
 
         <Scheduler
           brands={brands}

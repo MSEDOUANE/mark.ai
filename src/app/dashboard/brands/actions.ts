@@ -87,7 +87,34 @@ export async function saveBrandProfile(formData: FormData) {
   redirect("/dashboard/brands");
 }
 
+/**
+ * Soft-deletes a brand (sets deletedAt instead of removing the row) so the
+ * list page can offer an "Undo" affordance right after deleting. Restorable
+ * indefinitely via restoreBrandProfile — no purge job runs against
+ * soft-deleted rows, so nothing is ever silently lost.
+ */
 export async function deleteBrandProfile(formData: FormData) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+  const { org } = await ensureProfile(user);
+
+  const id = clean(formData, "id");
+  const name = clean(formData, "name") ?? "Brand";
+  if (!id) return;
+
+  await db
+    .update(schema.brandProfiles)
+    .set({ deletedAt: new Date() })
+    .where(and(eq(schema.brandProfiles.id, id), eq(schema.brandProfiles.orgId, org.id)));
+
+  revalidatePath("/dashboard/brands");
+  redirect(
+    `/dashboard/brands?undoId=${encodeURIComponent(id)}&undoName=${encodeURIComponent(name)}`,
+  );
+}
+
+export async function restoreBrandProfile(formData: FormData) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
@@ -96,9 +123,10 @@ export async function deleteBrandProfile(formData: FormData) {
   const id = clean(formData, "id");
   if (!id) return;
 
-  await db.delete(schema.brandProfiles).where(
-    and(eq(schema.brandProfiles.id, id), eq(schema.brandProfiles.orgId, org.id))
-  );
+  await db
+    .update(schema.brandProfiles)
+    .set({ deletedAt: null })
+    .where(and(eq(schema.brandProfiles.id, id), eq(schema.brandProfiles.orgId, org.id)));
 
   revalidatePath("/dashboard/brands");
   redirect("/dashboard/brands");

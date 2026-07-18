@@ -1,17 +1,23 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { desc, eq } from "drizzle-orm";
+import { and, desc, eq, isNull } from "drizzle-orm";
 import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { db, schema } from "@/db";
 import { DeleteProductButton } from "./delete-product-button";
 import { ProductThumb } from "./product-thumb";
+import { restoreProduct } from "./actions";
 
-export default async function ProductsPage() {
+export default async function ProductsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ undoId?: string; undoName?: string }>;
+}) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
   const { org } = await ensureProfile(user);
+  const { undoId, undoName } = await searchParams;
 
   const productRows = await db
     .select({
@@ -26,7 +32,7 @@ export default async function ProductsPage() {
     })
     .from(schema.products)
     .leftJoin(schema.brandProfiles, eq(schema.products.brandProfileId, schema.brandProfiles.id))
-    .where(eq(schema.products.orgId, org.id))
+    .where(and(eq(schema.products.orgId, org.id), isNull(schema.products.deletedAt)))
     .orderBy(desc(schema.products.createdAt));
 
   const products = productRows.map((p) => ({
@@ -50,6 +56,20 @@ export default async function ProductsPage() {
             + New product
           </Link>
         </div>
+
+        {undoId && undoName ? (
+          <div className="mt-4 flex items-center justify-between gap-3 rounded-xl border border-app-border-strong bg-app-surface-2 px-4 py-3 text-sm">
+            <span className="text-app-text">
+              Deleted <span className="font-semibold">&ldquo;{undoName}&rdquo;</span>.
+            </span>
+            <form action={restoreProduct}>
+              <input type="hidden" name="id" value={undoId} />
+              <button type="submit" className="font-semibold text-amber-400 hover:text-amber-300">
+                Undo
+              </button>
+            </form>
+          </div>
+        ) : null}
 
         {products.length === 0 ? (
           <div className="mt-20 flex flex-col items-center text-center">

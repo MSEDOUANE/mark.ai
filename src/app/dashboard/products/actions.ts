@@ -84,7 +84,34 @@ export async function saveProduct(formData: FormData) {
   redirect("/dashboard/products");
 }
 
+/**
+ * Soft-deletes a product (sets deletedAt instead of removing the row) so the
+ * list page can offer an "Undo" affordance right after deleting. Restorable
+ * indefinitely via restoreProduct — no purge job runs against soft-deleted
+ * rows, so nothing is ever silently lost.
+ */
 export async function deleteProduct(formData: FormData) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) redirect("/login");
+  const { org } = await ensureProfile(user);
+
+  const id = clean(formData, "id");
+  const name = clean(formData, "name") ?? "Product";
+  if (!id) return;
+
+  await db
+    .update(schema.products)
+    .set({ deletedAt: new Date() })
+    .where(and(eq(schema.products.id, id), eq(schema.products.orgId, org.id)));
+
+  revalidatePath("/dashboard/products");
+  redirect(
+    `/dashboard/products?undoId=${encodeURIComponent(id)}&undoName=${encodeURIComponent(name)}`,
+  );
+}
+
+export async function restoreProduct(formData: FormData) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
@@ -94,7 +121,8 @@ export async function deleteProduct(formData: FormData) {
   if (!id) return;
 
   await db
-    .delete(schema.products)
+    .update(schema.products)
+    .set({ deletedAt: null })
     .where(and(eq(schema.products.id, id), eq(schema.products.orgId, org.id)));
 
   revalidatePath("/dashboard/products");
