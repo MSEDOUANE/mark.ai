@@ -51,10 +51,10 @@ export default async function ApprovalsPage() {
     campaigns.find((c) => c.id === id)?.name ?? "Campaign";
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl">
         <h1 className="text-2xl font-bold">Approvals</h1>
-        <p className="mt-1 text-sm text-zinc-400">
+        <p className="mt-1 text-sm text-app-text-muted">
           Every decision that spends or changes your live campaigns waits here.
           Nothing reaches Meta until you approve it.
         </p>
@@ -67,7 +67,7 @@ export default async function ApprovalsPage() {
               </svg>
             </div>
             <h2 className="mt-5 text-lg font-semibold">You&apos;re all caught up</h2>
-            <p className="mt-2 max-w-sm text-sm text-zinc-500">
+            <p className="mt-2 max-w-sm text-sm text-app-text-subtle">
               No pending approvals. When the agent proposes a launch, an
               optimization, or a budget change, it&apos;ll show up here.
             </p>
@@ -179,23 +179,23 @@ function ApprovalCard({
   noReturnTo?: boolean;
 }) {
   return (
-    <section className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+    <section className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
       <div className="flex items-center gap-2">
         <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide ${tagClass}`}>
           {tag}
         </span>
-        <Link href={href} className="min-w-0 flex-1 truncate font-semibold text-zinc-100 hover:underline">
+        <Link href={href} className="min-w-0 flex-1 truncate font-semibold text-app-text hover:underline">
           {title}
         </Link>
       </div>
 
       <ul className="mt-3 space-y-1.5">
         {lines.filter(Boolean).map((l, i) => (
-          <li key={i} className="text-sm leading-relaxed text-zinc-300">{l}</li>
+          <li key={i} className="text-sm leading-relaxed text-app-text">{l}</li>
         ))}
       </ul>
 
-      {note ? <p className="mt-3 text-xs text-zinc-500">{note}</p> : null}
+      {note ? <p className="mt-3 text-xs text-app-text-subtle">{note}</p> : null}
 
       <div className="mt-4 flex flex-wrap gap-3">
         <form action={approve}>
@@ -208,7 +208,7 @@ function ApprovalCard({
         <form action={reject}>
           <input type="hidden" name="approvalId" value={approvalId} />
           {!noReturnTo ? <input type="hidden" name="returnTo" value={RETURN_TO} /> : null}
-          <button className="rounded-xl border border-zinc-700 px-5 py-2.5 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-zinc-100">
+          <button className="rounded-xl border border-app-border-strong px-5 py-2.5 text-sm text-app-text transition-colors hover:border-zinc-500 hover:text-app-text">
             Reject
           </button>
         </form>

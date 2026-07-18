@@ -18,7 +18,7 @@ import { ARABIC_DIALECTS } from "@/lib/ai/video-script";
 import { VOICE_LANGUAGES } from "@/lib/creative/image-models/fal-audio-video";
 
 const field =
-  "w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500";
+  "w-full rounded-lg border border-app-border-strong bg-app-bg px-3 py-2 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500";
 
 export default async function VideoEditorPage({
   params,
@@ -47,16 +47,16 @@ export default async function VideoEditorPage({
   const isAvatar = project.style === "avatar";
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <AutoRefresh enabled={rendering} intervalMs={5000} />
       <div className="mx-auto max-w-5xl">
-        <Link href="/dashboard/videos" className="text-sm text-zinc-400 hover:text-zinc-200">
+        <Link href="/dashboard/videos" className="text-sm text-app-text-muted hover:text-app-text">
           ← Video Studio
         </Link>
         <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-2xl font-bold">{project.title}</h1>
-            <p className="mt-0.5 text-sm capitalize text-zinc-400">
+            <p className="mt-0.5 text-sm capitalize text-app-text-muted">
               {project.style} ·{" "}
               {VOICE_LANGUAGES.find((l) => l.id === project.language)?.label ?? project.language}
               {project.language === "ar" && project.dialect
@@ -76,7 +76,7 @@ export default async function VideoEditorPage({
             ) : null}
             <form action={deleteVideoProject}>
               <input type="hidden" name="projectId" value={project.id} />
-              <button className="rounded-xl border border-zinc-700 px-4 py-2.5 text-sm text-zinc-400 transition-colors hover:border-red-400/40 hover:text-red-300">
+              <button className="rounded-xl border border-app-border-strong px-4 py-2.5 text-sm text-app-text-muted transition-colors hover:border-red-400/40 hover:text-red-300">
                 Delete
               </button>
             </form>
@@ -104,7 +104,7 @@ export default async function VideoEditorPage({
 
         {/* Final video */}
         {project.finalUrl ? (
-          <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+          <section className="mt-6 rounded-2xl border border-app-border bg-app-surface/60 p-5">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold">Final video</h2>
               <a href={project.finalUrl} download
@@ -121,19 +121,19 @@ export default async function VideoEditorPage({
         {scenes.length > 0 ? (
           <section className="mt-6">
             <h2 className="text-lg font-semibold">{isAvatar ? "Script" : "Scenes"}</h2>
-            <p className="mt-1 text-sm text-zinc-400">
+            <p className="mt-1 text-sm text-app-text-muted">
               {isAvatar
                 ? "The creator speaks these lines as one continuous take — edit any line, then re-render."
                 : "Adjust any scene — visuals, motion, voiceover, length — then regenerate it, and re-render the final cut."}
             </p>
             <div className="mt-4 space-y-4">
               {scenes.map((scene, i) => (
-                <div key={i} className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+                <div key={i} className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
                   <div className="flex items-center justify-between gap-3">
-                    <p className="text-sm font-semibold text-zinc-300">
+                    <p className="text-sm font-semibold text-app-text">
                       {isAvatar ? `Line ${i + 1}` : `Scene ${i + 1}`}
                       {!isAvatar && (
-                        <span className="ml-2 text-xs font-normal text-zinc-600">
+                        <span className="ml-2 text-xs font-normal text-app-text-subtle">
                           {scene.videoUrl ? "clip ready" : scene.imageUrl ? "still ready — clip pending" : "not rendered yet"}
                         </span>
                       )}
@@ -143,19 +143,19 @@ export default async function VideoEditorPage({
                         <input type="hidden" name="projectId" value={project.id} />
                         <input type="hidden" name="index" value={i} />
                         <input type="hidden" name="dir" value="up" />
-                        <button disabled={i === 0} className="rounded-lg px-2 py-1 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-200 disabled:opacity-30">↑</button>
+                        <button disabled={i === 0} className="rounded-lg px-2 py-1 text-app-text-subtle hover:bg-app-surface-2 hover:text-app-text disabled:opacity-30">↑</button>
                       </form>
                       <form action={moveScene}>
                         <input type="hidden" name="projectId" value={project.id} />
                         <input type="hidden" name="index" value={i} />
                         <input type="hidden" name="dir" value="down" />
-                        <button disabled={i === scenes.length - 1} className="rounded-lg px-2 py-1 text-zinc-500 hover:bg-zinc-800 hover:text-zinc-200 disabled:opacity-30">↓</button>
+                        <button disabled={i === scenes.length - 1} className="rounded-lg px-2 py-1 text-app-text-subtle hover:bg-app-surface-2 hover:text-app-text disabled:opacity-30">↓</button>
                       </form>
                       {scenes.length > 2 ? (
                         <form action={deleteScene}>
                           <input type="hidden" name="projectId" value={project.id} />
                           <input type="hidden" name="index" value={i} />
-                          <button className="rounded-lg px-2 py-1 text-zinc-600 hover:bg-zinc-800 hover:text-red-300">✕</button>
+                          <button className="rounded-lg px-2 py-1 text-app-text-subtle hover:bg-app-surface-2 hover:text-red-300">✕</button>
                         </form>
                       ) : null}
                     </div>
@@ -164,7 +164,7 @@ export default async function VideoEditorPage({
                   <div className={`mt-4 grid grid-cols-1 gap-4 ${isAvatar ? "" : "md:grid-cols-[200px_1fr]"}`}>
                     {/* Preview (voiceover styles only — avatar has one final take) */}
                     {!isAvatar && (
-                      <div className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950">
+                      <div className="overflow-hidden rounded-xl border border-app-border bg-app-bg">
                         {scene.videoUrl ? (
                           <video src={scene.videoUrl} controls loop muted playsInline className="aspect-square w-full object-cover" />
                         ) : scene.imageUrl ? (
@@ -182,23 +182,23 @@ export default async function VideoEditorPage({
                       <input type="hidden" name="index" value={i} />
                       {!isAvatar && (
                         <>
-                          <label className="block text-xs text-zinc-500">
+                          <label className="block text-xs text-app-text-subtle">
                             Visual (what the viewer sees)
                             <textarea name="visual" rows={2} defaultValue={scene.visual} className={`mt-1 ${field}`} />
                           </label>
-                          <label className="block text-xs text-zinc-500">
+                          <label className="block text-xs text-app-text-subtle">
                             Motion (camera / subject movement)
                             <input name="motion" defaultValue={scene.motion} className={`mt-1 ${field}`} />
                           </label>
                         </>
                       )}
-                      <label className="block text-xs text-zinc-500">
+                      <label className="block text-xs text-app-text-subtle">
                         {isAvatar ? "Spoken line" : "Voiceover line"}
                         <textarea name="voiceover" rows={2} dir="auto" defaultValue={scene.voiceover} className={`mt-1 ${field}`} />
                       </label>
                       <div className="flex flex-wrap items-center gap-3">
                         {!isAvatar && (
-                          <label className="text-xs text-zinc-500">
+                          <label className="text-xs text-app-text-subtle">
                             Length
                             <select name="durationSeconds" defaultValue={String(scene.durationSeconds)} className={`mt-1 ${field}`}>
                               <option value="5">5s</option>
@@ -206,7 +206,7 @@ export default async function VideoEditorPage({
                             </select>
                           </label>
                         )}
-                        <button className={`${isAvatar ? "" : "mt-4"} rounded-lg border border-zinc-600 bg-zinc-800 px-4 py-2 text-xs font-semibold text-zinc-200 transition-colors hover:bg-zinc-700`}>
+                        <button className={`${isAvatar ? "" : "mt-4"} rounded-lg border border-app-border-emphasis bg-app-surface-2 px-4 py-2 text-xs font-semibold text-app-text transition-colors hover:bg-app-surface-2`}>
                           Save changes
                         </button>
                       </div>
@@ -225,14 +225,14 @@ export default async function VideoEditorPage({
                 </div>
               ))}
             </div>
-            <p className="mt-4 text-xs text-zinc-600">
+            <p className="mt-4 text-xs text-app-text-subtle">
               Hook: “{script.hook}” · CTA: “{script.ctaLine}” — edits to scene
               text apply on the next render; changing visuals/motion/length
               clears that scene&apos;s clip so it re-films.
             </p>
           </section>
         ) : !rendering ? (
-          <p className="mt-8 text-sm text-zinc-500">
+          <p className="mt-8 text-sm text-app-text-subtle">
             No script yet — hit “Re-render final video” to generate one.
           </p>
         ) : null}

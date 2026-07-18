@@ -117,7 +117,7 @@ export default async function CreativesPage({
   }
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <CreativesPoller generatingCount={generatingCount} />
       <div className="mx-auto max-w-7xl">
 
@@ -125,7 +125,7 @@ export default async function CreativesPage({
         <div className="flex items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold">Ad Creatives</h1>
-            <p className="mt-1 text-sm text-zinc-400">
+            <p className="mt-1 text-sm text-app-text-muted">
               Generate conversion-focused creatives, scored and sized automatically.
             </p>
           </div>
@@ -185,14 +185,14 @@ export default async function CreativesPage({
         {/* ── Empty state ─────────────────────────────────────────────────── */}
         {allCreatives.length === 0 ? (
           <div className="mt-20 flex flex-col items-center text-center">
-            <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-zinc-800/80">
-              <svg className="h-9 w-9 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}>
+            <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-app-surface-2/80">
+              <svg className="h-9 w-9 text-app-text-subtle" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}>
                 <path strokeLinecap="round" strokeLinejoin="round"
                   d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
               </svg>
             </div>
             <h2 className="mt-5 text-lg font-semibold">No creatives yet</h2>
-            <p className="mt-2 max-w-sm text-sm text-zinc-500">
+            <p className="mt-2 max-w-sm text-sm text-app-text-subtle">
               Generate your first AI-scored ad creative. It takes under 30 seconds
               and produces 4 sizes automatically.
             </p>
@@ -204,7 +204,7 @@ export default async function CreativesPage({
         ) : creatives.length === 0 ? (
           /* Filtered empty */
           <div className="mt-16 text-center">
-            <p className="text-zinc-500">No creatives match this filter.</p>
+            <p className="text-app-text-subtle">No creatives match this filter.</p>
             <Link href="/dashboard/creatives" className="mt-2 inline-block text-sm text-amber-400 hover:underline">
               Clear filter
             </Link>
@@ -234,11 +234,11 @@ export default async function CreativesPage({
                   <TagEditor creativeId={c.id} tags={Array.isArray(meta.tags) ? (meta.tags as string[]) : []} />
 
                   {/* Campaign assignment */}
-                  <div className="rounded-xl border border-zinc-800 bg-zinc-900/70 p-3">
+                  <div className="rounded-xl border border-app-border bg-app-surface/70 p-3">
                     <div className="mb-2 flex items-center justify-between text-xs">
-                      <span className="text-zinc-500">
+                      <span className="text-app-text-subtle">
                         {c.productName ? (
-                          <span className="text-zinc-400">{c.productName}</span>
+                          <span className="text-app-text-muted">{c.productName}</span>
                         ) : "Standalone"}
                       </span>
                       {c.campaignName ? (
@@ -250,7 +250,7 @@ export default async function CreativesPage({
                           {c.campaignName}
                         </Link>
                       ) : (
-                        <span className="text-zinc-600">unassigned</span>
+                        <span className="text-app-text-subtle">unassigned</span>
                       )}
                     </div>
                     {campaigns.length > 0 ? (

@@ -102,24 +102,24 @@ export function ImageStudioClient() {
             className={`flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition-colors ${
               mode === m.id
                 ? "border-amber-400 bg-amber-400/10 text-amber-300"
-                : "border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
+                : "border-app-border-strong text-app-text-muted hover:border-zinc-500 hover:text-app-text"
             }`}>
             <span>{m.icon}</span>
             {m.label}
           </button>
         ))}
       </div>
-      <p className="text-sm text-zinc-400">{active.blurb}</p>
+      <p className="text-sm text-app-text-muted">{active.blurb}</p>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[380px_1fr]">
         {/* ── Controls ─────────────────────────────────────────────────── */}
         <div className="space-y-5">
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+          <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
             <h2 className="font-semibold">1. Upload an image</h2>
             <div className="mt-4">
               <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
               {photoUrl ? (
-                <div className="relative overflow-hidden rounded-xl border border-zinc-700 bg-zinc-950">
+                <div className="relative overflow-hidden rounded-xl border border-app-border-strong bg-app-bg">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={photoUrl} alt="Uploaded" className="aspect-square w-full object-contain" />
                   <button type="button" onClick={() => fileRef.current?.click()}
@@ -129,7 +129,7 @@ export function ImageStudioClient() {
                 </div>
               ) : (
                 <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading}
-                  className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-zinc-600 bg-zinc-950 py-10 text-sm text-zinc-400 transition-colors hover:border-zinc-500 hover:text-zinc-200 disabled:opacity-60">
+                  className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-app-border-emphasis bg-app-bg py-10 text-sm text-app-text-muted transition-colors hover:border-zinc-500 hover:text-app-text disabled:opacity-60">
                   {uploading ? (
                     <><svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>Uploading…</>
                   ) : (
@@ -142,11 +142,11 @@ export function ImageStudioClient() {
           </div>
 
           {active.needsPrompt && (
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+            <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
               <h2 className="font-semibold">2. {mode === "background" ? "Describe the new scene" : "Describe your edit"}</h2>
               <textarea rows={3} value={prompt} onChange={(e) => setPrompt(e.target.value)}
                 placeholder={active.placeholder}
-                className="mt-3 w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500" />
+                className="mt-3 w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500" />
             </div>
           )}
 
@@ -160,24 +160,24 @@ export function ImageStudioClient() {
             ) : active.cta}
           </button>
           {genError && <p className="text-center text-xs text-red-400">{genError}</p>}
-          {!photoUrl && <p className="text-center text-xs text-zinc-600">Upload a photo to get started.</p>}
+          {!photoUrl && <p className="text-center text-xs text-app-text-subtle">Upload a photo to get started.</p>}
         </div>
 
         {/* ── Result ───────────────────────────────────────────────────── */}
         <div>
           {!resultUrl && !generating ? (
-            <div className="flex h-full min-h-[320px] flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-zinc-800 text-center">
+            <div className="flex h-full min-h-[320px] flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-app-border text-center">
               <span className="text-3xl">{active.icon}</span>
-              <p className="text-sm text-zinc-500">Your result will appear here.</p>
+              <p className="text-sm text-app-text-subtle">Your result will appear here.</p>
             </div>
           ) : generating ? (
-            <div className="flex min-h-[320px] items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900">
+            <div className="flex min-h-[320px] items-center justify-center rounded-2xl border border-app-border bg-app-surface">
               <svg className="h-8 w-8 animate-spin text-amber-400" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
             </div>
           ) : resultUrl ? (
-            <div className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
-              <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-2.5">
-                <span className="text-sm font-medium text-zinc-200">{active.label}</span>
+            <div className="overflow-hidden rounded-2xl border border-app-border bg-app-surface">
+              <div className="flex items-center justify-between border-b border-app-border px-4 py-2.5">
+                <span className="text-sm font-medium text-app-text">{active.label}</span>
                 <a href={resultUrl} download target="_blank" rel="noreferrer"
                   className="text-xs font-semibold text-amber-400 hover:underline">Download</a>
               </div>

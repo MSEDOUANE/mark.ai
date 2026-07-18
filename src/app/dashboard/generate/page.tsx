@@ -50,7 +50,7 @@ const ASSETS: AssetType[] = [
     badge: "New",
     categories: ["All", "Text", "Most Popular"],
     preview: (
-      <div className="h-full w-full overflow-hidden rounded-lg bg-zinc-800 p-3">
+      <div className="h-full w-full overflow-hidden rounded-lg bg-app-surface-2 p-3">
         <div className="mb-2 flex items-center gap-1.5">
           <div className="h-1.5 w-1.5 rounded-full bg-amber-400" />
           <div className="h-1.5 w-8 rounded bg-amber-400/60" />
@@ -76,7 +76,7 @@ const ASSETS: AssetType[] = [
     badge: "New",
     categories: ["All", "Text", "Social Posts", "Most Popular"],
     preview: (
-      <div className="h-full w-full overflow-hidden rounded-lg bg-zinc-800 p-3">
+      <div className="h-full w-full overflow-hidden rounded-lg bg-app-surface-2 p-3">
         <div className="mb-2 flex items-center gap-2">
           <div className="h-5 w-5 rounded-full bg-gradient-to-br from-pink-500 to-orange-500" />
           <div className="h-1.5 w-12 rounded bg-zinc-600" />
@@ -102,7 +102,7 @@ const ASSETS: AssetType[] = [
     badge: "New",
     categories: ["All", "Audience", "Most Popular"],
     preview: (
-      <div className="h-full w-full overflow-hidden rounded-lg bg-zinc-800 p-3">
+      <div className="h-full w-full overflow-hidden rounded-lg bg-app-surface-2 p-3">
         <div className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-full bg-gradient-to-br from-emerald-400 to-teal-600" />
           <div>
@@ -111,13 +111,13 @@ const ASSETS: AssetType[] = [
           </div>
         </div>
         <div className="mt-2 space-y-1">
-          <div className="h-1.5 w-full rounded bg-zinc-700" />
-          <div className="h-1.5 w-4/5 rounded bg-zinc-700" />
-          <div className="h-1.5 w-5/6 rounded bg-zinc-700" />
+          <div className="h-1.5 w-full rounded bg-app-surface-2" />
+          <div className="h-1.5 w-4/5 rounded bg-app-surface-2" />
+          <div className="h-1.5 w-5/6 rounded bg-app-surface-2" />
         </div>
         <div className="mt-2 flex gap-1">
           {["Meta", "TikTok", "Google"].map((p) => (
-            <span key={p} className="rounded bg-zinc-700 px-1.5 py-0.5 text-[9px] text-zinc-400">{p}</span>
+            <span key={p} className="rounded bg-app-surface-2 px-1.5 py-0.5 text-[9px] text-app-text-muted">{p}</span>
           ))}
         </div>
       </div>
@@ -131,10 +131,10 @@ const ASSETS: AssetType[] = [
     badge: "New",
     categories: ["All", "Audience"],
     preview: (
-      <div className="h-full w-full overflow-hidden rounded-lg bg-zinc-800 p-3">
+      <div className="h-full w-full overflow-hidden rounded-lg bg-app-surface-2 p-3">
         <div className="grid grid-cols-3 gap-1.5">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="rounded-lg bg-zinc-700/60 p-1.5">
+            <div key={i} className="rounded-lg bg-app-surface-2/60 p-1.5">
               <div className="h-4 w-4 rounded-full bg-gradient-to-br from-blue-400 to-indigo-600" />
               <div className="mt-1 h-1 w-full rounded bg-zinc-600" />
               <div className="mt-0.5 h-1 w-2/3 rounded bg-zinc-600" />
@@ -152,7 +152,7 @@ const ASSETS: AssetType[] = [
     badge: "New",
     categories: ["All", "Images", "Product Ads"],
     preview: (
-      <div className="grid h-full w-full grid-cols-2 gap-0.5 overflow-hidden rounded-lg bg-zinc-950">
+      <div className="grid h-full w-full grid-cols-2 gap-0.5 overflow-hidden rounded-lg bg-app-bg">
         <div className="flex items-center justify-center bg-gradient-to-br from-zinc-200 to-zinc-400">
           <span className="text-lg">👟</span>
         </div>
@@ -224,7 +224,7 @@ const ASSETS: AssetType[] = [
     description: "Punchy, scroll-stopping headlines, primary text and call-to-actions — generated with your Ad Copy.",
     categories: ["All", "Text", "Most Popular"],
     preview: (
-      <div className="h-full w-full overflow-hidden rounded-lg bg-zinc-800 p-3">
+      <div className="h-full w-full overflow-hidden rounded-lg bg-app-surface-2 p-3">
         <div className="space-y-2">
           <div className="h-2.5 w-4/5 rounded bg-zinc-300" />
           <div className="h-2 w-3/5 rounded bg-zinc-500" />
@@ -291,7 +291,7 @@ const ASSETS: AssetType[] = [
     badge: "New",
     categories: ["All", "Images", "Product Ads"],
     preview: (
-      <div className="grid h-full w-full grid-cols-3 gap-0.5 overflow-hidden rounded-lg bg-zinc-950">
+      <div className="grid h-full w-full grid-cols-3 gap-0.5 overflow-hidden rounded-lg bg-app-bg">
         {[0, 1, 2].map((i) => (
           <div key={i} className="flex items-center justify-center bg-gradient-to-br from-amber-900/40 to-zinc-900">
             <span className="text-sm">⚡</span>
@@ -308,7 +308,7 @@ const ASSETS: AssetType[] = [
     badge: "New",
     categories: ["All", "Images"],
     preview: (
-      <div className="grid h-full w-full grid-cols-3 gap-0.5 overflow-hidden rounded-lg bg-zinc-950">
+      <div className="grid h-full w-full grid-cols-3 gap-0.5 overflow-hidden rounded-lg bg-app-bg">
         <div className="flex items-center justify-center bg-gradient-to-br from-cyan-900/50 to-zinc-900"><span className="text-sm">🔀</span></div>
         <div className="flex items-center justify-center bg-gradient-to-br from-purple-900/50 to-zinc-900"><span className="text-sm">🖼️</span></div>
         <div className="flex items-center justify-center bg-gradient-to-br from-emerald-900/50 to-zinc-900"><span className="text-sm">✏️</span></div>
@@ -341,7 +341,7 @@ const ASSETS: AssetType[] = [
       <div className="h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-amber-900/40 to-zinc-900 p-3">
         <div className="grid grid-cols-7 gap-1">
           {Array.from({ length: 21 }).map((_, i) => (
-            <div key={i} className={`h-3 rounded-sm ${[3, 4, 10, 17].includes(i) ? "bg-amber-400/80" : "bg-zinc-700/60"}`} />
+            <div key={i} className={`h-3 rounded-sm ${[3, 4, 10, 17].includes(i) ? "bg-amber-400/80" : "bg-app-surface-2/60"}`} />
           ))}
         </div>
         <div className="mt-2 flex items-center gap-1">
@@ -392,7 +392,7 @@ const ASSETS: AssetType[] = [
     categories: ["All", "Text"],
     preview: (
       <div className="h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-blue-900/40 to-zinc-900 p-3">
-        <div className="rounded-md bg-zinc-800/80 p-2">
+        <div className="rounded-md bg-app-surface-2/80 p-2">
           <div className="h-1.5 w-1/2 rounded bg-blue-400/70" />
           <div className="mt-1.5 space-y-1">
             <div className="h-1 w-full rounded bg-zinc-600" />
@@ -415,7 +415,7 @@ const ASSETS: AssetType[] = [
       <div className="h-full w-full overflow-hidden rounded-lg bg-gradient-to-br from-cyan-900/40 to-zinc-900 p-3">
         <div className="grid grid-cols-4 gap-1">
           {Array.from({ length: 8 }).map((_, i) => (
-            <div key={i} className={`flex h-6 items-center justify-center rounded ${[1, 4, 6].includes(i) ? "bg-cyan-400/70" : "bg-zinc-700/50"}`}>
+            <div key={i} className={`flex h-6 items-center justify-center rounded ${[1, 4, 6].includes(i) ? "bg-cyan-400/70" : "bg-app-surface-2/50"}`}>
               {[1, 4, 6].includes(i) && <span className="text-[8px]">✓</span>}
             </div>
           ))}
@@ -436,7 +436,7 @@ export default async function GeneratePage({
     : "Most Popular";
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="rounded-3xl border border-white/10 bg-[radial-gradient(circle_at_top_left,_rgba(251,191,36,0.12),_transparent_35%),linear-gradient(180deg,rgba(24,24,27,0.95),rgba(9,9,11,0.98))] p-6 shadow-2xl shadow-black/30 sm:p-8">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
@@ -445,7 +445,7 @@ export default async function GeneratePage({
               <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
                 Create images, videos, copy, and audience intelligence in one place.
               </h1>
-              <p className="mt-3 max-w-xl text-sm leading-relaxed text-zinc-400 sm:text-base">
+              <p className="mt-3 max-w-xl text-sm leading-relaxed text-app-text-muted sm:text-base">
                 Start from a brand, choose a workflow, and keep every generation inside the same project context.
               </p>
             </div>
@@ -456,9 +456,9 @@ export default async function GeneratePage({
                 ["Background jobs", "Keep working while renders run"],
                 ["Versioned", "Every output stays reusable"],
               ].map(([title, text]) => (
-                <div key={title} className="rounded-2xl border border-white/10 bg-zinc-950/70 p-3">
-                  <div className="text-sm font-semibold text-zinc-50">{title}</div>
-                  <div className="mt-1 text-[11px] leading-relaxed text-zinc-500">{text}</div>
+                <div key={title} className="rounded-2xl border border-white/10 bg-app-bg/70 p-3">
+                  <div className="text-sm font-semibold text-app-text">{title}</div>
+                  <div className="mt-1 text-[11px] leading-relaxed text-app-text-subtle">{text}</div>
                 </div>
               ))}
             </div>
@@ -471,18 +471,18 @@ export default async function GeneratePage({
               className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
                 cat === c
                   ? "border-amber-400 bg-amber-400/10 text-amber-400"
-                  : "border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
+                  : "border-app-border-strong text-app-text-muted hover:border-zinc-500 hover:text-app-text"
               }`}>
               {c}
             </Link>
           ))}
         </div>
 
-        <section className="mt-6 rounded-2xl border border-white/10 bg-zinc-900/70 p-4">
+        <section className="mt-6 rounded-2xl border border-white/10 bg-app-surface/70 p-4">
           <div className="flex items-center justify-between gap-3">
             <div>
-              <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500">Quick start</h2>
-              <p className="mt-1 text-sm text-zinc-400">Jump into the highest-frequency workflows.</p>
+              <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-app-text-subtle">Quick start</h2>
+              <p className="mt-1 text-sm text-app-text-muted">Jump into the highest-frequency workflows.</p>
             </div>
             <Link href="/dashboard/assistant" className="text-sm text-amber-300 hover:text-amber-200">
               Ask assistant →
@@ -495,9 +495,9 @@ export default async function GeneratePage({
               ["Voice", "/dashboard/generate/voice", "Voiceovers, narration, and cloning"],
               ["Animation", "/dashboard/generate/animation", "Turn stills into motion clips"],
             ].map(([title, href, text]) => (
-              <Link key={title} href={href as string} className="rounded-xl border border-white/10 bg-zinc-950 px-4 py-3 hover:border-white/20">
-                <div className="text-sm font-semibold text-zinc-50">{title}</div>
-                <div className="mt-1 text-xs text-zinc-500">{text}</div>
+              <Link key={title} href={href as string} className="rounded-xl border border-white/10 bg-app-bg px-4 py-3 hover:border-white/20">
+                <div className="text-sm font-semibold text-app-text">{title}</div>
+                <div className="mt-1 text-xs text-app-text-subtle">{text}</div>
               </Link>
             ))}
           </div>
@@ -522,19 +522,19 @@ function AssetCard({ asset: a }: { asset: AssetType }) {
   const isSoon = a.badge === "Soon";
 
   const inner = (
-    <div className={`group flex h-full flex-col overflow-hidden rounded-2xl border bg-zinc-900 transition-all ${
+    <div className={`group flex h-full flex-col overflow-hidden rounded-2xl border bg-app-surface transition-all ${
       isSoon
-        ? "border-zinc-800 opacity-60 cursor-not-allowed"
-        : "border-zinc-800 hover:border-zinc-600 hover:shadow-xl hover:shadow-black/40"
+        ? "border-app-border opacity-60 cursor-not-allowed"
+        : "border-app-border hover:border-app-border-emphasis hover:shadow-xl hover:shadow-black/40"
     }`}>
       {/* Preview thumbnail */}
-      <div className="relative h-36 overflow-hidden bg-zinc-950">
+      <div className="relative h-36 overflow-hidden bg-app-bg">
         {a.preview}
         {a.badge ? (
           <span className={`absolute right-3 top-3 rounded-full px-2.5 py-1 text-[11px] font-bold ${
             a.badge === "New"
               ? "bg-emerald-500/90 text-white"
-              : "bg-zinc-700 text-zinc-400"
+              : "bg-app-surface-2 text-app-text-muted"
           }`}>
             {a.badge}
           </span>
@@ -545,9 +545,9 @@ function AssetCard({ asset: a }: { asset: AssetType }) {
       <div className="flex flex-1 flex-col p-5">
         <div className="flex items-center gap-2.5">
           <span className="text-xl">{a.icon}</span>
-          <h3 className="font-semibold text-zinc-100">{a.label}</h3>
+          <h3 className="font-semibold text-app-text">{a.label}</h3>
         </div>
-        <p className="mt-2 flex-1 text-sm leading-relaxed text-zinc-400">{a.description}</p>
+        <p className="mt-2 flex-1 text-sm leading-relaxed text-app-text-muted">{a.description}</p>
 
         {!isSoon ? (
           <div className="mt-4 flex items-center text-sm font-medium text-amber-400">
@@ -557,7 +557,7 @@ function AssetCard({ asset: a }: { asset: AssetType }) {
             </svg>
           </div>
         ) : (
-          <p className="mt-4 text-sm text-zinc-600">Coming soon</p>
+          <p className="mt-4 text-sm text-app-text-subtle">Coming soon</p>
         )}
       </div>
     </div>

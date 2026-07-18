@@ -21,17 +21,17 @@ export default async function VoicePage() {
   if (!user) redirect("/login");
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8">
-          <Link href="/dashboard/generate" className="text-sm text-zinc-400 hover:text-zinc-200">
+          <Link href="/dashboard/generate" className="text-sm text-app-text-muted hover:text-app-text">
             ← Generate
           </Link>
           <div className="mt-3 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
               <p className="text-xs font-semibold uppercase tracking-[0.28em] text-amber-300">Generate · Voice</p>
               <h1 className="mt-2 text-3xl font-bold">Voice</h1>
-              <p className="mt-1 max-w-2xl text-sm text-zinc-400">
+              <p className="mt-1 max-w-2xl text-sm text-app-text-muted">
                 Create voiceovers, narration, commercial reads, and voice clones with language and dialect control.
               </p>
             </div>
@@ -41,9 +41,9 @@ export default async function VoicePage() {
                 ["Brand tone", "Match the voice to the brand memory"],
                 ["Export ready", "Use the result in video and ads"],
               ].map(([title, text]) => (
-                <div key={title} className="rounded-2xl border border-white/10 bg-zinc-900/70 p-3">
-                  <div className="text-sm font-semibold text-zinc-50">{title}</div>
-                  <div className="mt-1 text-[11px] leading-relaxed text-zinc-500">{text}</div>
+                <div key={title} className="rounded-2xl border border-white/10 bg-app-surface/70 p-3">
+                  <div className="text-sm font-semibold text-app-text">{title}</div>
+                  <div className="mt-1 text-[11px] leading-relaxed text-app-text-subtle">{text}</div>
                 </div>
               ))}
             </div>
@@ -51,10 +51,10 @@ export default async function VoicePage() {
         </div>
 
         <section className="grid gap-4 lg:grid-cols-[280px_1fr]">
-          <aside className="space-y-4 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+          <aside className="space-y-4 rounded-2xl border border-app-border bg-app-surface/60 p-5">
             <div>
-              <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-zinc-500">Workflow</h2>
-              <ol className="mt-3 space-y-2 text-sm text-zinc-300">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.18em] text-app-text-subtle">Workflow</h2>
+              <ol className="mt-3 space-y-2 text-sm text-app-text">
                 {steps.map((step, index) => (
                   <li key={step} className="flex items-start gap-3">
                     <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-amber-400/15 text-[11px] font-bold text-amber-300">
@@ -66,16 +66,16 @@ export default async function VoicePage() {
               </ol>
             </div>
 
-            <div className="rounded-xl border border-white/10 bg-zinc-950 p-4">
-              <h3 className="text-sm font-semibold text-zinc-50">Related workflows</h3>
+            <div className="rounded-xl border border-white/10 bg-app-bg p-4">
+              <h3 className="text-sm font-semibold text-app-text">Related workflows</h3>
               <div className="mt-3 space-y-2 text-sm">
-                <Link href="/dashboard/generate/audio" className="block rounded-lg border border-white/10 px-3 py-2 text-zinc-300 hover:border-white/20 hover:text-white">
+                <Link href="/dashboard/generate/audio" className="block rounded-lg border border-white/10 px-3 py-2 text-app-text hover:border-white/20 hover:text-white">
                   Voiceover & audio studio
                 </Link>
-                <Link href="/dashboard/videos" className="block rounded-lg border border-white/10 px-3 py-2 text-zinc-300 hover:border-white/20 hover:text-white">
+                <Link href="/dashboard/videos" className="block rounded-lg border border-white/10 px-3 py-2 text-app-text hover:border-white/20 hover:text-white">
                   Build a full video with voice
                 </Link>
-                <Link href="/dashboard/generate/ad-copy" className="block rounded-lg border border-white/10 px-3 py-2 text-zinc-300 hover:border-white/20 hover:text-white">
+                <Link href="/dashboard/generate/ad-copy" className="block rounded-lg border border-white/10 px-3 py-2 text-app-text hover:border-white/20 hover:text-white">
                   Generate script first
                 </Link>
               </div>
@@ -84,7 +84,7 @@ export default async function VoicePage() {
 
           <div className="space-y-4">
             <AudioStudioClient />
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+            <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
               <h2 className="text-lg font-semibold">Voice use cases</h2>
               <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {[
@@ -92,9 +92,9 @@ export default async function VoicePage() {
                   ["Narration", "Explain a product or brand story"],
                   ["Cloning", "Reuse a recognizable voice"],
                 ].map(([title, text]) => (
-                  <div key={title} className="rounded-xl border border-white/10 bg-zinc-950 px-4 py-3">
-                    <div className="text-sm font-semibold text-zinc-50">{title}</div>
-                    <div className="mt-1 text-sm text-zinc-500">{text}</div>
+                  <div key={title} className="rounded-xl border border-white/10 bg-app-bg px-4 py-3">
+                    <div className="text-sm font-semibold text-app-text">{title}</div>
+                    <div className="mt-1 text-sm text-app-text-subtle">{text}</div>
                   </div>
                 ))}
               </div>

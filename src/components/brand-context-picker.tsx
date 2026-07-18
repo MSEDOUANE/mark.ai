@@ -38,9 +38,9 @@ export function BrandContextPicker({
   }
 
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+    <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
       <h3 className="font-semibold">Brand voice</h3>
-      <p className="mt-0.5 text-sm text-zinc-400">
+      <p className="mt-0.5 text-sm text-app-text-muted">
         Pick a brand — the output is written in its voice.
       </p>
 
@@ -65,7 +65,7 @@ export function BrandContextPicker({
               className={`flex items-center gap-2 rounded-full border px-3.5 py-2 text-sm transition-all ${
                 sel
                   ? "border-amber-400 bg-amber-950/30 text-amber-200 ring-1 ring-amber-400"
-                  : "border-zinc-700 bg-zinc-950/70 text-zinc-300 hover:border-zinc-500"
+                  : "border-app-border-strong bg-app-bg/70 text-app-text hover:border-zinc-500"
               }`}
             >
               {b.logoUrl ? (
@@ -96,8 +96,8 @@ export function BrandContextPicker({
       </div>
 
       {selected?.tone ? (
-        <p className="mt-2.5 text-xs text-zinc-500">
-          Voice: <span className="text-zinc-400 capitalize">{selected.tone}</span>
+        <p className="mt-2.5 text-xs text-app-text-subtle">
+          Voice: <span className="text-app-text-muted capitalize">{selected.tone}</span>
         </p>
       ) : null}
     </div>

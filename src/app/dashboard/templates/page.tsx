@@ -56,7 +56,7 @@ function ScaledPreview({
   return (
     <div
       style={{ width: displayWidth, height: displayHeight, overflow: "hidden", position: "relative" }}
-      className="rounded-xl bg-zinc-950"
+      className="rounded-xl bg-app-bg"
     >
       <div style={{ width, height, transform: `scale(${scale})`, transformOrigin: "top left" }}>
         {element}
@@ -72,11 +72,11 @@ export default async function TemplatesPage() {
   await ensureProfile(user);
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8">
           <h1 className="text-2xl font-bold">Templates</h1>
-          <p className="mt-1 text-sm text-zinc-400">
+          <p className="mt-1 text-sm text-app-text-muted">
             The layout templates every generated creative uses — pick one to start, or let AI auto-select in Ad Creatives.
             Previews use the app&apos;s default palette; your brand colors, logo, and font apply automatically once you pick a brand.
           </p>
@@ -89,14 +89,14 @@ export default async function TemplatesPage() {
               "portrait",
             );
             return (
-              <div key={t.id} className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+              <div key={t.id} className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
                 <ScaledPreview element={main.element} width={main.width} height={main.height} displayWidth={280} />
 
                 <h2 className="mt-4 text-lg font-bold">{t.label}</h2>
-                <p className="mt-1 text-sm text-zinc-400">{t.desc}</p>
+                <p className="mt-1 text-sm text-app-text-muted">{t.desc}</p>
 
                 <div className="mt-4">
-                  <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-zinc-600">Also generates</p>
+                  <p className="mb-2 text-[11px] font-semibold uppercase tracking-wider text-app-text-subtle">Also generates</p>
                   <div className="flex flex-wrap gap-2">
                     {THUMB_SIZES.map((sizeKey) => {
                       const thumb = creativeArtwork({ ...SAMPLE_COPY, template: t.id }, sizeKey);
@@ -104,7 +104,7 @@ export default async function TemplatesPage() {
                       return (
                         <div key={sizeKey} className="text-center">
                           <ScaledPreview element={thumb.element} width={thumb.width} height={thumb.height} displayWidth={64} />
-                          <p className="mt-1 text-[9px] text-zinc-600">{info.ratio}</p>
+                          <p className="mt-1 text-[9px] text-app-text-subtle">{info.ratio}</p>
                         </div>
                       );
                     })}
@@ -122,19 +122,19 @@ export default async function TemplatesPage() {
           })}
         </div>
 
-        <div className="mt-8 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500">Every size, every template</h2>
+        <div className="mt-8 rounded-2xl border border-app-border bg-app-surface/60 p-5">
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-app-text-subtle">Every size, every template</h2>
           <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-5">
             {(Object.keys(CREATIVE_SIZES) as Array<keyof typeof CREATIVE_SIZES>).map((k) => (
-              <div key={k} className="rounded-xl border border-zinc-800 bg-zinc-950/60 px-3 py-2.5">
-                <p className="text-xs font-medium text-zinc-200">{SIZE_INFO[k]?.label ?? k}</p>
-                <p className="mt-0.5 text-[11px] text-zinc-500">
+              <div key={k} className="rounded-xl border border-app-border bg-app-bg/60 px-3 py-2.5">
+                <p className="text-xs font-medium text-app-text">{SIZE_INFO[k]?.label ?? k}</p>
+                <p className="mt-0.5 text-[11px] text-app-text-subtle">
                   {SIZE_INFO[k]?.ratio} · {CREATIVE_SIZES[k].w}×{CREATIVE_SIZES[k].h}
                 </p>
               </div>
             ))}
           </div>
-          <p className="mt-3 text-xs text-zinc-500">
+          <p className="mt-3 text-xs text-app-text-subtle">
             Every creative you generate produces all 5 sizes automatically in whichever template you pick — no need to choose per size.
           </p>
         </div>

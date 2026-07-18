@@ -32,7 +32,7 @@ function SubmitButton({ pending }: { pending: boolean }) {
 function StageCard({ stage, index }: { stage: FunnelStage; index: number }) {
   const s = STAGE_STYLE[stage.stage] ?? STAGE_STYLE.TOFU;
   return (
-    <article className={`rounded-2xl border bg-zinc-900 p-5 ${s.ring}`}>
+    <article className={`rounded-2xl border bg-app-surface p-5 ${s.ring}`}>
       <div className="flex items-center gap-3">
         <div className={`flex h-8 w-8 items-center justify-center rounded-full ${s.dot} text-sm font-bold text-zinc-950`}>{index + 1}</div>
         <div>
@@ -41,36 +41,36 @@ function StageCard({ stage, index }: { stage: FunnelStage; index: number }) {
         </div>
       </div>
 
-      <p className="mt-3 text-sm text-zinc-300">{stage.objective}</p>
-      <p className="mt-1.5 text-xs text-zinc-500">Audience: {stage.audienceState}</p>
+      <p className="mt-3 text-sm text-app-text">{stage.objective}</p>
+      <p className="mt-1.5 text-xs text-app-text-subtle">Audience: {stage.audienceState}</p>
 
       <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <div>
-          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-600">Angles</p>
+          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-app-text-subtle">Angles</p>
           <ul className="space-y-1">
             {stage.messagingAngles.map((a) => (
-              <li key={a} className="flex items-start gap-1.5 text-sm text-zinc-300"><span className={`mt-0.5 ${s.tint}`}>•</span>{a}</li>
+              <li key={a} className="flex items-start gap-1.5 text-sm text-app-text"><span className={`mt-0.5 ${s.tint}`}>•</span>{a}</li>
             ))}
           </ul>
         </div>
         <div>
-          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-600">Formats</p>
+          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-app-text-subtle">Formats</p>
           <div className="flex flex-wrap gap-1.5">
             {stage.adFormats.map((f) => (
-              <span key={f} className="rounded-full bg-zinc-800 px-2.5 py-0.5 text-[11px] text-zinc-300">{f}</span>
+              <span key={f} className="rounded-full bg-app-surface-2 px-2.5 py-0.5 text-[11px] text-app-text">{f}</span>
             ))}
           </div>
         </div>
       </div>
 
-      <div className="mt-4 rounded-xl bg-zinc-950/60 border border-zinc-800 px-4 py-3">
-        <p className="text-[11px] font-semibold uppercase tracking-wider text-zinc-600">Sample hook</p>
-        <p className="mt-1 text-sm text-zinc-200">{stage.sampleHook}</p>
+      <div className="mt-4 rounded-xl bg-app-bg/60 border border-app-border px-4 py-3">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-app-text-subtle">Sample hook</p>
+        <p className="mt-1 text-sm text-app-text">{stage.sampleHook}</p>
       </div>
 
       <div className="mt-3 flex flex-wrap items-center gap-2 text-xs">
         <span className="rounded-full bg-amber-400/15 px-2.5 py-1 font-semibold text-amber-300">CTA: {stage.cta}</span>
-        <span className="rounded-full bg-zinc-800 px-2.5 py-1 text-zinc-400">KPI: {stage.primaryKpi}</span>
+        <span className="rounded-full bg-app-surface-2 px-2.5 py-1 text-app-text-muted">KPI: {stage.primaryKpi}</span>
       </div>
     </article>
   );
@@ -82,7 +82,7 @@ export function FunnelGenerator({ brands = [] }: { brands?: BrandContextOption[]
     { status: "idle" },
   );
 
-  const field = "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500";
+  const field = "w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500";
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-[380px_1fr]">
@@ -92,30 +92,30 @@ export function FunnelGenerator({ brands = [] }: { brands?: BrandContextOption[]
           <BrandContextPicker brands={brands} />
           <LanguagePicker />
 
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 space-y-4">
+          <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5 space-y-4">
             <h3 className="font-semibold">Funnel brief</h3>
             <div>
-              <label className="text-sm text-zinc-400">Product / brand name *</label>
+              <label className="text-sm text-app-text-muted">Product / brand name *</label>
               <input name="productName" placeholder="NooRattan" className={`mt-1.5 ${field}`} />
             </div>
             <div>
-              <label className="text-sm text-zinc-400">Product description</label>
+              <label className="text-sm text-app-text-muted">Product description</label>
               <textarea name="description" rows={3} placeholder="What it is, who it's for" className={`mt-1.5 ${field}`} />
             </div>
             <div>
-              <label className="text-sm text-zinc-400">Target audience</label>
+              <label className="text-sm text-app-text-muted">Target audience</label>
               <input name="audience" placeholder="Women 25–45 in Morocco, home decor lovers" className={`mt-1.5 ${field}`} />
             </div>
             <div>
-              <label className="text-sm text-zinc-400">Campaign goal</label>
+              <label className="text-sm text-app-text-muted">Campaign goal</label>
               <input name="goal" placeholder="Drive online sales" className={`mt-1.5 ${field}`} />
             </div>
             <div>
-              <label className="text-sm text-zinc-400">Primary market</label>
+              <label className="text-sm text-app-text-muted">Primary market</label>
               <input name="market" defaultValue="Morocco / MENA" className={`mt-1.5 ${field}`} />
             </div>
             <div>
-              <label className="text-sm text-zinc-400">Conversion destination</label>
+              <label className="text-sm text-app-text-muted">Conversion destination</label>
               <select name="destination" defaultValue="" className={`mt-1.5 ${field}`}>
                 <option value="">Not sure</option>
                 <option value="website">Website / online store</option>
@@ -135,20 +135,20 @@ export function FunnelGenerator({ brands = [] }: { brands?: BrandContextOption[]
       {/* ── Results ──────────────────────────────────────────────────────── */}
       <div className="space-y-5">
         {state.status === "idle" && !pending && (
-          <div className="rounded-2xl border border-dashed border-zinc-800 p-12 text-center">
+          <div className="rounded-2xl border border-dashed border-app-border p-12 text-center">
             <p className="text-4xl">🫙</p>
-            <p className="mt-4 font-medium text-zinc-400">Your TOFU → MOFU → BOFU funnel will appear here</p>
-            <p className="mt-1.5 text-sm text-zinc-600">Describe the product to get a staged awareness → consideration → conversion plan.</p>
+            <p className="mt-4 font-medium text-app-text-muted">Your TOFU → MOFU → BOFU funnel will appear here</p>
+            <p className="mt-1.5 text-sm text-app-text-subtle">Describe the product to get a staged awareness → consideration → conversion plan.</p>
           </div>
         )}
 
         {pending && (
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-12 text-center">
+          <div className="rounded-2xl border border-app-border bg-app-surface/60 p-12 text-center">
             <svg className="mx-auto h-8 w-8 animate-spin text-amber-400" viewBox="0 0 24 24" fill="none">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
             </svg>
-            <p className="mt-3 text-sm text-zinc-400">Designing your full funnel…</p>
+            <p className="mt-3 text-sm text-app-text-muted">Designing your full funnel…</p>
           </div>
         )}
 
@@ -156,22 +156,22 @@ export function FunnelGenerator({ brands = [] }: { brands?: BrandContextOption[]
           const { result, productName } = state;
           return (
             <>
-              <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
-                <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-2">Funnel strategy for {productName}</p>
-                <p className="text-sm text-zinc-300 leading-relaxed">{result.overview}</p>
+              <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
+                <p className="text-xs font-semibold uppercase tracking-wider text-app-text-subtle mb-2">Funnel strategy for {productName}</p>
+                <p className="text-sm text-app-text leading-relaxed">{result.overview}</p>
                 <div className="mt-3 rounded-xl bg-amber-950/25 border border-amber-400/20 px-4 py-3">
                   <p className="text-xs font-semibold text-amber-400 mb-1">Budget split</p>
-                  <p className="text-sm text-zinc-200">{result.budgetSplit}</p>
+                  <p className="text-sm text-app-text">{result.budgetSplit}</p>
                 </div>
               </div>
 
               {result.stages.map((s, i) => <StageCard key={i} stage={s} index={i} />)}
 
-              <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
-                <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-2">Local conversion playbook</p>
+              <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
+                <p className="text-xs font-semibold uppercase tracking-wider text-app-text-subtle mb-2">Local conversion playbook</p>
                 <ul className="space-y-1.5">
                   {result.localPlaybook.map((t) => (
-                    <li key={t} className="flex items-start gap-1.5 text-sm text-zinc-300"><span className="mt-0.5 text-emerald-400">→</span>{t}</li>
+                    <li key={t} className="flex items-start gap-1.5 text-sm text-app-text"><span className="mt-0.5 text-emerald-400">→</span>{t}</li>
                   ))}
                 </ul>
               </div>

@@ -92,17 +92,17 @@ export default async function NewCreativePage({
   }
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
         <div className="mb-8">
           <Link
             href="/dashboard/creatives"
-            className="text-sm text-zinc-400 hover:text-zinc-200"
+            className="text-sm text-app-text-muted hover:text-app-text"
           >
             ← Creatives
           </Link>
           <h1 className="mt-2 text-2xl font-bold">Generate Ad Creatives</h1>
-          <p className="mt-1 text-sm text-zinc-400">
+          <p className="mt-1 text-sm text-app-text-muted">
             AI generates 2–4 branded variants, scores each one, and adds
             backgrounds — all in seconds.
           </p>

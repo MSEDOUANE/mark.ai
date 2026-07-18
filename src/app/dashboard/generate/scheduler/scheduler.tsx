@@ -17,11 +17,11 @@ export interface QueueItem {
 
 const STATUS_STYLE: Record<string, string> = {
   scheduled: "bg-blue-500/20 text-blue-300 border-blue-500/30",
-  draft: "bg-zinc-700/40 text-zinc-400 border-zinc-600",
+  draft: "bg-app-surface-2/40 text-app-text-muted border-app-border-emphasis",
   publishing: "bg-amber-500/20 text-amber-300 border-amber-500/30",
   published: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
   failed: "bg-red-500/20 text-red-300 border-red-500/30",
-  canceled: "bg-zinc-800 text-zinc-500 border-zinc-700",
+  canceled: "bg-app-surface-2 text-app-text-subtle border-app-border-strong",
 };
 
 function PlanButton({ pending }: { pending: boolean }) {
@@ -44,13 +44,13 @@ function PlanButton({ pending }: { pending: boolean }) {
 
 function IdeaCard({ idea, onUse }: { idea: PostIdea; onUse: (caption: string) => void }) {
   return (
-    <article className="rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
+    <article className="rounded-2xl border border-app-border bg-app-surface p-5">
       <div className="flex flex-wrap items-center gap-2">
         <h3 className="font-bold">{idea.theme}</h3>
-        <span className="rounded-full bg-zinc-800 px-2.5 py-0.5 text-[11px] text-zinc-400">{idea.format}</span>
-        <span className="ml-auto text-xs text-zinc-500">{idea.suggestedDay} · {idea.bestTime}</span>
+        <span className="rounded-full bg-app-surface-2 px-2.5 py-0.5 text-[11px] text-app-text-muted">{idea.format}</span>
+        <span className="ml-auto text-xs text-app-text-subtle">{idea.suggestedDay} · {idea.bestTime}</span>
       </div>
-      <p className="mt-3 whitespace-pre-wrap text-sm text-zinc-200 leading-relaxed">{idea.caption}</p>
+      <p className="mt-3 whitespace-pre-wrap text-sm text-app-text leading-relaxed">{idea.caption}</p>
       <div className="mt-3 flex flex-wrap gap-1.5">
         {idea.hashtags.map((h) => (
           <span key={h} className="rounded-full bg-blue-900/40 px-2 py-0.5 text-[11px] text-blue-300">
@@ -58,7 +58,7 @@ function IdeaCard({ idea, onUse }: { idea: PostIdea; onUse: (caption: string) =>
           </span>
         ))}
       </div>
-      <p className="mt-2 text-xs text-zinc-500">{idea.rationale}</p>
+      <p className="mt-2 text-xs text-app-text-subtle">{idea.rationale}</p>
       <button
         type="button"
         onClick={() => onUse(`${idea.caption}\n\n${idea.hashtags.map((h) => (h.startsWith("#") ? h : `#${h}`)).join(" ")}`)}
@@ -87,7 +87,7 @@ export function Scheduler({
   const [caption, setCaption] = useState("");
   const [imageUrl, setImageUrl] = useState("");
 
-  const field = "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500";
+  const field = "w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500";
 
   const active = queue.filter((q) => q.status === "scheduled" || q.status === "draft" || q.status === "publishing");
   const history = queue.filter((q) => q.status === "published" || q.status === "failed" || q.status === "canceled");
@@ -109,22 +109,22 @@ export function Scheduler({
           <form action={action} className="space-y-5">
             <BrandContextPicker brands={brands} />
             <LanguagePicker />
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 space-y-4">
+            <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5 space-y-4">
               <h3 className="font-semibold">Plan content</h3>
               <div>
-                <label className="text-sm text-zinc-400">Product / brand name *</label>
+                <label className="text-sm text-app-text-muted">Product / brand name *</label>
                 <input name="productName" placeholder="NooRattan" className={`mt-1.5 ${field}`} />
               </div>
               <div>
-                <label className="text-sm text-zinc-400">Description</label>
+                <label className="text-sm text-app-text-muted">Description</label>
                 <textarea name="description" rows={2} placeholder="What it is, who it's for" className={`mt-1.5 ${field}`} />
               </div>
               <div>
-                <label className="text-sm text-zinc-400">Content goal</label>
+                <label className="text-sm text-app-text-muted">Content goal</label>
                 <input name="goal" placeholder="Grow engagement, drive DMs…" className={`mt-1.5 ${field}`} />
               </div>
               <div>
-                <label className="text-sm text-zinc-400">How many posts</label>
+                <label className="text-sm text-app-text-muted">How many posts</label>
                 <input name="count" type="number" min={3} max={8} defaultValue={5} className={`mt-1.5 ${field}`} />
               </div>
             </div>
@@ -132,20 +132,20 @@ export function Scheduler({
           </form>
 
           {/* Schedule a post */}
-          <form action={schedulePost} className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 space-y-4">
+          <form action={schedulePost} className="rounded-2xl border border-app-border bg-app-surface/60 p-5 space-y-4">
             <h3 className="font-semibold">Queue a post</h3>
             <div>
-              <label className="text-sm text-zinc-400">Caption *</label>
+              <label className="text-sm text-app-text-muted">Caption *</label>
               <textarea name="caption" rows={5} value={caption} onChange={(e) => setCaption(e.target.value)}
                 placeholder="Write or paste a caption, or click “Use this caption” on a planned idea." className={`mt-1.5 ${field}`} />
             </div>
             <div>
-              <label className="text-sm text-zinc-400">Image URL (optional)</label>
+              <label className="text-sm text-app-text-muted">Image URL (optional)</label>
               <input name="imageUrl" type="url" value={imageUrl} onChange={(e) => setImageUrl(e.target.value)}
                 placeholder="https://…/photo.jpg" className={`mt-1.5 ${field}`} />
             </div>
             <div>
-              <label className="text-sm text-zinc-400">Publish at</label>
+              <label className="text-sm text-app-text-muted">Publish at</label>
               <input name="scheduledFor" type="datetime-local" className={`mt-1.5 ${field}`} />
             </div>
             <div className="flex gap-2">
@@ -154,7 +154,7 @@ export function Scheduler({
                 Schedule
               </button>
               <button type="submit" name="mode" value="draft"
-                className="rounded-xl border border-zinc-700 px-4 py-2.5 text-sm font-medium text-zinc-200 hover:bg-zinc-800">
+                className="rounded-xl border border-app-border-strong px-4 py-2.5 text-sm font-medium text-app-text hover:bg-app-surface-2">
                 Save draft
               </button>
             </div>
@@ -165,25 +165,25 @@ export function Scheduler({
         <div className="space-y-6">
           {/* Queue */}
           <section>
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500">Queue</h2>
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-app-text-subtle">Queue</h2>
             {active.length === 0 ? (
-              <p className="mt-3 rounded-2xl border border-dashed border-zinc-800 p-6 text-center text-sm text-zinc-600">
+              <p className="mt-3 rounded-2xl border border-dashed border-app-border p-6 text-center text-sm text-app-text-subtle">
                 Nothing queued yet. Plan posts, then schedule the ones you like.
               </p>
             ) : (
               <div className="mt-3 space-y-2">
                 {active.map((q) => (
-                  <div key={q.id} className="flex items-start justify-between gap-3 rounded-xl border border-zinc-800 bg-zinc-900 px-4 py-3">
+                  <div key={q.id} className="flex items-start justify-between gap-3 rounded-xl border border-app-border bg-app-surface px-4 py-3">
                     <div className="min-w-0">
                       <div className="flex items-center gap-2">
                         <span className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold ${STATUS_STYLE[q.status] ?? STATUS_STYLE.draft}`}>{q.status}</span>
-                        <span className="text-xs text-zinc-500">{q.status === "draft" ? "no time set" : new Date(q.scheduledFor).toLocaleString()}</span>
+                        <span className="text-xs text-app-text-subtle">{q.status === "draft" ? "no time set" : new Date(q.scheduledFor).toLocaleString()}</span>
                       </div>
-                      <p className="mt-1.5 truncate text-sm text-zinc-200">{q.caption}</p>
+                      <p className="mt-1.5 truncate text-sm text-app-text">{q.caption}</p>
                     </div>
                     <form action={cancelScheduledPost}>
                       <input type="hidden" name="id" value={q.id} />
-                      <button className="shrink-0 rounded-lg border border-zinc-700 px-2.5 py-1 text-xs text-zinc-300 hover:bg-zinc-800">Cancel</button>
+                      <button className="shrink-0 rounded-lg border border-app-border-strong px-2.5 py-1 text-xs text-app-text hover:bg-app-surface-2">Cancel</button>
                     </form>
                   </div>
                 ))}
@@ -197,8 +197,8 @@ export function Scheduler({
           )}
           {state.status === "success" && (
             <section>
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500">Planned ideas</h2>
-              <p className="mt-2 rounded-xl border border-zinc-800 bg-zinc-900/60 px-4 py-3 text-sm text-zinc-300">{state.result.strategy}</p>
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-app-text-subtle">Planned ideas</h2>
+              <p className="mt-2 rounded-xl border border-app-border bg-app-surface/60 px-4 py-3 text-sm text-app-text">{state.result.strategy}</p>
               <div className="mt-3 space-y-3">
                 {state.result.ideas.map((idea, i) => <IdeaCard key={i} idea={idea} onUse={setCaption} />)}
               </div>
@@ -208,16 +208,16 @@ export function Scheduler({
           {/* History */}
           {history.length > 0 && (
             <section>
-              <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500">History</h2>
+              <h2 className="text-sm font-semibold uppercase tracking-wider text-app-text-subtle">History</h2>
               <div className="mt-3 space-y-2">
                 {history.map((q) => (
-                  <div key={q.id} className="rounded-xl border border-zinc-800 bg-zinc-900/60 px-4 py-3">
+                  <div key={q.id} className="rounded-xl border border-app-border bg-app-surface/60 px-4 py-3">
                     <div className="flex items-center gap-2">
                       <span className={`rounded-full border px-2 py-0.5 text-[10px] font-semibold ${STATUS_STYLE[q.status] ?? STATUS_STYLE.draft}`}>{q.status}</span>
-                      <span className="text-xs text-zinc-500">{new Date(q.scheduledFor).toLocaleString()}</span>
+                      <span className="text-xs text-app-text-subtle">{new Date(q.scheduledFor).toLocaleString()}</span>
                       {q.permalink && <a href={q.permalink} target="_blank" rel="noopener noreferrer" className="ml-auto text-xs text-amber-300 hover:text-amber-200">View post →</a>}
                     </div>
-                    <p className="mt-1.5 truncate text-sm text-zinc-300">{q.caption}</p>
+                    <p className="mt-1.5 truncate text-sm text-app-text">{q.caption}</p>
                     {q.error && <p className="mt-1 text-xs text-red-300">{q.error}</p>}
                   </div>
                 ))}

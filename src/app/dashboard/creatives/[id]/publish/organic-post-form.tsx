@@ -8,7 +8,7 @@ interface AdAccountOption {
   label: string;
 }
 
-const field = "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500";
+const field = "w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500";
 
 export function OrganicPostForm({
   creativeId,
@@ -22,10 +22,10 @@ export function OrganicPostForm({
   const [state, action, pending] = useActionState<OrganicPostState, FormData>(postOrganic, { status: "idle" });
 
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6 space-y-4">
+    <div className="rounded-2xl border border-app-border bg-app-surface/60 p-6 space-y-4">
       <div>
         <h2 className="text-lg font-semibold">Post organically to your Page</h2>
-        <p className="mt-1 text-sm text-zinc-400">
+        <p className="mt-1 text-sm text-app-text-muted">
           Publishes immediately to your connected Facebook Page&rsquo;s feed — no budget, no approval, no undo.
         </p>
       </div>
@@ -34,14 +34,14 @@ export function OrganicPostForm({
         <input type="hidden" name="creativeId" value={creativeId} />
 
         <div>
-          <label className="text-sm text-zinc-400">Page (via ad account) *</label>
+          <label className="text-sm text-app-text-muted">Page (via ad account) *</label>
           <select name="adAccountId" className={`mt-1.5 ${field}`} defaultValue={accounts[0]?.id}>
             {accounts.map((a) => <option key={a.id} value={a.id}>{a.label}</option>)}
           </select>
         </div>
 
         <div>
-          <label className="text-sm text-zinc-400">Caption</label>
+          <label className="text-sm text-app-text-muted">Caption</label>
           <textarea name="caption" rows={3} defaultValue={defaultCaption} className={`mt-1.5 ${field}`} />
         </div>
 
@@ -55,7 +55,7 @@ export function OrganicPostForm({
         )}
 
         <button type="submit" disabled={pending}
-          className="w-full rounded-xl border border-zinc-600 bg-zinc-800 px-6 py-3 text-sm font-bold text-zinc-100 transition-colors hover:bg-zinc-700 disabled:opacity-60">
+          className="w-full rounded-xl border border-app-border-emphasis bg-app-surface-2 px-6 py-3 text-sm font-bold text-app-text transition-colors hover:bg-app-surface-2 disabled:opacity-60">
           {pending ? "Posting…" : "Post now"}
         </button>
       </form>

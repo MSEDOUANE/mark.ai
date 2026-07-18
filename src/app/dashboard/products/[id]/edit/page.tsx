@@ -44,10 +44,10 @@ export default async function EditProductPage({
   };
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-2xl">
         <div className="mb-6">
-          <Link href="/dashboard/products" className="text-sm text-zinc-400 hover:text-zinc-200">
+          <Link href="/dashboard/products" className="text-sm text-app-text-muted hover:text-app-text">
             ← Products
           </Link>
           <h1 className="mt-2 text-2xl font-bold">Edit product — {product.name}</h1>

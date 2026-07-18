@@ -75,7 +75,7 @@ export function AudioStudioClient() {
     }
   }
 
-  const field = "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500";
+  const field = "w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500";
 
   return (
     <div className="space-y-6">
@@ -85,21 +85,21 @@ export function AudioStudioClient() {
             className={`flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition-colors ${
               mode === m.id
                 ? "border-amber-400 bg-amber-400/10 text-amber-300"
-                : "border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
+                : "border-app-border-strong text-app-text-muted hover:border-zinc-500 hover:text-app-text"
             }`}>
             <span>{m.icon}</span>
             {m.label}
           </button>
         ))}
       </div>
-      <p className="text-sm text-zinc-400">{active.blurb}</p>
+      <p className="text-sm text-app-text-muted">{active.blurb}</p>
 
       <div className="grid grid-cols-1 gap-8 lg:grid-cols-[420px_1fr]">
         {/* ── Controls ─────────────────────────────────────────────────── */}
         <div className="space-y-5">
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 space-y-4">
+          <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5 space-y-4">
             <div>
-              <label className="text-sm text-zinc-400">
+              <label className="text-sm text-app-text-muted">
                 {mode === "voice" ? "Script" : "Description"}
               </label>
               <textarea rows={4} value={text} onChange={(e) => setText(e.target.value)}
@@ -110,7 +110,7 @@ export function AudioStudioClient() {
             {mode === "voice" && (
               <div className="grid grid-cols-2 gap-3">
                 <label className="block">
-                  <span className="text-sm text-zinc-400">Language</span>
+                  <span className="text-sm text-app-text-muted">Language</span>
                   <select value={language} onChange={(e) => setLanguage(e.target.value)} className={`mt-1.5 ${field}`}>
                     {VOICE_LANGUAGES.map((l) => (
                       <option key={l.id} value={l.id}>{l.label}</option>
@@ -118,7 +118,7 @@ export function AudioStudioClient() {
                   </select>
                 </label>
                 <label className="block">
-                  <span className="text-sm text-zinc-400">Voice</span>
+                  <span className="text-sm text-app-text-muted">Voice</span>
                   <select value={voice} onChange={(e) => setVoice(e.target.value)} className={`mt-1.5 ${field}`}>
                     <option value="female">Female</option>
                     <option value="male">Male</option>
@@ -129,7 +129,7 @@ export function AudioStudioClient() {
 
             {mode !== "voice" && (
               <label className="block">
-                <span className="text-sm text-zinc-400">
+                <span className="text-sm text-app-text-muted">
                   Duration — {duration}s {mode === "music" ? "(max 47s)" : "(max 22s)"}
                 </span>
                 <input type="range" min={mode === "music" ? 5 : 1} max={mode === "music" ? 47 : 22}
@@ -154,18 +154,18 @@ export function AudioStudioClient() {
         {/* ── Result ───────────────────────────────────────────────────── */}
         <div>
           {!resultUrl && !generating ? (
-            <div className="flex h-full min-h-[220px] flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-zinc-800 text-center">
+            <div className="flex h-full min-h-[220px] flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-app-border text-center">
               <span className="text-3xl">{active.icon}</span>
-              <p className="text-sm text-zinc-500">Your audio will appear here.</p>
+              <p className="text-sm text-app-text-subtle">Your audio will appear here.</p>
             </div>
           ) : generating ? (
-            <div className="flex min-h-[220px] items-center justify-center rounded-2xl border border-zinc-800 bg-zinc-900">
+            <div className="flex min-h-[220px] items-center justify-center rounded-2xl border border-app-border bg-app-surface">
               <svg className="h-8 w-8 animate-spin text-amber-400" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
             </div>
           ) : resultUrl ? (
-            <div className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 p-5">
+            <div className="overflow-hidden rounded-2xl border border-app-border bg-app-surface p-5">
               <div className="mb-3 flex items-center justify-between">
-                <span className="text-sm font-medium text-zinc-200">{active.label}</span>
+                <span className="text-sm font-medium text-app-text">{active.label}</span>
                 <a href={resultUrl} download target="_blank" rel="noreferrer"
                   className="text-xs font-semibold text-amber-400 hover:underline">Download</a>
               </div>

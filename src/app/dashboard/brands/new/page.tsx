@@ -15,14 +15,14 @@ export default async function NewBrandPage({
   const { error } = await searchParams;
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-2xl">
         <div className="mb-6">
-          <Link href="/dashboard/brands" className="text-sm text-zinc-400 hover:text-zinc-200">
+          <Link href="/dashboard/brands" className="text-sm text-app-text-muted hover:text-app-text">
             ← Brands
           </Link>
           <h1 className="mt-2 text-2xl font-bold">Create brand profile</h1>
-          <p className="mt-1 text-sm text-zinc-400">
+          <p className="mt-1 text-sm text-app-text-muted">
             Save your brand identity to reuse it across all creatives.
           </p>
         </div>

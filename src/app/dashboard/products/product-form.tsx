@@ -43,7 +43,7 @@ export function ProductForm({ product, brands, error }: ProductFormProps) {
   const [photoUrl, setPhotoUrl] = useState(product?.photoUrl ?? "");
   const [uploadStatus, setUploadStatus] = useState<"idle" | "loading" | "done" | "error">("idle");
 
-  const field = "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500";
+  const field = "w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500";
 
   async function handlePhotoFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -72,15 +72,15 @@ export function ProductForm({ product, brands, error }: ProductFormProps) {
         <div className="rounded-xl border border-red-400/20 bg-red-950/35 px-4 py-3 text-sm text-red-200">{error}</div>
       ) : null}
 
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 space-y-4">
+      <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5 space-y-4">
         <div>
-          <label className="text-sm text-zinc-400">Product name *</label>
+          <label className="text-sm text-app-text-muted">Product name *</label>
           <input name="name" placeholder="Argan Face Serum, NooRattan Chair…" className={`mt-1.5 ${field}`}
             value={name} onChange={(e) => setName(e.target.value)} />
         </div>
 
         <div>
-          <label className="text-sm text-zinc-400">Brand <span className="text-zinc-600">(optional — reuses that brand&apos;s voice &amp; colors)</span></label>
+          <label className="text-sm text-app-text-muted">Brand <span className="text-app-text-subtle">(optional — reuses that brand&apos;s voice &amp; colors)</span></label>
           <select name="brandProfileId" className={`mt-1.5 ${field}`}
             value={brandProfileId} onChange={(e) => setBrandProfileId(e.target.value)}>
             <option value="">No brand</option>
@@ -91,25 +91,25 @@ export function ProductForm({ product, brands, error }: ProductFormProps) {
         </div>
 
         <div>
-          <label className="text-sm text-zinc-400">Description</label>
+          <label className="text-sm text-app-text-muted">Description</label>
           <textarea name="description" rows={3} placeholder="Key features, benefits, what makes it special…"
             className={`mt-1.5 ${field}`}
             value={description} onChange={(e) => setDescription(e.target.value)} />
         </div>
 
         <div>
-          <label className="text-sm text-zinc-400">Target audience</label>
+          <label className="text-sm text-app-text-muted">Target audience</label>
           <input name="targetAudience" placeholder="Women 25-45 in Morocco interested in home decor"
             className={`mt-1.5 ${field}`}
             value={targetAudience} onChange={(e) => setTargetAudience(e.target.value)} />
         </div>
 
         <div>
-          <label className="text-sm text-zinc-400">Product photo</label>
+          <label className="text-sm text-app-text-muted">Product photo</label>
           <div className="mt-1.5">
             <input ref={photoFileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoFile} />
             <button type="button" onClick={() => photoFileRef.current?.click()}
-              className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-zinc-600 bg-zinc-950 py-4 text-sm text-zinc-400 transition-colors hover:border-zinc-500 hover:text-zinc-200">
+              className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-app-border-emphasis bg-app-bg py-4 text-sm text-app-text-muted transition-colors hover:border-zinc-500 hover:text-app-text">
               {uploadStatus === "loading" ? "Uploading…"
                 : uploadStatus === "error" ? <span className="text-red-400">Upload failed — try again (max 5 MB)</span>
                 : photoUrl ? <span className="text-emerald-400">Photo set — click to change</span>
@@ -122,7 +122,7 @@ export function ProductForm({ product, brands, error }: ProductFormProps) {
               <img src={photoUrl} alt="product" className="h-14 w-14 rounded-lg object-cover"
                 onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
               <button type="button" onClick={() => { setPhotoUrl(""); setUploadStatus("idle"); }}
-                className="text-xs text-zinc-600 hover:text-zinc-400">Remove</button>
+                className="text-xs text-app-text-subtle hover:text-app-text-muted">Remove</button>
             </div>
           ) : null}
         </div>
@@ -130,7 +130,7 @@ export function ProductForm({ product, brands, error }: ProductFormProps) {
 
       <div className="flex items-center gap-3">
         <SaveButton isEdit={isEdit} />
-        <a href="/dashboard/products" className="rounded-xl border border-zinc-700 px-5 py-3 text-sm text-zinc-400 hover:text-zinc-200">
+        <a href="/dashboard/products" className="rounded-xl border border-app-border-strong px-5 py-3 text-sm text-app-text-muted hover:text-app-text">
           Cancel
         </a>
       </div>

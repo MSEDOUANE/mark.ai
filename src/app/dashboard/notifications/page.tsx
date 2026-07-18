@@ -49,23 +49,23 @@ export default async function NotificationsPage() {
   ]);
 
   const alertItems = alerts.map((alert) => (
-    <div key={alert.id} className="rounded-xl border border-white/10 bg-zinc-950 px-4 py-3">
+    <div key={alert.id} className="rounded-xl border border-white/10 bg-app-bg px-4 py-3">
       <div className="flex items-start justify-between gap-3">
         <div>
           <p className={`text-sm font-medium ${alert.severity === "critical" ? "text-red-300" : "text-amber-300"}`}>
             {alert.type}
           </p>
-          <p className="mt-1 text-sm text-zinc-300">{alert.message}</p>
-          <p className="mt-1 text-xs text-zinc-500">{new Date(alert.createdAt).toLocaleString()}</p>
+          <p className="mt-1 text-sm text-app-text">{alert.message}</p>
+          <p className="mt-1 text-xs text-app-text-subtle">{new Date(alert.createdAt).toLocaleString()}</p>
         </div>
         <form action={dismissAlert}>
           <input type="hidden" name="id" value={alert.id} />
-          <button className="rounded-lg border border-white/10 px-2.5 py-1 text-xs text-zinc-200 hover:bg-zinc-900">
+          <button className="rounded-lg border border-white/10 px-2.5 py-1 text-xs text-app-text hover:bg-app-surface">
             Dismiss
           </button>
         </form>
       </div>
-      <Link href={`/dashboard/campaigns/${alert.campaignId}`} className="mt-2 inline-block text-xs text-zinc-400 hover:text-zinc-200">
+      <Link href={`/dashboard/campaigns/${alert.campaignId}`} className="mt-2 inline-block text-xs text-app-text-muted hover:text-app-text">
         Open campaign →
       </Link>
     </div>
@@ -75,32 +75,32 @@ export default async function NotificationsPage() {
     <Link
       key={approval.id}
       href={approval.entityType === "budget_allocation" ? "/dashboard" : `/dashboard/campaigns/${approval.entityId}`}
-      className="block rounded-xl border border-white/10 bg-zinc-950 px-4 py-3 hover:border-white/20"
+      className="block rounded-xl border border-white/10 bg-app-bg px-4 py-3 hover:border-white/20"
     >
-      <p className="text-sm font-medium text-zinc-100">{approval.entityType.replace(/_/g, " ")}</p>
-      <p className="mt-1 text-xs text-zinc-500">Waiting since {new Date(approval.createdAt).toLocaleString()}</p>
+      <p className="text-sm font-medium text-app-text">{approval.entityType.replace(/_/g, " ")}</p>
+      <p className="mt-1 text-xs text-app-text-subtle">Waiting since {new Date(approval.createdAt).toLocaleString()}</p>
     </Link>
   ));
 
   const reportItems = reports.map((report) => (
-    <div key={report.id} className="rounded-xl border border-white/10 bg-zinc-950 px-4 py-3">
-      <p className="text-sm text-zinc-100">
+    <div key={report.id} className="rounded-xl border border-white/10 bg-app-bg px-4 py-3">
+      <p className="text-sm text-app-text">
         {report.periodStart} to {report.periodEnd}
       </p>
-      <p className="mt-1 text-xs text-zinc-500">Published {new Date(report.createdAt).toLocaleString()}</p>
+      <p className="mt-1 text-xs text-app-text-subtle">Published {new Date(report.createdAt).toLocaleString()}</p>
     </div>
   ));
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
-        <Link href="/dashboard" className="text-sm text-zinc-300 hover:text-white">
+        <Link href="/dashboard" className="text-sm text-app-text hover:text-white">
           ← Dashboard
         </Link>
 
-        <div className="mt-3 rounded-xl border border-white/10 bg-zinc-900/80 p-4 backdrop-blur-sm">
+        <div className="mt-3 rounded-xl border border-white/10 bg-app-surface/80 p-4 backdrop-blur-sm">
           <h1 className="text-2xl font-bold">Notifications</h1>
-          <p className="mt-1 text-sm text-zinc-400">
+          <p className="mt-1 text-sm text-app-text-muted">
             Alerts, approvals, and report updates stay here so the workspace never loses context.
           </p>
         </div>
@@ -110,11 +110,11 @@ export default async function NotificationsPage() {
           <Panel title="Pending approvals" emptyText="No pending approvals." items={approvalItems} />
         </section>
 
-        <section className="mt-4 rounded-xl border border-white/10 bg-zinc-900/80 p-4">
+        <section className="mt-4 rounded-xl border border-white/10 bg-app-surface/80 p-4">
           <h2 className="text-lg font-medium">Recent reports</h2>
           <div className="mt-3 space-y-2">
             {reportItems.length === 0 ? (
-              <p className="text-sm text-zinc-400">No reports yet.</p>
+              <p className="text-sm text-app-text-muted">No reports yet.</p>
             ) : (
               reportItems
             )}
@@ -135,10 +135,10 @@ function Panel({
   items: ReactNode[];
 }) {
   return (
-    <section className="rounded-xl border border-white/10 bg-zinc-900/80 p-4">
+    <section className="rounded-xl border border-white/10 bg-app-surface/80 p-4">
       <h2 className="text-lg font-medium">{title}</h2>
       <div className="mt-3 space-y-2">
-        {items.length === 0 ? <p className="text-sm text-zinc-400">{emptyText}</p> : items}
+        {items.length === 0 ? <p className="text-sm text-app-text-muted">{emptyText}</p> : items}
       </div>
     </section>
   );

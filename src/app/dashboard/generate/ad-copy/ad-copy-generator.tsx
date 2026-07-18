@@ -54,7 +54,7 @@ function CopyButton({ text }: { text: string }) {
   }
   return (
     <button type="button" onClick={handleCopy}
-      className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs text-zinc-500 transition-colors hover:bg-zinc-700 hover:text-zinc-200">
+      className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs text-app-text-subtle transition-colors hover:bg-app-surface-2 hover:text-app-text">
       {copied ? (
         <><svg className="h-3.5 w-3.5 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>Copied</>
       ) : (
@@ -65,12 +65,12 @@ function CopyButton({ text }: { text: string }) {
 }
 
 function VariantCard({ v }: { v: AdCopyVariant }) {
-  const colorClass = FRAMEWORK_COLORS[v.framework] ?? "bg-zinc-700/30 text-zinc-300 border-zinc-600";
+  const colorClass = FRAMEWORK_COLORS[v.framework] ?? "bg-app-surface-2/30 text-app-text border-app-border-emphasis";
   const fullText = `${v.hook}\n\n${v.primaryText}\n\n${v.callToAction}`;
 
   return (
-    <article className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 transition-shadow hover:shadow-xl hover:shadow-black/30">
-      <div className="flex items-center justify-between border-b border-zinc-800 px-5 py-3">
+    <article className="overflow-hidden rounded-2xl border border-app-border bg-app-surface transition-shadow hover:shadow-xl hover:shadow-black/30">
+      <div className="flex items-center justify-between border-b border-app-border px-5 py-3">
         <span className={`rounded-full border px-3 py-1 text-xs font-semibold ${colorClass}`}>
           {v.framework}
         </span>
@@ -80,28 +80,28 @@ function VariantCard({ v }: { v: AdCopyVariant }) {
       <div className="space-y-4 p-5">
         {/* Hook */}
         <div>
-          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-widest text-zinc-600">Hook</p>
-          <p className="text-sm font-medium italic text-zinc-200">&ldquo;{v.hook}&rdquo;</p>
+          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-widest text-app-text-subtle">Hook</p>
+          <p className="text-sm font-medium italic text-app-text">&ldquo;{v.hook}&rdquo;</p>
         </div>
 
         {/* Headline */}
         <div>
-          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-widest text-zinc-600">Headline</p>
-          <p className="text-base font-bold text-zinc-100">{v.headline}</p>
+          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-widest text-app-text-subtle">Headline</p>
+          <p className="text-base font-bold text-app-text">{v.headline}</p>
         </div>
 
         {/* Body */}
         <div>
-          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-widest text-zinc-600">Body copy</p>
-          <p className="text-sm leading-relaxed text-zinc-300">{v.primaryText}</p>
+          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-widest text-app-text-subtle">Body copy</p>
+          <p className="text-sm leading-relaxed text-app-text">{v.primaryText}</p>
         </div>
 
         {/* CTA */}
         <div className="flex items-center gap-3">
-          <span className="rounded-full bg-zinc-800 px-3.5 py-1.5 text-xs font-bold text-zinc-200">
+          <span className="rounded-full bg-app-surface-2 px-3.5 py-1.5 text-xs font-bold text-app-text">
             {v.callToAction}
           </span>
-          <span className="text-[11px] text-zinc-600">CTA button</span>
+          <span className="text-[11px] text-app-text-subtle">CTA button</span>
         </div>
       </div>
     </article>
@@ -123,7 +123,7 @@ export function AdCopyGenerator({ brands = [] }: { brands?: BrandContextOption[]
   const [productName, setProductName] = useState("");
   const [productDesc, setProductDesc] = useState("");
 
-  const field = "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500";
+  const field = "w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500";
 
   function toggleFramework(id: string) {
     setSelectedFrameworks((prev) =>
@@ -162,17 +162,17 @@ export function AdCopyGenerator({ brands = [] }: { brands?: BrandContextOption[]
         <LanguagePicker />
 
         {/* Import from URL */}
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+        <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
           <h3 className="font-semibold">Import from website</h3>
-          <p className="mt-0.5 text-sm text-zinc-400">Auto-fill product info from your landing page.</p>
+          <p className="mt-0.5 text-sm text-app-text-muted">Auto-fill product info from your landing page.</p>
           <div className="mt-3 flex gap-2">
             <input type="text" placeholder="yoursite.com"
-              className="min-w-0 flex-1 rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500"
+              className="min-w-0 flex-1 rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500"
               value={scanUrl} onChange={(e) => setScanUrl(e.target.value)}
               onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); void handleScan(); } }} />
             <button type="button" onClick={() => void handleScan()}
               disabled={scanStatus === "loading" || !scanUrl.trim()}
-              className="shrink-0 rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-200 hover:bg-zinc-700 disabled:opacity-50">
+              className="shrink-0 rounded-xl border border-app-border-emphasis bg-app-surface-2 px-4 py-2.5 text-sm font-medium text-app-text hover:bg-app-surface-2 disabled:opacity-50">
               {scanStatus === "loading" ? (
                 <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
@@ -186,37 +186,37 @@ export function AdCopyGenerator({ brands = [] }: { brands?: BrandContextOption[]
         </div>
 
         {/* Product details */}
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 space-y-4">
+        <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5 space-y-4">
           <h3 className="font-semibold">Product</h3>
 
           <div>
-            <label className="text-sm text-zinc-400">Product / brand name *</label>
+            <label className="text-sm text-app-text-muted">Product / brand name *</label>
             <input name="productName" placeholder="NooRattan" className={`mt-1.5 ${field}`}
               value={productName} onChange={(e) => setProductName(e.target.value)} />
           </div>
           <div>
-            <label className="text-sm text-zinc-400">Description</label>
+            <label className="text-sm text-app-text-muted">Description</label>
             <textarea name="productDescription" rows={2} placeholder="What it does and why customers love it"
               className={`mt-1.5 ${field}`}
               value={productDesc} onChange={(e) => setProductDesc(e.target.value)} />
           </div>
           <div>
-            <label className="text-sm text-zinc-400">Campaign goal</label>
+            <label className="text-sm text-app-text-muted">Campaign goal</label>
             <input name="goal" placeholder="Drive online sales, increase sign-ups…" className={`mt-1.5 ${field}`} />
           </div>
           <div>
-            <label className="text-sm text-zinc-400">Current offer / promotion</label>
+            <label className="text-sm text-app-text-muted">Current offer / promotion</label>
             <input name="offer" placeholder="20% off, Free shipping, Limited edition…" className={`mt-1.5 ${field}`} />
           </div>
           <div>
-            <label className="text-sm text-zinc-400">Target audience</label>
+            <label className="text-sm text-app-text-muted">Target audience</label>
             <input name="audience" placeholder="Women 25-45 in Morocco interested in home decor" className={`mt-1.5 ${field}`} />
           </div>
           <div>
-            <label className="text-sm text-zinc-400">Tone</label>
+            <label className="text-sm text-app-text-muted">Tone</label>
             <div className="mt-1.5 flex flex-wrap gap-2">
               {TONES.map((t) => (
-                <label key={t} className="flex cursor-pointer items-center gap-1.5 rounded-full border border-zinc-700 px-3 py-1 text-xs has-[:checked]:border-amber-400/50 has-[:checked]:bg-amber-950/30 has-[:checked]:text-amber-300">
+                <label key={t} className="flex cursor-pointer items-center gap-1.5 rounded-full border border-app-border-strong px-3 py-1 text-xs has-[:checked]:border-amber-400/50 has-[:checked]:bg-amber-950/30 has-[:checked]:text-amber-300">
                   <input type="radio" name="tone" value={t} className="sr-only" defaultChecked={t === "Conversational"} />
                   {t}
                 </label>
@@ -226,25 +226,25 @@ export function AdCopyGenerator({ brands = [] }: { brands?: BrandContextOption[]
         </div>
 
         {/* Framework picker */}
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+        <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
           <h3 className="font-semibold">Copywriting frameworks</h3>
-          <p className="mt-0.5 text-sm text-zinc-400">One variant per framework. Select up to 7.</p>
+          <p className="mt-0.5 text-sm text-app-text-muted">One variant per framework. Select up to 7.</p>
           <div className="mt-4 space-y-2">
             {FRAMEWORKS.map((fw) => {
               const on = selectedFrameworks.includes(fw.id);
               return (
                 <button key={fw.id} type="button" onClick={() => toggleFramework(fw.id)}
                   className={`flex w-full items-center gap-3 rounded-xl border px-4 py-3 text-left transition-all ${
-                    on ? "border-amber-400/40 bg-amber-950/20" : "border-zinc-700 bg-zinc-950/50 hover:border-zinc-600"
+                    on ? "border-amber-400/40 bg-amber-950/20" : "border-app-border-strong bg-app-bg/50 hover:border-app-border-emphasis"
                   }`}>
                   <div className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full border-2 transition-colors ${
-                    on ? "border-amber-400 bg-amber-400" : "border-zinc-600"
+                    on ? "border-amber-400 bg-amber-400" : "border-app-border-emphasis"
                   }`}>
                     {on && <svg className="h-3 w-3 text-zinc-950" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7"/></svg>}
                   </div>
                   <div>
-                    <p className={`text-sm font-semibold ${on ? "text-zinc-100" : "text-zinc-400"}`}>{fw.label}</p>
-                    <p className="text-xs text-zinc-600">{fw.desc}</p>
+                    <p className={`text-sm font-semibold ${on ? "text-app-text" : "text-app-text-muted"}`}>{fw.label}</p>
+                    <p className="text-xs text-app-text-subtle">{fw.desc}</p>
                   </div>
                 </button>
               );
@@ -262,20 +262,20 @@ export function AdCopyGenerator({ brands = [] }: { brands?: BrandContextOption[]
       {/* ── Results / sidebar ────────────────────────────────────────────── */}
       <div id="headlines" className="space-y-4 scroll-mt-6">
         {state.status === "idle" && !pending && (
-          <div className="rounded-2xl border border-dashed border-zinc-800 p-8 text-center">
+          <div className="rounded-2xl border border-dashed border-app-border p-8 text-center">
             <p className="text-2xl">✍️</p>
-            <p className="mt-3 font-medium text-zinc-400">Your copy variants will appear here</p>
-            <p className="mt-1 text-sm text-zinc-600">Fill in the form and click Generate.</p>
+            <p className="mt-3 font-medium text-app-text-muted">Your copy variants will appear here</p>
+            <p className="mt-1 text-sm text-app-text-subtle">Fill in the form and click Generate.</p>
           </div>
         )}
 
         {pending && (
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-8 text-center">
+          <div className="rounded-2xl border border-app-border bg-app-surface/60 p-8 text-center">
             <svg className="mx-auto h-8 w-8 animate-spin text-amber-400" viewBox="0 0 24 24" fill="none">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
             </svg>
-            <p className="mt-3 text-sm text-zinc-400">Writing {selectedFrameworks.length} copy variants…</p>
+            <p className="mt-3 text-sm text-app-text-muted">Writing {selectedFrameworks.length} copy variants…</p>
           </div>
         )}
 
@@ -288,11 +288,11 @@ export function AdCopyGenerator({ brands = [] }: { brands?: BrandContextOption[]
             {state.result.variants.map((v, i) => <VariantCard key={i} v={v} />)}
 
             {/* Writing tips */}
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
-              <p className="mb-3 text-sm font-semibold text-zinc-300">Tips to strengthen this copy</p>
+            <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
+              <p className="mb-3 text-sm font-semibold text-app-text">Tips to strengthen this copy</p>
               <ul className="space-y-2">
                 {state.result.writingTips.map((tip, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-zinc-400">
+                  <li key={i} className="flex items-start gap-2 text-sm text-app-text-muted">
                     <svg className="mt-0.5 h-3.5 w-3.5 shrink-0 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                     </svg>

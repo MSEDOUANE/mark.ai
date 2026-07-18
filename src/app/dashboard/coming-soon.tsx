@@ -13,7 +13,7 @@ export function ComingSoon({
   bullets: string[];
 }) {
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl">
         <div className="flex items-center gap-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-400/15 text-2xl">
@@ -22,19 +22,19 @@ export function ComingSoon({
           <div>
             <div className="flex items-center gap-2">
               <h1 className="text-2xl font-bold">{title}</h1>
-              <span className="rounded-full bg-zinc-800 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-zinc-400">
+              <span className="rounded-full bg-app-surface-2 px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide text-app-text-muted">
                 Soon
               </span>
             </div>
-            <p className="mt-0.5 text-sm text-zinc-400">{blurb}</p>
+            <p className="mt-0.5 text-sm text-app-text-muted">{blurb}</p>
           </div>
         </div>
 
-        <div className="mt-8 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
-          <p className="text-sm font-medium text-zinc-300">What&rsquo;s coming</p>
+        <div className="mt-8 rounded-2xl border border-app-border bg-app-surface/60 p-6">
+          <p className="text-sm font-medium text-app-text">What&rsquo;s coming</p>
           <ul className="mt-3 space-y-2">
             {bullets.map((b) => (
-              <li key={b} className="flex items-start gap-2.5 text-sm text-zinc-400">
+              <li key={b} className="flex items-start gap-2.5 text-sm text-app-text-muted">
                 <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400" />
                 {b}
               </li>

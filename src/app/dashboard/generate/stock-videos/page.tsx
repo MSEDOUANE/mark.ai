@@ -9,17 +9,17 @@ export default async function StockVideosPage() {
   if (!user) redirect("/login");
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="mb-8">
-          <Link href="/dashboard/generate" className="text-sm text-zinc-400 hover:text-zinc-200">
+          <Link href="/dashboard/generate" className="text-sm text-app-text-muted hover:text-app-text">
             ← Generate
           </Link>
           <div className="mt-3 flex items-center gap-3">
             <span className="text-3xl">🎥</span>
             <div>
               <h1 className="text-2xl font-bold">Stock Videos</h1>
-              <p className="mt-0.5 text-sm text-zinc-400">
+              <p className="mt-0.5 text-sm text-app-text-muted">
                 Search millions of free-to-use video clips for your ads and content.
               </p>
             </div>

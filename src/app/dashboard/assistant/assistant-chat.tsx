@@ -96,11 +96,11 @@ export function AssistantChat({ initialHistory }: { initialHistory: ChatTurn[] }
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       {/* Thread */}
-      <div className="flex-1 space-y-4 overflow-y-auto rounded-2xl border border-zinc-800 bg-zinc-900/40 p-4">
+      <div className="flex-1 space-y-4 overflow-y-auto rounded-2xl border border-app-border bg-app-surface/40 p-4">
         {turns.length === 0 && !pending && (
           <div className="flex h-full flex-col items-center justify-center gap-4 py-16 text-center">
             <p className="text-3xl">✦</p>
-            <p className="text-sm text-zinc-500">
+            <p className="text-sm text-app-text-subtle">
               Ask anything about your marketing — I can read your real data and act on it.
             </p>
             <div className="flex max-w-lg flex-wrap justify-center gap-2">
@@ -109,7 +109,7 @@ export function AssistantChat({ initialHistory }: { initialHistory: ChatTurn[] }
                   key={s}
                   type="button"
                   onClick={() => void send(s)}
-                  className="rounded-full border border-zinc-700 px-3.5 py-1.5 text-xs text-zinc-300 transition-colors hover:border-amber-400/50 hover:text-amber-300"
+                  className="rounded-full border border-app-border-strong px-3.5 py-1.5 text-xs text-app-text transition-colors hover:border-amber-400/50 hover:text-amber-300"
                 >
                   {s}
                 </button>
@@ -133,14 +133,14 @@ export function AssistantChat({ initialHistory }: { initialHistory: ChatTurn[] }
                     {t.toolsUsed.map((tool) => (
                       <span
                         key={tool}
-                        className="rounded-full bg-zinc-800 px-2.5 py-0.5 text-[10px] font-medium text-zinc-400"
+                        className="rounded-full bg-app-surface-2 px-2.5 py-0.5 text-[10px] font-medium text-app-text-muted"
                       >
                         ⚙ {TOOL_LABELS[tool] ?? tool}
                       </span>
                     ))}
                   </div>
                 )}
-                <div className="rounded-2xl rounded-bl-md border border-zinc-800 bg-zinc-900 px-4 py-2.5 text-sm leading-relaxed text-zinc-200">
+                <div className="rounded-2xl rounded-bl-md border border-app-border bg-app-surface px-4 py-2.5 text-sm leading-relaxed text-app-text">
                   {renderContent(t.content)}
                 </div>
               </div>
@@ -150,12 +150,12 @@ export function AssistantChat({ initialHistory }: { initialHistory: ChatTurn[] }
 
         {pending && (
           <div className="flex justify-start">
-            <div className="flex items-center gap-2 rounded-2xl rounded-bl-md border border-zinc-800 bg-zinc-900 px-4 py-3">
+            <div className="flex items-center gap-2 rounded-2xl rounded-bl-md border border-app-border bg-app-surface px-4 py-3">
               <svg className="h-4 w-4 animate-spin text-amber-400" viewBox="0 0 24 24" fill="none">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                 <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
               </svg>
-              <span className="text-xs text-zinc-500">Working — checking data and running tools…</span>
+              <span className="text-xs text-app-text-subtle">Working — checking data and running tools…</span>
             </div>
           </div>
         )}
@@ -181,7 +181,7 @@ export function AssistantChat({ initialHistory }: { initialHistory: ChatTurn[] }
           onChange={(e) => setInput(e.target.value)}
           placeholder="Ask your marketing manager…"
           disabled={pending}
-          className="min-w-0 flex-1 rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none transition-colors placeholder:text-zinc-600 focus:border-zinc-500 disabled:opacity-60"
+          className="min-w-0 flex-1 rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none transition-colors placeholder:text-app-text-subtle focus:border-zinc-500 disabled:opacity-60"
         />
         <button
           type="submit"

@@ -106,10 +106,10 @@ export function CreativeCard({
   const isGenerating = status === "pending" || status === "generating";
 
   return (
-    <article className="group relative overflow-hidden rounded-2xl border border-white/8 bg-zinc-900 transition-shadow hover:shadow-2xl hover:shadow-black/50">
+    <article className="group relative overflow-hidden rounded-2xl border border-white/8 bg-app-surface transition-shadow hover:shadow-2xl hover:shadow-black/50">
 
       {/* ── Image area ────────────────────────────────────────────────────── */}
-      <div className={`relative overflow-hidden bg-zinc-950 ${current.aspect}`}>
+      <div className={`relative overflow-hidden bg-app-bg ${current.aspect}`}>
 
         {/* Generating spinner */}
         {isGenerating && (
@@ -118,13 +118,13 @@ export function CreativeCard({
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
             </svg>
-            <p className="text-xs text-zinc-500">Generating…</p>
+            <p className="text-xs text-app-text-subtle">Generating…</p>
           </div>
         )}
 
         {/* Failed state */}
         {status === "failed" && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-zinc-900">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-app-surface">
             <svg className="h-8 w-8 text-red-400/60" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z" />
             </svg>
@@ -237,7 +237,7 @@ export function CreativeCard({
           {SIZES.map((s) => (
             <button key={s.key} type="button" onClick={() => setSize(s.key)}
               className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold transition-colors ${
-                size === s.key ? "bg-amber-400 text-zinc-950" : "text-zinc-500 hover:text-zinc-300"
+                size === s.key ? "bg-amber-400 text-zinc-950" : "text-app-text-subtle hover:text-app-text"
               }`}>
               {s.label}
             </button>
@@ -245,18 +245,18 @@ export function CreativeCard({
           {/* Status dot */}
           <div className="ml-auto flex items-center gap-1.5">
             <StatusDot status={status} />
-            <span className="text-[11px] text-zinc-600 capitalize">{statusLabel}</span>
+            <span className="text-[11px] text-app-text-subtle capitalize">{statusLabel}</span>
           </div>
         </div>
 
         {/* Model toggle — shown only on ready/failed cards (not while generating) */}
         {!isGenerating && (
           <div className="mt-1.5 flex items-center gap-1">
-            <span className="text-[10px] text-zinc-600">Model:</span>
+            <span className="text-[10px] text-app-text-subtle">Model:</span>
             {(["nano-banana-2", "flux-schnell"] as const).map((m) => (
               <button key={m} type="button" onClick={() => setImageModel(m)}
                 className={`rounded-full px-2 py-0.5 text-[10px] font-medium transition-colors ${
-                  imageModel === m ? "bg-zinc-700 text-zinc-200" : "text-zinc-600 hover:text-zinc-400"
+                  imageModel === m ? "bg-app-surface-2 text-app-text" : "text-app-text-subtle hover:text-app-text-muted"
                 }`}>
                 {m === "nano-banana-2" ? "NanoBanana" : "FLUX"}
               </button>
@@ -266,10 +266,10 @@ export function CreativeCard({
 
         {/* Headline */}
         {headline ? (
-          <p className="mt-2 truncate text-sm font-semibold text-zinc-200">{headline}</p>
+          <p className="mt-2 truncate text-sm font-semibold text-app-text">{headline}</p>
         ) : null}
         {primaryText ? (
-          <p className="mt-0.5 line-clamp-2 text-xs text-zinc-500">{primaryText}</p>
+          <p className="mt-0.5 line-clamp-2 text-xs text-app-text-subtle">{primaryText}</p>
         ) : null}
 
         {/* Score detail (expandable) */}
@@ -277,8 +277,8 @@ export function CreativeCard({
           <div className="mt-2.5 border-t border-white/8 pt-2.5">
             <button type="button" onClick={() => setShowTips((p) => !p)}
               className="flex w-full items-center justify-between text-left">
-              <span className="text-xs text-zinc-500">AI conversion score</span>
-              <svg className={`h-3.5 w-3.5 text-zinc-600 transition-transform ${showTips ? "rotate-180" : ""}`}
+              <span className="text-xs text-app-text-subtle">AI conversion score</span>
+              <svg className={`h-3.5 w-3.5 text-app-text-subtle transition-transform ${showTips ? "rotate-180" : ""}`}
                 fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
               </svg>
@@ -287,13 +287,13 @@ export function CreativeCard({
             {showTips && (
               <div className="mt-2 space-y-1.5">
                 {scoreRationale ? (
-                  <p className="text-xs text-zinc-400">{scoreRationale}</p>
+                  <p className="text-xs text-app-text-muted">{scoreRationale}</p>
                 ) : null}
                 {scoreTips && scoreTips.length > 0 ? (
                   <>
                     <ul className="space-y-1">
                       {scoreTips.map((t, i) => (
-                        <li key={i} className="flex items-start gap-1.5 text-xs text-zinc-500">
+                        <li key={i} className="flex items-start gap-1.5 text-xs text-app-text-subtle">
                           <svg className="mt-0.5 h-3 w-3 shrink-0 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
                             <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
                           </svg>

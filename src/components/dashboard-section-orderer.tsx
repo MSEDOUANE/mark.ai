@@ -221,7 +221,7 @@ export function DashboardSectionOrderer({
         ref={triggerRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="rounded-full border border-zinc-700 px-3 py-1 text-xs text-zinc-300 hover:border-zinc-500 hover:text-zinc-100"
+        className="rounded-full border border-app-border-strong px-3 py-1 text-xs text-app-text hover:border-zinc-500 hover:text-app-text"
       >
         Reorder panels
       </button>
@@ -230,14 +230,14 @@ export function DashboardSectionOrderer({
         ref={popoverRef}
         aria-hidden={!open}
         onKeyDown={handlePopoverKeyDown}
-        className={`absolute right-0 top-9 z-30 w-72 rounded-xl border border-zinc-800 bg-zinc-950/95 p-3 shadow-2xl transition duration-150 ease-out motion-reduce:transition-none ${
+        className={`absolute right-0 top-9 z-30 w-72 rounded-xl border border-app-border bg-app-bg/95 p-3 shadow-2xl transition duration-150 ease-out motion-reduce:transition-none ${
           open
             ? "translate-y-0 scale-100 opacity-100"
             : "pointer-events-none -translate-y-1 scale-[0.98] opacity-0"
         }`}
       >
-          <p className="text-[11px] uppercase tracking-[0.12em] text-zinc-500">Drag or use keyboard to reorder</p>
-          <p className="mt-1 text-[11px] text-zinc-600">Focused row: Arrow up/down, Home, End</p>
+          <p className="text-[11px] uppercase tracking-[0.12em] text-app-text-subtle">Drag or use keyboard to reorder</p>
+          <p className="mt-1 text-[11px] text-app-text-subtle">Focused row: Arrow up/down, Home, End</p>
           <div className="mt-2 space-y-2">
             {order.map((id, index) => (
               <div
@@ -258,14 +258,14 @@ export function DashboardSectionOrderer({
                   applyOrder(reorder(order, dragIndex, index));
                   setDragIndex(null);
                 }}
-                className="flex items-center justify-between rounded-lg border border-zinc-800 bg-zinc-900/60 px-2.5 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/70"
+                className="flex items-center justify-between rounded-lg border border-app-border bg-app-surface/60 px-2.5 py-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400/70"
               >
-                <span className="text-xs text-zinc-200">{index + 1}. {SECTION_LABELS[id]}</span>
+                <span className="text-xs text-app-text">{index + 1}. {SECTION_LABELS[id]}</span>
                 <div className="flex items-center gap-1">
                   <button
                     type="button"
                     onClick={() => applyOrder(reorder(order, index, index - 1))}
-                    className="rounded border border-zinc-700 px-1.5 py-0.5 text-[10px] text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
+                    className="rounded border border-app-border-strong px-1.5 py-0.5 text-[10px] text-app-text-muted hover:border-zinc-500 hover:text-app-text"
                     aria-label={`Move ${SECTION_LABELS[id]} up`}
                   >
                     ↑
@@ -273,7 +273,7 @@ export function DashboardSectionOrderer({
                   <button
                     type="button"
                     onClick={() => applyOrder(reorder(order, index, index + 1))}
-                    className="rounded border border-zinc-700 px-1.5 py-0.5 text-[10px] text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
+                    className="rounded border border-app-border-strong px-1.5 py-0.5 text-[10px] text-app-text-muted hover:border-zinc-500 hover:text-app-text"
                     aria-label={`Move ${SECTION_LABELS[id]} down`}
                   >
                     ↓
@@ -287,13 +287,13 @@ export function DashboardSectionOrderer({
             <button
               type="button"
               onClick={() => applyOrder([...DEFAULT_ORDER])}
-              className="rounded-lg border border-zinc-700 px-2.5 py-1 text-xs text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
+              className="rounded-lg border border-app-border-strong px-2.5 py-1 text-xs text-app-text-muted hover:border-zinc-500 hover:text-app-text"
             >
               Default order
             </button>
             {isAutoSaving ? (
               <div className="flex items-center gap-2">
-                <span className="text-[11px] text-zinc-500">Saving...</span>
+                <span className="text-[11px] text-app-text-subtle">Saving...</span>
                 <button
                   type="button"
                   onClick={() => {
@@ -302,13 +302,13 @@ export function DashboardSectionOrderer({
                     setUndoOrder(null);
                     setIsAutoSaving(false);
                   }}
-                  className="rounded-lg border border-zinc-700 px-2 py-1 text-xs text-zinc-300 hover:border-zinc-500 hover:text-zinc-100"
+                  className="rounded-lg border border-app-border-strong px-2 py-1 text-xs text-app-text hover:border-zinc-500 hover:text-app-text"
                 >
                   Undo
                 </button>
               </div>
             ) : (
-              <span className="text-[11px] text-zinc-500">Auto-saves on reorder</span>
+              <span className="text-[11px] text-app-text-subtle">Auto-saves on reorder</span>
             )}
           </div>
         </div>

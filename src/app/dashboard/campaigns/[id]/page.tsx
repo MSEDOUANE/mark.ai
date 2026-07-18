@@ -83,13 +83,13 @@ function sumKpis(rows: { kpis: EntityKpis }[]): EntityKpis {
 }
 
 const fieldClass =
-  "rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm outline-none focus:border-zinc-500";
+  "rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm outline-none focus:border-zinc-500";
 const panelClass =
-  "rounded-lg border border-zinc-800 bg-zinc-900 p-4";
+  "rounded-lg border border-app-border bg-app-surface p-4";
 const primaryButtonClass =
   "rounded-full bg-zinc-100 px-4 py-2.5 text-sm font-semibold text-zinc-900 hover:bg-white";
 const secondaryButtonClass =
-  "rounded-full border border-zinc-700 bg-zinc-950 px-4 py-2.5 text-sm font-medium hover:bg-zinc-800";
+  "rounded-full border border-app-border-strong bg-app-bg px-4 py-2.5 text-sm font-medium hover:bg-app-surface-2";
 const successButtonClass =
   "rounded-full bg-zinc-100 px-4 py-2.5 text-sm font-semibold text-zinc-900 hover:bg-white";
 
@@ -289,19 +289,19 @@ export default async function CampaignDetailPage({
   };
 
   return (
-    <main className="min-h-screen px-4 py-5 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-5 text-app-text sm:px-6 lg:px-8">
       <AutoRefresh enabled={generating || pendingCreatives > 0} />
       <div className="mx-auto max-w-4xl">
         <Link
           href="/dashboard/campaigns"
-          className="text-sm text-zinc-400 hover:text-zinc-200"
+          className="text-sm text-app-text-muted hover:text-app-text"
         >
           ← Campaigns
         </Link>
-        <header className="mt-3 rounded-lg border border-zinc-800 bg-zinc-900 p-4">
+        <header className="mt-3 rounded-lg border border-app-border bg-app-surface p-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h1 className="text-xl font-semibold">{campaign.name}</h1>
-            <p className="text-sm text-zinc-400">
+            <p className="text-sm text-app-text-muted">
               {campaign.platform} · {campaign.status}
               {pendingCreatives > 0
                 ? ` · ${pendingCreatives} creative(s) generating`
@@ -332,10 +332,10 @@ export default async function CampaignDetailPage({
           {campaign.status === "draft" && strategy ? (
             adAccounts.length > 0 ? (
               <>
-                <p className="mt-2 text-sm text-zinc-400">
+                <p className="mt-2 text-sm text-app-text-muted">
                   Launch builds the full ad on Meta — campaign → ad set
                   (budget + targeting) → ad creative → ad — all{" "}
-                  <span className="text-zinc-200">paused</span> until you approve
+                  <span className="text-app-text">paused</span> until you approve
                   spend.
                 </p>
                 <ul className="mt-3 space-y-1 text-sm">
@@ -348,26 +348,26 @@ export default async function CampaignDetailPage({
                   >
                     {destinationUrl || isWhatsAppDest ? "✓" : "•"} Destination{" "}
                     {isWhatsAppDest ? (
-                      <span className="text-zinc-400">
+                      <span className="text-app-text-muted">
                         — WhatsApp chat (needs a WhatsApp Business number on
                         your Facebook Page)
                       </span>
                     ) : destinationUrl ? (
-                      <span className="text-zinc-400">— {destinationUrl}</span>
+                      <span className="text-app-text-muted">— {destinationUrl}</span>
                     ) : (
-                      <span className="text-zinc-400">
+                      <span className="text-app-text-muted">
                         — required; add a URL to the brief to launch
                       </span>
                     )}
                   </li>
                   <li className={launchHasCreative ? "text-emerald-300" : "text-amber-300"}>
                     {launchHasCreative ? "✓" : "•"} Creative{" "}
-                    <span className="text-zinc-400">
+                    <span className="text-app-text-muted">
                       — {creatives.length} generated
                       {pendingCreatives > 0 ? ` (${pendingCreatives} still rendering)` : ""}
                     </span>
                   </li>
-                  <li className="text-zinc-400">
+                  <li className="text-app-text-muted">
                     • Target countries —{" "}
                     {brief.geoCountries
                       ? String(
@@ -381,7 +381,7 @@ export default async function CampaignDetailPage({
                 <form action={prepareLaunch} className="mt-4 flex flex-wrap items-end gap-3">
                   <input type="hidden" name="campaignId" value={campaign.id} />
                   <label className="flex flex-col gap-1 text-sm">
-                    <span className="text-zinc-400">Ad account</span>
+                    <span className="text-app-text-muted">Ad account</span>
                     <select
                       name="adAccountId"
                       className={fieldClass}
@@ -414,7 +414,7 @@ export default async function CampaignDetailPage({
                 ) : null}
               </>
             ) : (
-              <p className="mt-2 text-sm text-zinc-400">
+              <p className="mt-2 text-sm text-app-text-muted">
                 Connect an ad account in{" "}
                 <Link href="/dashboard/settings" className="underline">
                   Settings
@@ -429,17 +429,17 @@ export default async function CampaignDetailPage({
               <p className="text-sm text-amber-300">
                 ⏸ Awaiting your approval — nothing is spent until you approve.
               </p>
-              <p className="mt-3 text-xs text-zinc-500">
+              <p className="mt-3 text-xs text-app-text-subtle">
                 Approving creates this on Meta (all paused):
               </p>
               <dl className="mt-2 grid grid-cols-2 gap-2 text-sm">
-                <dt className="text-zinc-500">Campaign</dt>
+                <dt className="text-app-text-subtle">Campaign</dt>
                 <dd>{launchSpec.name}</dd>
-                <dt className="text-zinc-500">Objective</dt>
+                <dt className="text-app-text-subtle">Objective</dt>
                 <dd>{launchSpec.objective}</dd>
-                <dt className="text-zinc-500">Daily budget</dt>
+                <dt className="text-app-text-subtle">Daily budget</dt>
                 <dd>{money(launchSpec.dailyBudgetMinor, launchSpec.currency)}</dd>
-                <dt className="text-zinc-500">Targeting</dt>
+                <dt className="text-app-text-subtle">Targeting</dt>
                 <dd>
                   {brief.geoCountries
                     ? String(
@@ -449,9 +449,9 @@ export default async function CampaignDetailPage({
                       )
                     : "US"}
                 </dd>
-                <dt className="text-zinc-500">Destination</dt>
+                <dt className="text-app-text-subtle">Destination</dt>
                 <dd className="truncate">{destinationUrl || "—"}</dd>
-                <dt className="text-zinc-500">Creatives</dt>
+                <dt className="text-app-text-subtle">Creatives</dt>
                 <dd>
                   {(() => {
                     // Mirrors executeLaunch: top 3 by score, ready first — 2+
@@ -500,28 +500,28 @@ export default async function CampaignDetailPage({
             <div className="mt-2 text-sm text-emerald-300">
               <p>✓ Launched on Meta (paused — unpause in Ads Manager to spend).</p>
               {externalIds.meta || externalIds.tiktok ? (
-                <dl className="mt-2 grid grid-cols-[7rem_1fr] gap-x-3 gap-y-1 font-mono text-xs text-zinc-400">
+                <dl className="mt-2 grid grid-cols-[7rem_1fr] gap-x-3 gap-y-1 font-mono text-xs text-app-text-muted">
                   {externalIds.meta ? (
                     <>
-                      <dt className="text-zinc-500">Campaign</dt>
+                      <dt className="text-app-text-subtle">Campaign</dt>
                       <dd>{externalIds.meta}</dd>
                     </>
                   ) : null}
                   {externalIds.metaAdSet ? (
                     <>
-                      <dt className="text-zinc-500">Ad set</dt>
+                      <dt className="text-app-text-subtle">Ad set</dt>
                       <dd>{externalIds.metaAdSet}</dd>
                     </>
                   ) : null}
                   {externalIds.metaAd ? (
                     <>
-                      <dt className="text-zinc-500">Ad</dt>
+                      <dt className="text-app-text-subtle">Ad</dt>
                       <dd>{externalIds.metaAd}</dd>
                     </>
                   ) : null}
                   {externalIds.tiktok ? (
                     <>
-                      <dt className="text-zinc-500">TikTok</dt>
+                      <dt className="text-app-text-subtle">TikTok</dt>
                       <dd>{externalIds.tiktok}</dd>
                     </>
                   ) : null}
@@ -535,7 +535,7 @@ export default async function CampaignDetailPage({
           ) : null}
 
           {campaign.status === "completed" ? (
-            <p className="mt-2 text-sm text-zinc-400">Completed.</p>
+            <p className="mt-2 text-sm text-app-text-muted">Completed.</p>
           ) : null}
 
           {campaign.status === "failed" ? (
@@ -551,7 +551,7 @@ export default async function CampaignDetailPage({
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div>
                 <h2 className="text-lg font-medium">Optimization chat</h2>
-                <p className="mt-1 text-sm text-zinc-400">
+                <p className="mt-1 text-sm text-app-text-muted">
                   Open a dedicated chat screen for recommendations and approvals.
                 </p>
               </div>
@@ -566,7 +566,7 @@ export default async function CampaignDetailPage({
             </div>
 
             {optimization && pendingOptimization ? (
-              <div className="mt-3 rounded-lg border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">
+              <div className="mt-3 rounded-lg border border-app-border bg-app-bg p-4 text-sm text-app-text">
                 Pending recommendation: {optimization.action.toUpperCase()} · confidence {optimization.confidence}
               </div>
             ) : null}
@@ -587,7 +587,7 @@ export default async function CampaignDetailPage({
           <section className={`mt-6 ${panelClass} p-5`}>
             <div className="flex flex-wrap items-end justify-between gap-3">
               <div>
-                <div className="text-xs uppercase tracking-wide text-zinc-500">
+                <div className="text-xs uppercase tracking-wide text-app-text-subtle">
                   Date range
                 </div>
                 <div className="mt-2 flex flex-wrap gap-1">
@@ -612,7 +612,7 @@ export default async function CampaignDetailPage({
                 </div>
               </div>
               <form method="get" className="flex flex-wrap items-end gap-2">
-                <label className="flex flex-col gap-1 text-xs text-zinc-500">
+                <label className="flex flex-col gap-1 text-xs text-app-text-subtle">
                   From
                   <input
                     type="date"
@@ -621,7 +621,7 @@ export default async function CampaignDetailPage({
                     className={fieldClass}
                   />
                 </label>
-                <label className="flex flex-col gap-1 text-xs text-zinc-500">
+                <label className="flex flex-col gap-1 text-xs text-app-text-subtle">
                   To
                   <input
                     type="date"
@@ -635,7 +635,7 @@ export default async function CampaignDetailPage({
                 </button>
               </form>
             </div>
-            <p className="mt-2 text-xs text-zinc-500">
+            <p className="mt-2 text-xs text-app-text-subtle">
               Showing {rangeSince} → {rangeUntil}
               {hasCustom ? " (custom)" : ""}
             </p>
@@ -646,7 +646,7 @@ export default async function CampaignDetailPage({
         {externalCampaignId && (breakdown || breakdownError) ? (
           <section className={`mt-6 ${panelClass}`}>
             <h2 className="text-lg font-medium">Ad sets &amp; ads</h2>
-            <p className="mt-1 text-xs text-zinc-500">
+            <p className="mt-1 text-xs text-app-text-subtle">
               Live from the Meta Ads API · KPIs for {rangeSince} → {rangeUntil}
             </p>
 
@@ -676,7 +676,7 @@ export default async function CampaignDetailPage({
                           key={k.label}
                           className="rounded-2xl border border-white/10 bg-black/15 p-4"
                         >
-                          <div className="text-xs uppercase tracking-wide text-zinc-500">
+                          <div className="text-xs uppercase tracking-wide text-app-text-subtle">
                             {k.label}
                           </div>
                           <div className="mt-1 text-lg font-semibold">{k.value}</div>
@@ -684,24 +684,24 @@ export default async function CampaignDetailPage({
                       ))}
                     </div>
 
-                    <h3 className="mt-6 text-sm font-medium text-zinc-300">
+                    <h3 className="mt-6 text-sm font-medium text-app-text">
                       Ad sets ({breakdown.adSets.length})
                     </h3>
                     {breakdown.adSets.length === 0 ? (
-                      <p className="mt-2 text-sm text-zinc-500">No ad sets found.</p>
+                      <p className="mt-2 text-sm text-app-text-subtle">No ad sets found.</p>
                     ) : (
                       <div className="mt-2 overflow-x-auto">
                         <table className="w-full min-w-[720px] text-left text-sm">
-                          <thead className="text-xs uppercase tracking-wide text-zinc-500">
+                          <thead className="text-xs uppercase tracking-wide text-app-text-subtle">
                             <tr>
                               {["Ad set", "Spend trend", "Status", "Budget/day", "Impr.", "Clicks", "CTR", "Spend", "Conv.", "ROAS"].map((h) => (
                                 <th key={h} className="py-1 pr-3 font-medium">{h}</th>
                               ))}
                             </tr>
                           </thead>
-                          <tbody className="text-zinc-300">
+                          <tbody className="text-app-text">
                             {breakdown.adSets.map((s) => (
-                              <tr key={s.id} className="border-t border-zinc-800/60">
+                              <tr key={s.id} className="border-t border-app-border/60">
                                 <td className="py-1 pr-3">{s.name}</td>
                                 <td className="py-1 pr-3">
                                   <Sparkline points={entitySpend.get(s.id) ?? []} />
@@ -725,29 +725,29 @@ export default async function CampaignDetailPage({
                       </div>
                     )}
 
-                    <h3 className="mt-6 text-sm font-medium text-zinc-300">
+                    <h3 className="mt-6 text-sm font-medium text-app-text">
                       Ads ({breakdown.ads.length})
                     </h3>
                     {breakdown.ads.length === 0 ? (
-                      <p className="mt-2 text-sm text-zinc-500">No ads found.</p>
+                      <p className="mt-2 text-sm text-app-text-subtle">No ads found.</p>
                     ) : (
                       <div className="mt-2 overflow-x-auto">
                         <table className="w-full min-w-[720px] text-left text-sm">
-                          <thead className="text-xs uppercase tracking-wide text-zinc-500">
+                          <thead className="text-xs uppercase tracking-wide text-app-text-subtle">
                             <tr>
                               {["Ad", "Spend trend", "Ad set", "Status", "Impr.", "Clicks", "CTR", "Spend", "Conv.", "ROAS"].map((h) => (
                                 <th key={h} className="py-1 pr-3 font-medium">{h}</th>
                               ))}
                             </tr>
                           </thead>
-                          <tbody className="text-zinc-300">
+                          <tbody className="text-app-text">
                             {breakdown.ads.map((ad) => (
-                              <tr key={ad.id} className="border-t border-zinc-800/60">
+                              <tr key={ad.id} className="border-t border-app-border/60">
                                 <td className="py-1 pr-3">{ad.name}</td>
                                 <td className="py-1 pr-3">
                                   <Sparkline points={entitySpend.get(ad.id) ?? []} />
                                 </td>
-                                <td className="py-1 pr-3 text-zinc-500">
+                                <td className="py-1 pr-3 text-app-text-subtle">
                                   {ad.adSetId ? adSetName.get(ad.adSetId) ?? "—" : "—"}
                                 </td>
                                 <td className="py-1 pr-3 lowercase">{ad.status}</td>
@@ -774,7 +774,7 @@ export default async function CampaignDetailPage({
         {metrics.length > 0 ? (
           <section className={`mt-6 ${panelClass}`}>
             <h2 className="text-lg font-medium">Trends</h2>
-            <p className="mt-1 text-xs text-zinc-500">
+            <p className="mt-1 text-xs text-app-text-subtle">
               Daily metrics over {metrics.length} day(s) · hover a chart for a
               specific day
             </p>
@@ -817,13 +817,13 @@ export default async function CampaignDetailPage({
         {metrics.length > 0 ? (
           <section className={`mt-6 ${panelClass}`}>
             <h2 className="text-lg font-medium">Performance</h2>
-            <p className="mt-1 text-xs text-zinc-500">
+            <p className="mt-1 text-xs text-app-text-subtle">
               From the Meta Ads insights API · most recent {recentMetrics.length}{" "}
               day(s)
             </p>
             <div className="mt-3 overflow-x-auto">
               <table className="w-full min-w-[820px] text-left text-sm">
-                <thead className="text-xs uppercase tracking-wide text-zinc-500">
+                <thead className="text-xs uppercase tracking-wide text-app-text-subtle">
                   <tr>
                     {[
                       "Date",
@@ -846,9 +846,9 @@ export default async function CampaignDetailPage({
                     ))}
                   </tr>
                 </thead>
-                <tbody className="text-zinc-300">
+                <tbody className="text-app-text">
                   {recentMetrics.map((m) => (
-                    <tr key={m.id} className="border-t border-zinc-800/60">
+                    <tr key={m.id} className="border-t border-app-border/60">
                       <td className="whitespace-nowrap py-1 pr-3">{m.date}</td>
                       <td className="py-1 pr-3">{m.reach.toLocaleString()}</td>
                       <td className="py-1 pr-3">{m.impressions.toLocaleString()}</td>
@@ -904,43 +904,43 @@ export default async function CampaignDetailPage({
         {research ? (
           <section className={`mt-6 ${panelClass}`}>
             <h2 className="text-lg font-medium">Market research</h2>
-            <p className="mt-2 text-sm text-zinc-300">{research.marketOverview}</p>
+            <p className="mt-2 text-sm text-app-text">{research.marketOverview}</p>
 
-            <h3 className="mt-4 text-xs uppercase tracking-wide text-zinc-500">
+            <h3 className="mt-4 text-xs uppercase tracking-wide text-app-text-subtle">
               Competitors
             </h3>
             <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {research.competitors.map((c, i) => (
                 <div
                   key={i}
-                  className="rounded-xl border border-zinc-800 bg-zinc-950/40 p-3 text-sm"
+                  className="rounded-xl border border-app-border bg-app-bg/40 p-3 text-sm"
                 >
                   <div className="font-medium">{c.name}</div>
-                  <div className="mt-1 text-zinc-400">{c.positioning}</div>
+                  <div className="mt-1 text-app-text-muted">{c.positioning}</div>
                   <div className="mt-1 text-xs text-emerald-300">Gap: {c.gaps}</div>
                 </div>
               ))}
             </div>
 
-            <h3 className="mt-4 text-xs uppercase tracking-wide text-zinc-500">
+            <h3 className="mt-4 text-xs uppercase tracking-wide text-app-text-subtle">
               Audience personas
             </h3>
             <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
               {research.audiencePersonas.map((p, i) => (
                 <div
                   key={i}
-                  className="rounded-xl border border-zinc-800 bg-zinc-950/40 p-3 text-sm"
+                  className="rounded-xl border border-app-border bg-app-bg/40 p-3 text-sm"
                 >
                   <div className="font-medium">{p.name}</div>
-                  <div className="mt-1 text-zinc-400">{p.description}</div>
-                  <div className="mt-2 text-xs text-zinc-500">Pains</div>
-                  <ul className="list-disc pl-4 text-xs text-zinc-300">
+                  <div className="mt-1 text-app-text-muted">{p.description}</div>
+                  <div className="mt-2 text-xs text-app-text-subtle">Pains</div>
+                  <ul className="list-disc pl-4 text-xs text-app-text">
                     {p.painPoints.map((x, j) => (
                       <li key={j}>{x}</li>
                     ))}
                   </ul>
-                  <div className="mt-2 text-xs text-zinc-500">Hooks</div>
-                  <ul className="list-disc pl-4 text-xs text-zinc-300">
+                  <div className="mt-2 text-xs text-app-text-subtle">Hooks</div>
+                  <ul className="list-disc pl-4 text-xs text-app-text">
                     {p.messagingHooks.map((x, j) => (
                       <li key={j}>{x}</li>
                     ))}
@@ -951,27 +951,27 @@ export default async function CampaignDetailPage({
 
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <h3 className="text-xs uppercase tracking-wide text-zinc-500">
+                <h3 className="text-xs uppercase tracking-wide text-app-text-subtle">
                   Opportunities
                 </h3>
-                <ul className="mt-1 list-disc pl-5 text-sm text-zinc-300">
+                <ul className="mt-1 list-disc pl-5 text-sm text-app-text">
                   {research.opportunities.map((o, i) => (
                     <li key={i}>{o}</li>
                   ))}
                 </ul>
               </div>
               <div>
-                <h3 className="text-xs uppercase tracking-wide text-zinc-500">
+                <h3 className="text-xs uppercase tracking-wide text-app-text-subtle">
                   Recommended channels
                 </h3>
-                <p className="mt-1 text-sm text-zinc-300">
+                <p className="mt-1 text-sm text-app-text">
                   {research.recommendedChannels.join(", ")}
                 </p>
               </div>
             </div>
 
             {research.sources.length > 0 ? (
-              <p className="mt-3 text-xs text-zinc-600">
+              <p className="mt-3 text-xs text-app-text-subtle">
                 Sources: {research.sources.slice(0, 6).join(" · ")}
               </p>
             ) : null}
@@ -982,21 +982,21 @@ export default async function CampaignDetailPage({
         {strategy ? (
           <section className={`mt-6 ${panelClass}`}>
             <h2 className="text-lg font-medium">Strategy</h2>
-            <p className="mt-2 text-sm text-zinc-300">{strategy.positioning}</p>
+            <p className="mt-2 text-sm text-app-text">{strategy.positioning}</p>
             <div className="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
-                <h3 className="text-xs uppercase tracking-wide text-zinc-500">
+                <h3 className="text-xs uppercase tracking-wide text-app-text-subtle">
                   Audience
                 </h3>
-                <p className="mt-1 text-sm text-zinc-300">
+                <p className="mt-1 text-sm text-app-text">
                   {strategy.targetAudience.summary}
                 </p>
               </div>
               <div>
-                <h3 className="text-xs uppercase tracking-wide text-zinc-500">
+                <h3 className="text-xs uppercase tracking-wide text-app-text-subtle">
                   Key messages
                 </h3>
-                <ul className="mt-1 list-disc pl-5 text-sm text-zinc-300">
+                <ul className="mt-1 list-disc pl-5 text-sm text-app-text">
                   {strategy.keyMessages.map((m, i) => (
                     <li key={i}>{m}</li>
                   ))}
@@ -1037,10 +1037,10 @@ export default async function CampaignDetailPage({
         {audit.length > 0 ? (
           <section className={`mt-6 ${panelClass}`}>
             <h2 className="text-lg font-medium">Activity</h2>
-            <ul className="mt-3 space-y-1 text-sm text-zinc-400">
+            <ul className="mt-3 space-y-1 text-sm text-app-text-muted">
               {audit.map((a) => (
                 <li key={a.id}>
-                  <span className="text-zinc-500">
+                  <span className="text-app-text-subtle">
                     {a.createdAt.toISOString().slice(0, 19).replace("T", " ")}
                   </span>{" "}
                   · {a.actor} · {a.action}

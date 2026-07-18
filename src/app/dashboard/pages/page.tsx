@@ -8,7 +8,7 @@ import { createLandingPage, deleteLandingPage } from "./actions";
 import { LanguagePicker } from "@/components/language-picker";
 
 const field =
-  "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500";
+  "w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500";
 
 export default async function PagesPage({
   searchParams,
@@ -40,10 +40,10 @@ export default async function PagesPage({
   ]);
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
         <h1 className="text-2xl font-bold">Landing Pages</h1>
-        <p className="mt-1 text-sm text-zinc-400">
+        <p className="mt-1 text-sm text-app-text-muted">
           AI-written, on-brand pages your ads click through to — hero, benefits,
           FAQ, and one clear CTA.
         </p>
@@ -67,14 +67,14 @@ export default async function PagesPage({
           {/* Generate form */}
           <form
             action={createLandingPage}
-            className="h-fit space-y-4 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6"
+            className="h-fit space-y-4 rounded-2xl border border-app-border bg-app-surface/60 p-6"
           >
             <h2 className="text-lg font-semibold">New page</h2>
 
             {products.length > 0 ? (
               <label className="block text-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-zinc-400">Catalog product</span>
+                  <span className="text-app-text-muted">Catalog product</span>
                   <Link href="/dashboard/products/new" className="text-xs text-amber-400 hover:underline">
                     + New product
                   </Link>
@@ -91,14 +91,14 @@ export default async function PagesPage({
             ) : null}
 
             <label className="block text-sm">
-              <span className="text-zinc-400">
+              <span className="text-app-text-muted">
                 {products.length > 0 ? "…or a product name" : "Product name *"}
               </span>
               <input name="productName" placeholder="Reveria Signature Collection" className={`mt-1.5 ${field}`} />
             </label>
 
             <label className="block text-sm">
-              <span className="text-zinc-400">Extra context (optional)</span>
+              <span className="text-app-text-muted">Extra context (optional)</span>
               <textarea name="productDescription" rows={2} className={`mt-1.5 ${field}`}
                 placeholder="Anything the page should emphasize" />
             </label>
@@ -106,7 +106,7 @@ export default async function PagesPage({
             <LanguagePicker />
 
             <div className="text-sm">
-              <span className="text-zinc-400">Call to action</span>
+              <span className="text-app-text-muted">Call to action</span>
               <div className="mt-1.5 space-y-2">
                 <label className="flex items-center gap-2">
                   <input type="radio" name="ctaKind" value="whatsapp" defaultChecked />
@@ -124,7 +124,7 @@ export default async function PagesPage({
             <button className="w-full rounded-xl bg-amber-400 px-5 py-3 text-sm font-bold text-zinc-950 shadow shadow-amber-500/20 transition-colors hover:bg-amber-300">
               Generate page
             </button>
-            <p className="text-xs text-zinc-600">
+            <p className="text-xs text-app-text-subtle">
               Written in the product&apos;s brand voice; takes ~15 seconds.
             </p>
           </form>
@@ -132,13 +132,13 @@ export default async function PagesPage({
           {/* Existing pages */}
           <div className="space-y-3">
             {pages.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-zinc-800 p-10 text-center text-sm text-zinc-500">
+              <div className="rounded-2xl border border-dashed border-app-border p-10 text-center text-sm text-app-text-subtle">
                 No pages yet — generate one and use its URL as your ad&apos;s destination.
               </div>
             ) : (
               pages.map((p) => (
                 <div key={p.id}
-                  className="flex items-center gap-4 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4">
+                  className="flex items-center gap-4 rounded-2xl border border-app-border bg-app-surface/60 p-4">
                   <div className="min-w-0 flex-1">
                     <p className="font-semibold">{p.title}</p>
                     <a href={`/p/${p.slug}`} target="_blank"
@@ -152,7 +152,7 @@ export default async function PagesPage({
                   </Link>
                   <form action={deleteLandingPage}>
                     <input type="hidden" name="id" value={p.id} />
-                    <button className="shrink-0 rounded-lg px-2 py-1.5 text-xs text-zinc-600 hover:bg-zinc-800 hover:text-zinc-300">
+                    <button className="shrink-0 rounded-lg px-2 py-1.5 text-xs text-app-text-subtle hover:bg-app-surface-2 hover:text-app-text">
                       Delete
                     </button>
                   </form>

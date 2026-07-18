@@ -35,12 +35,12 @@ export default async function ProductsPage() {
   }));
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
         <div className="flex items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold">Products</h1>
-            <p className="mt-1 text-sm text-zinc-400">
+            <p className="mt-1 text-sm text-app-text-muted">
               Your reusable product catalog — pick from these when generating
               creatives, campaigns, videos, and landing pages.
             </p>
@@ -53,13 +53,13 @@ export default async function ProductsPage() {
 
         {products.length === 0 ? (
           <div className="mt-20 flex flex-col items-center text-center">
-            <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-zinc-800/80">
-              <svg className="h-9 w-9 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}>
+            <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-app-surface-2/80">
+              <svg className="h-9 w-9 text-app-text-subtle" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
               </svg>
             </div>
             <h2 className="mt-5 text-lg font-semibold">No products yet</h2>
-            <p className="mt-2 max-w-sm text-sm text-zinc-500">
+            <p className="mt-2 max-w-sm text-sm text-app-text-subtle">
               Add a product once — name, description, audience, photo — and
               reuse it every time you generate a creative, campaign, video, or
               landing page.
@@ -76,7 +76,7 @@ export default async function ProductsPage() {
             ))}
 
             <Link href="/dashboard/products/new"
-              className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-zinc-700 py-10 text-zinc-500 transition-colors hover:border-zinc-500 hover:text-zinc-300">
+              className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-app-border-strong py-10 text-app-text-subtle transition-colors hover:border-zinc-500 hover:text-app-text">
               <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
@@ -96,8 +96,8 @@ function ProductCard({ product: p }: {
   };
 }) {
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 transition-shadow hover:shadow-xl hover:shadow-black/40">
-      <div className="relative flex h-28 items-center justify-center overflow-hidden bg-zinc-950">
+    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-app-border bg-app-surface transition-shadow hover:shadow-xl hover:shadow-black/40">
+      <div className="relative flex h-28 items-center justify-center overflow-hidden bg-app-bg">
         {p.photoUrl ? (
           <ProductThumb src={p.photoUrl} alt={p.name} />
         ) : (
@@ -111,17 +111,17 @@ function ProductCard({ product: p }: {
       </div>
 
       <div className="flex flex-1 flex-col p-4">
-        <h3 className="font-semibold text-zinc-100">{p.name}</h3>
+        <h3 className="font-semibold text-app-text">{p.name}</h3>
         {p.description ? (
-          <p className="mt-1.5 line-clamp-2 text-xs text-zinc-500">{p.description}</p>
+          <p className="mt-1.5 line-clamp-2 text-xs text-app-text-subtle">{p.description}</p>
         ) : null}
         {p.targetAudience ? (
-          <p className="mt-1.5 line-clamp-1 text-[11px] text-zinc-600">🎯 {p.targetAudience}</p>
+          <p className="mt-1.5 line-clamp-1 text-[11px] text-app-text-subtle">🎯 {p.targetAudience}</p>
         ) : null}
 
-        <div className="mt-4 flex items-center gap-2 border-t border-zinc-800 pt-3">
+        <div className="mt-4 flex items-center gap-2 border-t border-app-border pt-3">
           <Link href={`/dashboard/products/${p.id}/edit`}
-            className="flex-1 rounded-lg border border-zinc-700 py-1.5 text-center text-xs font-medium text-zinc-300 transition-colors hover:border-zinc-500 hover:text-zinc-100">
+            className="flex-1 rounded-lg border border-app-border-strong py-1.5 text-center text-xs font-medium text-app-text transition-colors hover:border-zinc-500 hover:text-app-text">
             Edit
           </Link>
           <Link href={`/dashboard/creatives/new`}

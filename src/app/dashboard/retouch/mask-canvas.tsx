@@ -118,7 +118,7 @@ export const MaskCanvas = forwardRef<MaskCanvasHandle, {
 
   return (
     <div className="space-y-3">
-      <div className="relative overflow-hidden rounded-xl border border-zinc-700 bg-zinc-950">
+      <div className="relative overflow-hidden rounded-xl border border-app-border-strong bg-app-bg">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           ref={imgRef}
@@ -139,7 +139,7 @@ export const MaskCanvas = forwardRef<MaskCanvasHandle, {
       </div>
 
       <div className="flex items-center gap-3">
-        <span className="text-xs text-zinc-500">Brush</span>
+        <span className="text-xs text-app-text-subtle">Brush</span>
         <input
           type="range"
           min={2}
@@ -156,12 +156,12 @@ export const MaskCanvas = forwardRef<MaskCanvasHandle, {
             if (c && ctx) ctx.clearRect(0, 0, c.width, c.height);
             setDirty(false);
           }}
-          className="rounded-lg border border-zinc-700 px-2.5 py-1 text-xs text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
+          className="rounded-lg border border-app-border-strong px-2.5 py-1 text-xs text-app-text-muted hover:border-zinc-500 hover:text-app-text"
         >
           Clear
         </button>
       </div>
-      <p className="text-xs text-zinc-600">Paint over the parts you want removed, then generate.</p>
+      <p className="text-xs text-app-text-subtle">Paint over the parts you want removed, then generate.</p>
     </div>
   );
 });

@@ -10,7 +10,7 @@ function DeleteBtn({ name }: { name: string }) {
       onClick={(e) => {
         if (!confirm(`Delete product "${name}"? This cannot be undone.`)) e.preventDefault();
       }}
-      className="flex h-7 w-7 items-center justify-center rounded-lg border border-zinc-700 text-zinc-600 transition-colors hover:border-red-400/40 hover:text-red-400 disabled:opacity-50">
+      className="flex h-7 w-7 items-center justify-center rounded-lg border border-app-border-strong text-app-text-subtle transition-colors hover:border-red-400/40 hover:text-red-400 disabled:opacity-50">
       {pending ? (
         <svg className="h-3 w-3 animate-spin" viewBox="0 0 24 24" fill="none">
           <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />

@@ -70,7 +70,7 @@ export function StockVideosClient() {
     <div className="space-y-6">
       {/* Search bar */}
       <div className="relative">
-        <svg className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+        <svg className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-app-text-subtle" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
           <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 15.803a7.5 7.5 0 0 0 10.607 0Z" />
         </svg>
         <input
@@ -78,10 +78,10 @@ export function StockVideosClient() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search millions of stock videos…"
-          className="w-full rounded-2xl border border-zinc-700 bg-zinc-900 py-4 pl-12 pr-5 text-base text-zinc-100 outline-none placeholder:text-zinc-500 focus:border-zinc-500"
+          className="w-full rounded-2xl border border-app-border-strong bg-app-surface py-4 pl-12 pr-5 text-base text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500"
         />
         {loading && (
-          <svg className="absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 animate-spin text-zinc-500" viewBox="0 0 24 24" fill="none">
+          <svg className="absolute right-4 top-1/2 h-5 w-5 -translate-y-1/2 animate-spin text-app-text-subtle" viewBox="0 0 24 24" fill="none">
             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
           </svg>
@@ -92,7 +92,7 @@ export function StockVideosClient() {
 
       {/* Selected video detail panel */}
       {selected && (
-        <div className="overflow-hidden rounded-2xl border border-zinc-700 bg-zinc-900">
+        <div className="overflow-hidden rounded-2xl border border-app-border-strong bg-app-surface">
           <div className="flex flex-col gap-0 sm:flex-row">
             <div className="relative aspect-video shrink-0 overflow-hidden bg-black sm:w-96">
               <video
@@ -109,13 +109,13 @@ export function StockVideosClient() {
 
             <div className="flex flex-1 flex-col justify-between p-6">
               <div>
-                <p className="text-xs text-zinc-500">
-                  Video by <span className="font-semibold text-zinc-300">{selected.photographer}</span>
+                <p className="text-xs text-app-text-subtle">
+                  Video by <span className="font-semibold text-app-text">{selected.photographer}</span>
                   {" "}on <span className="capitalize">{selected.source}</span>
                   {" · "}{formatDuration(selected.durationSeconds)}
                 </p>
-                <div className="mt-3 flex items-center gap-2 overflow-hidden rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2">
-                  <p className="flex-1 truncate text-xs text-zinc-400">{selected.full}</p>
+                <div className="mt-3 flex items-center gap-2 overflow-hidden rounded-lg border border-app-border-strong bg-app-bg px-3 py-2">
+                  <p className="flex-1 truncate text-xs text-app-text-muted">{selected.full}</p>
                 </div>
               </div>
 
@@ -124,7 +124,7 @@ export function StockVideosClient() {
                   type="button"
                   onClick={copyUrl}
                   className={`flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-colors ${
-                    copied ? "bg-emerald-500 text-white" : "bg-zinc-800 text-zinc-100 hover:bg-zinc-700"
+                    copied ? "bg-emerald-500 text-white" : "bg-app-surface-2 text-app-text hover:bg-app-surface-2"
                   }`}
                 >
                   {copied ? (
@@ -138,7 +138,7 @@ export function StockVideosClient() {
                   href={selected.full}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center gap-2 rounded-xl border border-zinc-700 px-4 py-2.5 text-sm font-semibold text-zinc-300 transition-colors hover:border-zinc-500 hover:text-zinc-100"
+                  className="flex items-center gap-2 rounded-xl border border-app-border-strong px-4 py-2.5 text-sm font-semibold text-app-text transition-colors hover:border-zinc-500 hover:text-app-text"
                 >
                   <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                     <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3" />
@@ -149,7 +149,7 @@ export function StockVideosClient() {
                 <button
                   type="button"
                   onClick={() => setSelected(null)}
-                  className="ml-auto self-start text-xs text-zinc-600 hover:text-zinc-400"
+                  className="ml-auto self-start text-xs text-app-text-subtle hover:text-app-text-muted"
                 >
                   ✕ Close
                 </button>
@@ -172,7 +172,7 @@ export function StockVideosClient() {
                   onClick={() => setSelected((prev) => prev?.id === video.id ? null : video)}
                   title={`Video by ${video.photographer}`}
                   className={`group relative aspect-video overflow-hidden rounded-xl border-2 transition-all ${
-                    sel ? "border-amber-400 ring-2 ring-amber-400/30" : "border-transparent hover:border-zinc-600"
+                    sel ? "border-amber-400 ring-2 ring-amber-400/30" : "border-transparent hover:border-app-border-emphasis"
                   }`}
                 >
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -207,13 +207,13 @@ export function StockVideosClient() {
           </div>
 
           <div className="flex items-center justify-between">
-            <p className="text-[11px] text-zinc-600">Videos from Pexels · free to use with attribution</p>
+            <p className="text-[11px] text-app-text-subtle">Videos from Pexels · free to use with attribution</p>
             {hasMore && (
               <button
                 type="button"
                 onClick={loadMore}
                 disabled={loading}
-                className="rounded-xl border border-zinc-700 px-4 py-2 text-sm text-zinc-400 transition-colors hover:border-zinc-500 hover:text-zinc-200 disabled:opacity-50"
+                className="rounded-xl border border-app-border-strong px-4 py-2 text-sm text-app-text-muted transition-colors hover:border-zinc-500 hover:text-app-text disabled:opacity-50"
               >
                 {loading ? "Loading…" : "Load more"}
               </button>
@@ -221,7 +221,7 @@ export function StockVideosClient() {
           </div>
         </>
       ) : !loading && query.trim() ? (
-        <p className="py-16 text-center text-sm text-zinc-600">No videos found for &ldquo;{query}&rdquo;</p>
+        <p className="py-16 text-center text-sm text-app-text-subtle">No videos found for &ldquo;{query}&rdquo;</p>
       ) : null}
     </div>
   );

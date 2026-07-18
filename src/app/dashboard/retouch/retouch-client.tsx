@@ -77,19 +77,19 @@ export function RetouchClient() {
       {/* ── Controls ─────────────────────────────────────────────────────── */}
       <div className="space-y-5">
         {/* Upload */}
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+        <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
           <h2 className="font-semibold">1. Upload a photo</h2>
-          <p className="mt-1 text-sm text-zinc-400">Product shot, portrait, or any image you want to clean up.</p>
+          <p className="mt-1 text-sm text-app-text-muted">Product shot, portrait, or any image you want to clean up.</p>
           <div className="mt-4">
             <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
             {photoUrl ? (
               <button type="button" onClick={() => fileRef.current?.click()}
-                className="w-full rounded-xl border border-zinc-700 bg-zinc-950 py-2.5 text-xs font-semibold text-zinc-300 hover:border-zinc-500 hover:text-zinc-100">
+                className="w-full rounded-xl border border-app-border-strong bg-app-bg py-2.5 text-xs font-semibold text-app-text hover:border-zinc-500 hover:text-app-text">
                 Change photo
               </button>
             ) : (
               <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading}
-                className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-zinc-600 bg-zinc-950 py-10 text-sm text-zinc-400 transition-colors hover:border-zinc-500 hover:text-zinc-200 disabled:opacity-60">
+                className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-app-border-emphasis bg-app-bg py-10 text-sm text-app-text-muted transition-colors hover:border-zinc-500 hover:text-app-text disabled:opacity-60">
                 {uploading ? (
                   <><svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>Uploading…</>
                 ) : (
@@ -102,7 +102,7 @@ export function RetouchClient() {
         </div>
 
         {/* Tool picker */}
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+        <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
           <h2 className="font-semibold">2. Choose a tool</h2>
           <div className="mt-4 grid grid-cols-2 gap-2">
             {RETOUCH_TOOLS.map((t) => {
@@ -110,12 +110,12 @@ export function RetouchClient() {
               return (
                 <button key={t.id} type="button" onClick={() => selectTool(t.id)}
                   className={`flex flex-col items-start gap-1 rounded-xl border p-3 text-left transition-all ${
-                    on ? "border-amber-400/50 bg-amber-950/25 ring-1 ring-amber-400" : "border-zinc-700 bg-zinc-950/50 hover:border-zinc-600"
+                    on ? "border-amber-400/50 bg-amber-950/25 ring-1 ring-amber-400" : "border-app-border-strong bg-app-bg/50 hover:border-app-border-emphasis"
                   }`}>
                   <span className="text-lg">{t.icon}</span>
-                  <span className={`text-xs font-semibold ${on ? "text-amber-200" : "text-zinc-300"}`}>{t.label}</span>
-                  <span className="text-[10px] leading-snug text-zinc-500">{t.description}</span>
-                  {t.needsMask && <span className="mt-0.5 rounded bg-zinc-800 px-1.5 py-0.5 text-[9px] text-zinc-400">needs brush</span>}
+                  <span className={`text-xs font-semibold ${on ? "text-amber-200" : "text-app-text"}`}>{t.label}</span>
+                  <span className="text-[10px] leading-snug text-app-text-subtle">{t.description}</span>
+                  {t.needsMask && <span className="mt-0.5 rounded bg-app-surface-2 px-1.5 py-0.5 text-[9px] text-app-text-muted">needs brush</span>}
                 </button>
               );
             })}
@@ -134,26 +134,26 @@ export function RetouchClient() {
           )}
         </button>
         {genError && <p className="text-center text-xs text-red-400">{genError}</p>}
-        {!photoUrl && <p className="text-center text-xs text-zinc-600">Upload a photo to start editing.</p>}
+        {!photoUrl && <p className="text-center text-xs text-app-text-subtle">Upload a photo to start editing.</p>}
       </div>
 
       {/* ── Workspace ────────────────────────────────────────────────────── */}
       <div className="space-y-6">
         {!photoUrl ? (
-          <div className="flex h-full min-h-[320px] flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-zinc-800 text-center">
+          <div className="flex h-full min-h-[320px] flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-app-border text-center">
             <span className="text-3xl">🪄</span>
-            <p className="text-sm text-zinc-500">Upload a photo, pick a tool, and your edited image appears here.</p>
+            <p className="text-sm text-app-text-subtle">Upload a photo, pick a tool, and your edited image appears here.</p>
           </div>
         ) : (
           <>
             <div>
-              <p className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-zinc-600">
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-app-text-subtle">
                 {tool.needsMask ? "Brush the area to remove" : "Source"}
               </p>
               {tool.needsMask ? (
                 <MaskCanvas ref={maskRef} imageUrl={photoUrl} onDirtyChange={setMaskDirty} />
               ) : (
-                <div className="overflow-hidden rounded-xl border border-zinc-700 bg-zinc-950">
+                <div className="overflow-hidden rounded-xl border border-app-border-strong bg-app-bg">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={photoUrl} alt="Source" className="block w-full object-contain" />
                 </div>
@@ -162,15 +162,15 @@ export function RetouchClient() {
 
             {(generating || resultUrl) && (
               <div>
-                <p className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-zinc-600">Result</p>
+                <p className="mb-2 text-[11px] font-semibold uppercase tracking-widest text-app-text-subtle">Result</p>
                 {generating ? (
-                  <div className="flex min-h-[220px] items-center justify-center rounded-xl border border-zinc-800 bg-zinc-900">
+                  <div className="flex min-h-[220px] items-center justify-center rounded-xl border border-app-border bg-app-surface">
                     <svg className="h-7 w-7 animate-spin text-amber-400" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
                   </div>
                 ) : resultUrl ? (
-                  <div className="overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900">
-                    <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-2.5">
-                      <span className="text-sm font-medium text-zinc-200">{tool.label}</span>
+                  <div className="overflow-hidden rounded-xl border border-app-border bg-app-surface">
+                    <div className="flex items-center justify-between border-b border-app-border px-4 py-2.5">
+                      <span className="text-sm font-medium text-app-text">{tool.label}</span>
                       <a href={resultUrl} download target="_blank" rel="noreferrer"
                         className="text-xs font-semibold text-amber-400 hover:underline">Download</a>
                     </div>

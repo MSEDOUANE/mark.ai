@@ -40,7 +40,7 @@ export function BatchGenerateClient({ products }: { products: Product[] }) {
     setSelected((prev) => (prev.size === products.length ? new Set() : new Set(products.map((p) => p.id))));
   }
 
-  const field = "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500";
+  const field = "w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500";
 
   return (
     <form action={startBatchGeneration} className="space-y-5">
@@ -48,21 +48,21 @@ export function BatchGenerateClient({ products }: { products: Product[] }) {
         <input key={id} type="hidden" name="productIds" value={id} />
       ))}
 
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 space-y-4">
+      <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5 space-y-4">
         <h3 className="font-semibold">Shared brief</h3>
         <div>
-          <label className="text-sm text-zinc-400">What should every ad say? *</label>
+          <label className="text-sm text-app-text-muted">What should every ad say? *</label>
           <textarea name="brief" rows={3} required
             placeholder="Example: Highlight fast delivery and a limited-time 20% discount, warm and inviting tone"
             className={`mt-1.5 ${field}`} />
         </div>
         <div>
-          <label className="text-sm text-zinc-400">Goal <span className="text-zinc-600">(optional)</span></label>
+          <label className="text-sm text-app-text-muted">Goal <span className="text-app-text-subtle">(optional)</span></label>
           <input name="goal" placeholder="Drive first-time purchases" className={`mt-1.5 ${field}`} />
         </div>
       </div>
 
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+      <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
         <div className="flex items-center justify-between">
           <h3 className="font-semibold">Products ({selected.size}/{products.length})</h3>
           <button type="button" onClick={toggleAll} className="text-xs font-semibold text-amber-400 hover:underline">
@@ -76,17 +76,17 @@ export function BatchGenerateClient({ products }: { products: Product[] }) {
             return (
               <button key={p.id} type="button" onClick={() => toggle(p.id)}
                 className={`flex items-center gap-3 rounded-xl border p-3 text-left transition-all ${
-                  on ? "border-amber-400/50 bg-amber-950/25 ring-1 ring-amber-400" : "border-zinc-700 bg-zinc-950/50 hover:border-zinc-600"
+                  on ? "border-amber-400/50 bg-amber-950/25 ring-1 ring-amber-400" : "border-app-border-strong bg-app-bg/50 hover:border-app-border-emphasis"
                 }`}>
                 {p.photoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={p.photoUrl} alt="" className="h-10 w-10 shrink-0 rounded-lg object-cover" />
                 ) : (
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-zinc-800 text-sm">📦</div>
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-app-surface-2 text-sm">📦</div>
                 )}
                 <div className="min-w-0 flex-1">
-                  <p className={`truncate text-sm font-medium ${on ? "text-amber-200" : "text-zinc-200"}`}>{p.name}</p>
-                  {p.description && <p className="truncate text-xs text-zinc-500">{p.description}</p>}
+                  <p className={`truncate text-sm font-medium ${on ? "text-amber-200" : "text-app-text"}`}>{p.name}</p>
+                  {p.description && <p className="truncate text-xs text-app-text-subtle">{p.description}</p>}
                 </div>
                 {on && (
                   <svg className="h-4 w-4 shrink-0 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>

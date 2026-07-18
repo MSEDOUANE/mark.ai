@@ -116,14 +116,14 @@ export function PhotoshootClient() {
       {/* ── Controls ─────────────────────────────────────────────────────── */}
       <div className="space-y-5">
         {/* Upload */}
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+        <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
           <h2 className="font-semibold">1. Upload your product photo</h2>
-          <p className="mt-1 text-sm text-zinc-400">Any angle, any background — the AI keeps the product exact.</p>
+          <p className="mt-1 text-sm text-app-text-muted">Any angle, any background — the AI keeps the product exact.</p>
 
           <div className="mt-4">
             <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handleFile} />
             {photoUrl ? (
-              <div className="relative overflow-hidden rounded-xl border border-zinc-700 bg-zinc-950">
+              <div className="relative overflow-hidden rounded-xl border border-app-border-strong bg-app-bg">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={photoUrl} alt="Uploaded product" className="aspect-square w-full object-contain" />
                 <button type="button" onClick={() => fileRef.current?.click()}
@@ -133,7 +133,7 @@ export function PhotoshootClient() {
               </div>
             ) : (
               <button type="button" onClick={() => fileRef.current?.click()} disabled={uploading}
-                className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-zinc-600 bg-zinc-950 py-10 text-sm text-zinc-400 transition-colors hover:border-zinc-500 hover:text-zinc-200 disabled:opacity-60">
+                className="flex w-full flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-app-border-emphasis bg-app-bg py-10 text-sm text-app-text-muted transition-colors hover:border-zinc-500 hover:text-app-text disabled:opacity-60">
                 {uploading ? (
                   <><svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>Uploading…</>
                 ) : (
@@ -146,9 +146,9 @@ export function PhotoshootClient() {
         </div>
 
         {/* Style picker */}
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+        <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
           <h2 className="font-semibold">2. Pick shoot styles</h2>
-          <p className="mt-1 text-sm text-zinc-400">Select one or more — each generates its own variant.</p>
+          <p className="mt-1 text-sm text-app-text-muted">Select one or more — each generates its own variant.</p>
 
           <div className="mt-3 flex gap-1.5">
             {CATEGORIES.map((c) => (
@@ -156,7 +156,7 @@ export function PhotoshootClient() {
                 className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
                   category === c.id
                     ? "border-amber-400 bg-amber-400/10 text-amber-400"
-                    : "border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
+                    : "border-app-border-strong text-app-text-muted hover:border-zinc-500 hover:text-app-text"
                 }`}>
                 {c.label}
               </button>
@@ -169,11 +169,11 @@ export function PhotoshootClient() {
               return (
                 <button key={s.id} type="button" onClick={() => toggleStyle(s.id)}
                   className={`flex flex-col items-start gap-1 rounded-xl border p-3 text-left transition-all ${
-                    on ? "border-amber-400/50 bg-amber-950/25 ring-1 ring-amber-400" : "border-zinc-700 bg-zinc-950/50 hover:border-zinc-600"
+                    on ? "border-amber-400/50 bg-amber-950/25 ring-1 ring-amber-400" : "border-app-border-strong bg-app-bg/50 hover:border-app-border-emphasis"
                   }`}>
                   <span className="text-lg">{s.icon}</span>
-                  <span className={`text-xs font-semibold ${on ? "text-amber-200" : "text-zinc-300"}`}>{s.label}</span>
-                  <span className="text-[10px] text-zinc-500">{s.description}</span>
+                  <span className={`text-xs font-semibold ${on ? "text-amber-200" : "text-app-text"}`}>{s.label}</span>
+                  <span className="text-[10px] text-app-text-subtle">{s.description}</span>
                 </button>
               );
             })}
@@ -192,29 +192,29 @@ export function PhotoshootClient() {
           )}
         </button>
         {genError && <p className="text-center text-xs text-red-400">{genError}</p>}
-        {!photoUrl && <p className="text-center text-xs text-zinc-600">Upload a photo to enable generation.</p>}
+        {!photoUrl && <p className="text-center text-xs text-app-text-subtle">Upload a photo to enable generation.</p>}
       </div>
 
       {/* ── Results ──────────────────────────────────────────────────────── */}
       <div>
         {results.length === 0 && !generating ? (
-          <div className="flex h-full min-h-[300px] flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-zinc-800 text-center">
+          <div className="flex h-full min-h-[300px] flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-app-border text-center">
             <span className="text-3xl">📸</span>
-            <p className="text-sm text-zinc-500">Your professional shots will appear here.</p>
+            <p className="text-sm text-app-text-subtle">Your professional shots will appear here.</p>
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             {generating &&
               selected.map((id) => (
-                <div key={id} className="flex aspect-square animate-pulse flex-col items-center justify-center gap-2 rounded-2xl border border-zinc-800 bg-zinc-900">
+                <div key={id} className="flex aspect-square animate-pulse flex-col items-center justify-center gap-2 rounded-2xl border border-app-border bg-app-surface">
                   <svg className="h-6 w-6 animate-spin text-amber-400" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
-                  <p className="text-xs text-zinc-500">{PHOTOSHOOT_STYLES.find((s) => s.id === id)?.label}</p>
+                  <p className="text-xs text-app-text-subtle">{PHOTOSHOOT_STYLES.find((s) => s.id === id)?.label}</p>
                 </div>
               ))}
             {results.map((r) => (
-              <div key={r.styleId} className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
-                <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-2.5">
-                  <span className="text-sm font-medium text-zinc-200">{r.label}</span>
+              <div key={r.styleId} className="overflow-hidden rounded-2xl border border-app-border bg-app-surface">
+                <div className="flex items-center justify-between border-b border-app-border px-4 py-2.5">
+                  <span className="text-sm font-medium text-app-text">{r.label}</span>
                   {r.url ? (
                     <a href={r.url} download target="_blank" rel="noreferrer"
                       className="text-xs font-semibold text-amber-400 hover:underline">
@@ -226,21 +226,21 @@ export function PhotoshootClient() {
                   // eslint-disable-next-line @next/next/no-img-element
                   <img src={r.url} alt={r.label} className="aspect-square w-full object-cover" />
                 ) : (
-                  <div className="flex aspect-square w-full flex-col items-center justify-center gap-1 bg-zinc-950 px-4 text-center">
+                  <div className="flex aspect-square w-full flex-col items-center justify-center gap-1 bg-app-bg px-4 text-center">
                     <span className="text-2xl">⚠️</span>
                     <p className="text-xs text-red-400">{r.error ?? "Failed to generate"}</p>
                   </div>
                 )}
                 {r.url && (
-                  <div className="border-t border-zinc-800 px-4 py-2.5">
+                  <div className="border-t border-app-border px-4 py-2.5">
                     {!r.video ? (
                       <button type="button" onClick={() => handleAnimate(r)}
-                        className="flex items-center gap-1.5 text-xs font-semibold text-zinc-400 hover:text-amber-400">
+                        className="flex items-center gap-1.5 text-xs font-semibold text-app-text-muted hover:text-amber-400">
                         <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5.14v14l11-7-11-7z" /></svg>
                         Animate → video
                       </button>
                     ) : r.video.status === "generating" ? (
-                      <span className="flex items-center gap-1.5 text-xs text-zinc-500">
+                      <span className="flex items-center gap-1.5 text-xs text-app-text-subtle">
                         <svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>
                         Animating…
                       </span>

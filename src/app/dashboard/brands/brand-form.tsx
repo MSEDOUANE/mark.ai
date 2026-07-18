@@ -47,7 +47,7 @@ function BrandLearningPanel({ brandProfileId, onDraft }: { brandProfileId: strin
         <input type="hidden" name="brandProfileId" value={brandProfileId} />
         <div>
           <p className="text-sm font-medium text-blue-200">Brand Learning</p>
-          <p className="text-xs text-zinc-500">Analyze past AI-generated content to draft voice consistency notes.</p>
+          <p className="text-xs text-app-text-subtle">Analyze past AI-generated content to draft voice consistency notes.</p>
         </div>
         <button type="submit" disabled={pending}
           className="shrink-0 rounded-lg border border-blue-400/30 bg-blue-900/30 px-3 py-2 text-xs font-semibold text-blue-200 hover:bg-blue-900/50 disabled:opacity-60">
@@ -56,8 +56,8 @@ function BrandLearningPanel({ brandProfileId, onDraft }: { brandProfileId: strin
       </form>
       {state.status === "error" && <p className="mt-2 text-xs text-red-400">{state.message}</p>}
       {state.status === "success" && (
-        <div className="mt-3 rounded-lg border border-zinc-700 bg-zinc-950 p-3">
-          <p className="text-sm text-zinc-300">{state.draft}</p>
+        <div className="mt-3 rounded-lg border border-app-border-strong bg-app-bg p-3">
+          <p className="text-sm text-app-text">{state.draft}</p>
           <button type="button" onClick={() => onDraft(state.draft)}
             className="mt-2 text-xs font-semibold text-amber-400 hover:underline">
             Use this →
@@ -134,7 +134,7 @@ export function BrandForm({ brand, error }: BrandFormProps) {
     setAssets((prev) => prev.filter((a) => a.url !== url));
   }
 
-  const field = "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500";
+  const field = "w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500";
   const safeColor = /^#[0-9a-f]{6}$/i.test(color) ? color : "#7c3aed";
 
   async function handleScan() {
@@ -195,16 +195,16 @@ export function BrandForm({ brand, error }: BrandFormProps) {
       ) : null}
 
       {/* Import from website */}
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+      <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
         <h3 className="font-semibold">Import from website</h3>
-        <p className="mt-0.5 text-sm text-zinc-400">We&apos;ll extract your brand name, colors and logo automatically.</p>
+        <p className="mt-0.5 text-sm text-app-text-muted">We&apos;ll extract your brand name, colors and logo automatically.</p>
         <div className="mt-3 flex gap-2">
           <input type="text" placeholder="yoursite.com"
-            className="min-w-0 flex-1 rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500"
+            className="min-w-0 flex-1 rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500"
             value={websiteUrl} onChange={(e) => setWebsiteUrl(e.target.value)}
             onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleScan(); } }} />
           <button type="button" onClick={handleScan} disabled={scanStatus === "loading" || !websiteUrl.trim()}
-            className="shrink-0 rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-200 hover:bg-zinc-700 disabled:opacity-50">
+            className="shrink-0 rounded-xl border border-app-border-emphasis bg-app-surface-2 px-4 py-2.5 text-sm font-medium text-app-text hover:bg-app-surface-2 disabled:opacity-50">
             {scanStatus === "loading" ? (
               <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
                 <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
@@ -223,19 +223,19 @@ export function BrandForm({ brand, error }: BrandFormProps) {
       </div>
 
       {/* Brand identity */}
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 space-y-4">
+      <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5 space-y-4">
         <h3 className="font-semibold">Brand identity</h3>
 
         <div>
-          <label className="text-sm text-zinc-400">Brand name *</label>
+          <label className="text-sm text-app-text-muted">Brand name *</label>
           <input name="name" placeholder="NooRattan" className={`mt-1.5 ${field}`}
             value={name} onChange={(e) => setName(e.target.value)} />
         </div>
 
         <div>
-          <label className="text-sm text-zinc-400">Brand color</label>
+          <label className="text-sm text-app-text-muted">Brand color</label>
           <div className="mt-1.5 flex items-center gap-3">
-            <div className="relative h-11 w-11 shrink-0 cursor-pointer overflow-hidden rounded-xl border border-zinc-700">
+            <div className="relative h-11 w-11 shrink-0 cursor-pointer overflow-hidden rounded-xl border border-app-border-strong">
               <input type="color" value={safeColor} onChange={(e) => setColor(e.target.value)}
                 className="absolute inset-0 h-full w-full cursor-pointer opacity-0" />
               <div className="h-full w-full" style={{ backgroundColor: safeColor }} />
@@ -248,12 +248,12 @@ export function BrandForm({ brand, error }: BrandFormProps) {
 
         {/* Logo */}
         <div>
-          <label className="text-sm text-zinc-400">Logo</label>
-          <div className="mt-1.5 flex gap-1 rounded-xl border border-zinc-700 bg-zinc-950 p-1">
+          <label className="text-sm text-app-text-muted">Logo</label>
+          <div className="mt-1.5 flex gap-1 rounded-xl border border-app-border-strong bg-app-bg p-1">
             {(["url", "upload"] as const).map((tab) => (
               <button key={tab} type="button" onClick={() => setLogoTab(tab)}
                 className={`flex-1 rounded-lg py-1.5 text-xs font-medium transition-colors ${
-                  logoTab === tab ? "bg-zinc-700 text-zinc-100" : "text-zinc-500 hover:text-zinc-300"}`}>
+                  logoTab === tab ? "bg-app-surface-2 text-app-text" : "text-app-text-subtle hover:text-app-text"}`}>
                 {tab === "url" ? "Paste URL" : "Upload file"}
               </button>
             ))}
@@ -267,7 +267,7 @@ export function BrandForm({ brand, error }: BrandFormProps) {
             <div className="mt-2">
               <input ref={logoFileRef} type="file" accept="image/*" className="hidden" onChange={handleLogoFile} />
               <button type="button" onClick={() => logoFileRef.current?.click()}
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-zinc-600 bg-zinc-950 py-4 text-sm text-zinc-400 hover:border-zinc-500 hover:text-zinc-200">
+                className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-app-border-emphasis bg-app-bg py-4 text-sm text-app-text-muted hover:border-zinc-500 hover:text-app-text">
                 {uploadStatus === "loading" ? "Reading…"
                   : uploadStatus === "done" ? <span className="text-emerald-400">Logo uploaded — click to change</span>
                   : uploadStatus === "error" ? <span className="text-red-400">Must be an image under 2 MB</span>
@@ -281,19 +281,19 @@ export function BrandForm({ brand, error }: BrandFormProps) {
               <img src={logoUrl} alt="logo" className="h-8 w-auto max-w-[100px] rounded object-contain"
                 onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
               <button type="button" onClick={() => { setLogoUrl(""); setUploadStatus("idle"); }}
-                className="text-xs text-zinc-600 hover:text-zinc-400">Remove</button>
+                className="text-xs text-app-text-subtle hover:text-app-text-muted">Remove</button>
             </div>
           ) : null}
         </div>
 
         <div>
-          <label className="text-sm text-zinc-400">Brand tone <span className="text-zinc-600">(optional)</span></label>
+          <label className="text-sm text-app-text-muted">Brand tone <span className="text-app-text-subtle">(optional)</span></label>
           <input name="tone" placeholder="premium, warm, artisanal" className={`mt-1.5 ${field}`}
             value={tone} onChange={(e) => setTone(e.target.value)} />
         </div>
 
         <div>
-          <label className="text-sm text-zinc-400">Short description <span className="text-zinc-600">(optional)</span></label>
+          <label className="text-sm text-app-text-muted">Short description <span className="text-app-text-subtle">(optional)</span></label>
           <textarea name="description" rows={3} placeholder="What does this brand sell and who is it for?"
             className={`mt-1.5 ${field}`}
             value={description} onChange={(e) => setDescription(e.target.value)} />
@@ -301,15 +301,15 @@ export function BrandForm({ brand, error }: BrandFormProps) {
       </div>
 
       {/* Palette & typography */}
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 space-y-4">
+      <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5 space-y-4">
         <h3 className="font-semibold">Palette &amp; typography</h3>
-        <p className="mt-0.5 text-sm text-zinc-400">Used to render designed ad creatives in this brand&apos;s look.</p>
+        <p className="mt-0.5 text-sm text-app-text-muted">Used to render designed ad creatives in this brand&apos;s look.</p>
 
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="text-sm text-zinc-400">Secondary color <span className="text-zinc-600">(optional)</span></label>
+            <label className="text-sm text-app-text-muted">Secondary color <span className="text-app-text-subtle">(optional)</span></label>
             <div className="mt-1.5 flex items-center gap-3">
-              <div className="relative h-11 w-11 shrink-0 cursor-pointer overflow-hidden rounded-xl border border-zinc-700">
+              <div className="relative h-11 w-11 shrink-0 cursor-pointer overflow-hidden rounded-xl border border-app-border-strong">
                 <input type="color" value={/^#[0-9a-f]{6}$/i.test(secondaryColor) ? secondaryColor : "#94a3b8"}
                   onChange={(e) => setSecondaryColor(e.target.value)}
                   className="absolute inset-0 h-full w-full cursor-pointer opacity-0" />
@@ -321,9 +321,9 @@ export function BrandForm({ brand, error }: BrandFormProps) {
             </div>
           </div>
           <div>
-            <label className="text-sm text-zinc-400">Accent / CTA color</label>
+            <label className="text-sm text-app-text-muted">Accent / CTA color</label>
             <div className="mt-1.5 flex items-center gap-3">
-              <div className="relative h-11 w-11 shrink-0 cursor-pointer overflow-hidden rounded-xl border border-zinc-700">
+              <div className="relative h-11 w-11 shrink-0 cursor-pointer overflow-hidden rounded-xl border border-app-border-strong">
                 <input type="color" value={/^#[0-9a-f]{6}$/i.test(accentColor) ? accentColor : "#f59e0b"}
                   onChange={(e) => setAccentColor(e.target.value)}
                   className="absolute inset-0 h-full w-full cursor-pointer opacity-0" />
@@ -337,19 +337,19 @@ export function BrandForm({ brand, error }: BrandFormProps) {
         </div>
 
         <div>
-          <label className="text-sm text-zinc-400">Font</label>
+          <label className="text-sm text-app-text-muted">Font</label>
           <select value={fontFamily} onChange={(e) => setFontFamily(e.target.value)} className={`mt-1.5 ${field}`}>
             {FONT_FAMILIES.map((f) => <option key={f.id} value={f.id}>{f.label}</option>)}
           </select>
         </div>
 
         <div>
-          <label className="text-sm text-zinc-400">Default ad template</label>
+          <label className="text-sm text-app-text-muted">Default ad template</label>
           <div className="mt-1.5 grid grid-cols-3 gap-2">
             {TEMPLATES.map((t) => (
               <button key={t.id} type="button" onClick={() => setDefaultTemplate(t.id)}
                 className={`rounded-xl border px-3 py-2.5 text-sm font-medium transition-colors ${
-                  defaultTemplate === t.id ? "border-amber-400 bg-amber-950/25 text-amber-200" : "border-zinc-700 text-zinc-400 hover:border-zinc-600"
+                  defaultTemplate === t.id ? "border-amber-400 bg-amber-950/25 text-amber-200" : "border-app-border-strong text-app-text-muted hover:border-app-border-emphasis"
                 }`}>
                 {t.label}
               </button>
@@ -359,16 +359,16 @@ export function BrandForm({ brand, error }: BrandFormProps) {
       </div>
 
       {/* Asset gallery */}
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 space-y-3">
+      <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5 space-y-3">
         <h3 className="font-semibold">Brand assets</h3>
-        <p className="text-sm text-zinc-400">Reference photos, icons, or graphics to reuse across creatives.</p>
+        <p className="text-sm text-app-text-muted">Reference photos, icons, or graphics to reuse across creatives.</p>
 
         <input ref={assetFileRef} type="file" accept="image/*" multiple className="hidden" onChange={handleAssetFiles} />
 
         {assets.length > 0 && (
           <div className="grid grid-cols-4 gap-2 sm:grid-cols-6">
             {assets.map((a) => (
-              <div key={a.url} className="group relative aspect-square overflow-hidden rounded-lg border border-zinc-700 bg-zinc-950">
+              <div key={a.url} className="group relative aspect-square overflow-hidden rounded-lg border border-app-border-strong bg-app-bg">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src={a.url} alt={a.label} className="h-full w-full object-cover" />
                 <button type="button" onClick={() => removeAsset(a.url)}
@@ -381,26 +381,26 @@ export function BrandForm({ brand, error }: BrandFormProps) {
         )}
 
         <button type="button" onClick={() => assetFileRef.current?.click()} disabled={assetUploading || assets.length >= 20}
-          className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-zinc-600 bg-zinc-950 py-3 text-sm text-zinc-400 hover:border-zinc-500 hover:text-zinc-200 disabled:opacity-50">
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-app-border-emphasis bg-app-bg py-3 text-sm text-app-text-muted hover:border-zinc-500 hover:text-app-text disabled:opacity-50">
           {assetUploading ? "Uploading…" : `Upload assets (${assets.length}/20)`}
         </button>
       </div>
 
       {/* Brand voice notes + Learning */}
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 space-y-3">
-        <h3 className="font-semibold">Voice consistency notes <span className="text-zinc-600 font-normal">(optional)</span></h3>
-        <p className="text-sm text-zinc-400">Layered on top of tone — feeds every Generate tool that uses this brand.</p>
+      <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5 space-y-3">
+        <h3 className="font-semibold">Voice consistency notes <span className="text-app-text-subtle font-normal">(optional)</span></h3>
+        <p className="text-sm text-app-text-muted">Layered on top of tone — feeds every Generate tool that uses this brand.</p>
         <textarea rows={3} placeholder="Recurring phrases, sentence rhythm, angles that work, things to avoid…"
           className={field} value={voiceNotes} onChange={(e) => setVoiceNotes(e.target.value)} />
         {isEdit && brand ? (
           <BrandLearningPanel brandProfileId={brand.id} onDraft={setVoiceNotes} />
         ) : (
-          <p className="text-xs text-zinc-600">Save this brand first, then use it in a Generate tool — Brand Learning needs past content to analyze.</p>
+          <p className="text-xs text-app-text-subtle">Save this brand first, then use it in a Generate tool — Brand Learning needs past content to analyze.</p>
         )}
       </div>
 
       {/* Preview */}
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+      <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
         <h3 className="mb-3 font-semibold">Preview</h3>
         <div className="flex h-28 items-center justify-center overflow-hidden rounded-xl"
           style={{ background: `linear-gradient(135deg, ${safeColor}33 0%, ${safeColor}0a 100%)` }}>
@@ -419,7 +419,7 @@ export function BrandForm({ brand, error }: BrandFormProps) {
 
       <div className="flex items-center gap-3">
         <SaveButton isEdit={isEdit} />
-        <a href="/dashboard/brands" className="rounded-xl border border-zinc-700 px-5 py-3 text-sm text-zinc-400 hover:text-zinc-200">
+        <a href="/dashboard/brands" className="rounded-xl border border-app-border-strong px-5 py-3 text-sm text-app-text-muted hover:text-app-text">
           Cancel
         </a>
       </div>

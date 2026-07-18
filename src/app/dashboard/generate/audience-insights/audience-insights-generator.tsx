@@ -30,10 +30,10 @@ function SubmitButton({ pending }: { pending: boolean }) {
 }
 
 function SegmentCard({ segment, isPrimary }: { segment: AudienceSegment; isPrimary: boolean }) {
-  const sizeClass = SIZE_COLORS[segment.sizeSignal] ?? "bg-zinc-700/30 text-zinc-300 border-zinc-600";
+  const sizeClass = SIZE_COLORS[segment.sizeSignal] ?? "bg-app-surface-2/30 text-app-text border-app-border-emphasis";
   return (
-    <article className={`overflow-hidden rounded-2xl border bg-zinc-900 transition-shadow hover:shadow-xl hover:shadow-black/30 ${
-      isPrimary ? "border-amber-400/40" : "border-zinc-800"
+    <article className={`overflow-hidden rounded-2xl border bg-app-surface transition-shadow hover:shadow-xl hover:shadow-black/30 ${
+      isPrimary ? "border-amber-400/40" : "border-app-border"
     }`}>
       {isPrimary && (
         <div className="flex items-center gap-2 bg-amber-400/10 px-5 py-2 text-xs font-semibold text-amber-400">
@@ -46,43 +46,43 @@ function SegmentCard({ segment, isPrimary }: { segment: AudienceSegment; isPrima
           <h3 className="text-lg font-bold">{segment.name}</h3>
           <span className={`rounded-full border px-2.5 py-0.5 text-xs font-semibold ${sizeClass}`}>{segment.sizeSignal}</span>
         </div>
-        <p className="mt-1.5 text-sm text-zinc-400">{segment.description}</p>
+        <p className="mt-1.5 text-sm text-app-text-muted">{segment.description}</p>
 
         <div className="mt-4 grid grid-cols-2 gap-3 text-xs">
-          <div><p className="text-zinc-600">Age</p><p className="mt-0.5 text-zinc-300">{segment.demographics.ageRange}</p></div>
-          <div><p className="text-zinc-600">Gender</p><p className="mt-0.5 text-zinc-300">{segment.demographics.gender}</p></div>
-          <div><p className="text-zinc-600">Income</p><p className="mt-0.5 text-zinc-300">{segment.demographics.incomeLevel}</p></div>
-          <div><p className="text-zinc-600">Location</p><p className="mt-0.5 text-zinc-300">{segment.demographics.location}</p></div>
+          <div><p className="text-app-text-subtle">Age</p><p className="mt-0.5 text-app-text">{segment.demographics.ageRange}</p></div>
+          <div><p className="text-app-text-subtle">Gender</p><p className="mt-0.5 text-app-text">{segment.demographics.gender}</p></div>
+          <div><p className="text-app-text-subtle">Income</p><p className="mt-0.5 text-app-text">{segment.demographics.incomeLevel}</p></div>
+          <div><p className="text-app-text-subtle">Location</p><p className="mt-0.5 text-app-text">{segment.demographics.location}</p></div>
         </div>
 
         <div className="mt-4">
-          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-600">Interests</p>
+          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-app-text-subtle">Interests</p>
           <div className="flex flex-wrap gap-1.5">
-            {segment.interests.map((i) => <span key={i} className="rounded-full bg-zinc-800 px-2 py-0.5 text-[11px] text-zinc-300">{i}</span>)}
+            {segment.interests.map((i) => <span key={i} className="rounded-full bg-app-surface-2 px-2 py-0.5 text-[11px] text-app-text">{i}</span>)}
           </div>
         </div>
 
         <div className="mt-3">
-          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-600">Online behavior</p>
+          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-app-text-subtle">Online behavior</p>
           <ul className="space-y-1">
             {segment.onlineBehavior.map((b) => (
-              <li key={b} className="flex items-start gap-1.5 text-sm text-zinc-300"><span className="mt-0.5 text-blue-400">•</span>{b}</li>
+              <li key={b} className="flex items-start gap-1.5 text-sm text-app-text"><span className="mt-0.5 text-blue-400">•</span>{b}</li>
             ))}
           </ul>
         </div>
 
         <div className="mt-3">
-          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-zinc-600">Pain points</p>
+          <p className="mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-app-text-subtle">Pain points</p>
           <ul className="space-y-1">
             {segment.painPoints.map((p) => (
-              <li key={p} className="flex items-start gap-1.5 text-sm text-zinc-300"><span className="mt-0.5 text-red-400">•</span>{p}</li>
+              <li key={p} className="flex items-start gap-1.5 text-sm text-app-text"><span className="mt-0.5 text-red-400">•</span>{p}</li>
             ))}
           </ul>
         </div>
 
         <div className="mt-4 flex flex-wrap gap-1.5">
           {segment.preferredChannels.map((c) => (
-            <span key={c} className="rounded-full bg-zinc-800 px-2.5 py-1 text-[11px] font-medium text-zinc-400">{c}</span>
+            <span key={c} className="rounded-full bg-app-surface-2 px-2.5 py-1 text-[11px] font-medium text-app-text-muted">{c}</span>
           ))}
         </div>
       </div>
@@ -96,7 +96,7 @@ export function AudienceInsightsGenerator({ brands = [] }: { brands?: BrandConte
     { status: "idle" },
   );
 
-  const field = "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500";
+  const field = "w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500";
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-[380px_1fr]">
@@ -106,24 +106,24 @@ export function AudienceInsightsGenerator({ brands = [] }: { brands?: BrandConte
           <BrandContextPicker brands={brands} />
           <LanguagePicker />
 
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 space-y-4">
+          <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5 space-y-4">
             <h3 className="font-semibold">About your product</h3>
             <div>
-              <label className="text-sm text-zinc-400">Product / brand name *</label>
+              <label className="text-sm text-app-text-muted">Product / brand name *</label>
               <input name="productName" placeholder="NooRattan" className={`mt-1.5 ${field}`} />
             </div>
             <div>
-              <label className="text-sm text-zinc-400">Product description</label>
+              <label className="text-sm text-app-text-muted">Product description</label>
               <textarea name="description" rows={3}
                 placeholder="What it is, what it does, what makes it special"
                 className={`mt-1.5 ${field}`} />
             </div>
             <div>
-              <label className="text-sm text-zinc-400">Target market / geography</label>
+              <label className="text-sm text-app-text-muted">Target market / geography</label>
               <input name="market" placeholder="Morocco, urban areas, mid-to-high income" className={`mt-1.5 ${field}`} />
             </div>
             <div>
-              <label className="text-sm text-zinc-400">Known competitors</label>
+              <label className="text-sm text-app-text-muted">Known competitors</label>
               <input name="competitors" placeholder="Who else serves this market" className={`mt-1.5 ${field}`} />
             </div>
           </div>
@@ -139,20 +139,20 @@ export function AudienceInsightsGenerator({ brands = [] }: { brands?: BrandConte
       {/* ── Results ──────────────────────────────────────────────────────── */}
       <div className="space-y-5">
         {state.status === "idle" && !pending && (
-          <div className="rounded-2xl border border-dashed border-zinc-800 p-12 text-center">
+          <div className="rounded-2xl border border-dashed border-app-border p-12 text-center">
             <p className="text-4xl">🔎</p>
-            <p className="mt-4 font-medium text-zinc-400">Your audience segments will appear here</p>
-            <p className="mt-1.5 text-sm text-zinc-600">Fill in the product brief to get 3-5 actionable segments.</p>
+            <p className="mt-4 font-medium text-app-text-muted">Your audience segments will appear here</p>
+            <p className="mt-1.5 text-sm text-app-text-subtle">Fill in the product brief to get 3-5 actionable segments.</p>
           </div>
         )}
 
         {pending && (
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-12 text-center">
+          <div className="rounded-2xl border border-app-border bg-app-surface/60 p-12 text-center">
             <svg className="mx-auto h-8 w-8 animate-spin text-amber-400" viewBox="0 0 24 24" fill="none">
               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
             </svg>
-            <p className="mt-3 text-sm text-zinc-400">Segmenting your addressable audience…</p>
+            <p className="mt-3 text-sm text-app-text-muted">Segmenting your addressable audience…</p>
           </div>
         )}
 
@@ -161,12 +161,12 @@ export function AudienceInsightsGenerator({ brands = [] }: { brands?: BrandConte
           const focusName = result.recommendedFocus.split(" ")[0];
           return (
             <>
-              <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
-                <p className="text-xs font-semibold uppercase tracking-wider text-zinc-500 mb-2">Market summary for {productName}</p>
-                <p className="text-sm text-zinc-300 leading-relaxed">{result.marketSummary}</p>
+              <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
+                <p className="text-xs font-semibold uppercase tracking-wider text-app-text-subtle mb-2">Market summary for {productName}</p>
+                <p className="text-sm text-app-text leading-relaxed">{result.marketSummary}</p>
                 <div className="mt-3 rounded-xl bg-amber-950/30 border border-amber-400/20 px-4 py-3">
                   <p className="text-xs font-semibold text-amber-400 mb-1">Opportunity gap</p>
-                  <p className="text-sm text-zinc-200">{result.opportunityGap}</p>
+                  <p className="text-sm text-app-text">{result.opportunityGap}</p>
                 </div>
               </div>
 

@@ -84,7 +84,7 @@ export function FolderPicker({
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter") save(); if (e.key === "Escape") setEditing(false); }}
           placeholder="Folder name…"
-          className="min-w-0 flex-1 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-[10px] text-zinc-200 outline-none focus:border-amber-400"
+          className="min-w-0 flex-1 rounded-lg border border-app-border-strong bg-app-bg px-2 py-1 text-[10px] text-app-text outline-none focus:border-amber-400"
         />
         <datalist id={`folders-${kind}`}>
           {knownFolders.map((f) => <option key={f} value={f} />)}
@@ -101,7 +101,7 @@ export function FolderPicker({
     <button
       type="button"
       onClick={(e) => { e.preventDefault(); e.stopPropagation(); setEditing(true); }}
-      className="mt-1.5 block truncate text-left text-[10px] text-zinc-600 hover:text-zinc-400"
+      className="mt-1.5 block truncate text-left text-[10px] text-app-text-subtle hover:text-app-text-muted"
     >
       {folder ? `📁 ${folder}` : "+ add to folder"}
     </button>

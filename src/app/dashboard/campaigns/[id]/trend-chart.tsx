@@ -30,7 +30,7 @@ export function Sparkline({
   const padY = 3;
   const n = points.length;
   if (n === 0) {
-    return <span className="text-[10px] text-zinc-600">—</span>;
+    return <span className="text-[10px] text-app-text-subtle">—</span>;
   }
   const values = points.map((p) => p.value);
   const max = Math.max(1, ...values);
@@ -111,18 +111,18 @@ export function TrendChart({
   const shortDate = (d: string) => (d.length >= 10 ? d.slice(5) : d);
 
   return (
-    <div className="rounded-xl border border-zinc-800 bg-zinc-950/40 p-3">
+    <div className="rounded-xl border border-app-border bg-app-bg/40 p-3">
       <div className="flex items-baseline justify-between">
-        <span className="text-xs uppercase tracking-wide text-zinc-500">
+        <span className="text-xs uppercase tracking-wide text-app-text-subtle">
           {label}
         </span>
-        <span className="text-sm font-semibold text-zinc-100">
+        <span className="text-sm font-semibold text-app-text">
           {formatValue(active ? active.value : latest, format, currency)}
         </span>
       </div>
 
       {n === 0 ? (
-        <div className="mt-2 flex h-[88px] items-center justify-center text-xs text-zinc-600">
+        <div className="mt-2 flex h-[88px] items-center justify-center text-xs text-app-text-subtle">
           no data
         </div>
       ) : (
@@ -176,7 +176,7 @@ export function TrendChart({
         </svg>
       )}
 
-      <div className="mt-1 flex justify-between text-[10px] text-zinc-600">
+      <div className="mt-1 flex justify-between text-[10px] text-app-text-subtle">
         <span>{active ? shortDate(active.date) : shortDate(points[0]?.date ?? "")}</span>
         <span>{shortDate(points[n - 1]?.date ?? "")}</span>
       </div>

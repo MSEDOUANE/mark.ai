@@ -30,7 +30,7 @@ export function TagEditor({ creativeId, tags }: { creativeId: string; tags: stri
           onChange={(e) => setValue(e.target.value)}
           onKeyDown={(e) => { if (e.key === "Enter") save(); if (e.key === "Escape") setEditing(false); }}
           placeholder="tag1, tag2…"
-          className="min-w-0 flex-1 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1 text-xs text-zinc-200 outline-none focus:border-amber-400"
+          className="min-w-0 flex-1 rounded-lg border border-app-border-strong bg-app-bg px-2 py-1 text-xs text-app-text outline-none focus:border-amber-400"
         />
         <button type="button" onClick={save} disabled={isPending}
           className="shrink-0 rounded-lg bg-amber-400 px-2 py-1 text-xs font-semibold text-zinc-950 disabled:opacity-60">
@@ -43,10 +43,10 @@ export function TagEditor({ creativeId, tags }: { creativeId: string; tags: stri
   return (
     <div className="mt-2 flex flex-wrap items-center gap-1">
       {tags.map((t) => (
-        <span key={t} className="rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-400">{t}</span>
+        <span key={t} className="rounded-full bg-app-surface-2 px-2 py-0.5 text-[10px] text-app-text-muted">{t}</span>
       ))}
       <button type="button" onClick={() => setEditing(true)}
-        className="text-[10px] text-zinc-600 hover:text-zinc-400">
+        className="text-[10px] text-app-text-subtle hover:text-app-text-muted">
         {tags.length ? "edit tags" : "+ add tags"}
       </button>
     </div>

@@ -37,11 +37,11 @@ export default async function AssistantPage() {
     .map((p) => ({ role: p.role, content: p.content, toolsUsed: p.toolsUsed }));
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto flex min-h-[calc(100vh-3rem)] max-w-3xl flex-col">
         <div className="mb-4">
           <h1 className="text-2xl font-bold">MarkAI Assistant</h1>
-          <p className="mt-1 text-sm text-zinc-400">
+          <p className="mt-1 text-sm text-app-text-muted">
             Your marketing manager — ask about performance, launch campaigns,
             refresh creatives, or get recommendations. Spend always waits for
             your approval.

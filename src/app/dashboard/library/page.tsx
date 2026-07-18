@@ -185,12 +185,12 @@ export default async function LibraryPage({
   const withKind = (extra: string) => `/dashboard/library?${[kindQS, extra].filter(Boolean).join("&")}`;
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
         <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold">Asset Library</h1>
-            <p className="mt-0.5 text-sm text-zinc-400">
+            <p className="mt-0.5 text-sm text-app-text-muted">
               Every creative, video, generated text, and page — all in one place.
             </p>
           </div>
@@ -202,9 +202,9 @@ export default async function LibraryPage({
               name="q"
               defaultValue={q ?? ""}
               placeholder="Search title or copy…"
-              className="w-56 rounded-full border border-zinc-700 bg-zinc-950 px-4 py-1.5 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500"
+              className="w-56 rounded-full border border-app-border-strong bg-app-bg px-4 py-1.5 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500"
             />
-            <button type="submit" className="rounded-full border border-zinc-700 px-3 py-1.5 text-sm text-zinc-300 hover:border-zinc-500">
+            <button type="submit" className="rounded-full border border-app-border-strong px-3 py-1.5 text-sm text-app-text hover:border-zinc-500">
               Search
             </button>
           </form>
@@ -213,34 +213,34 @@ export default async function LibraryPage({
         <div className="flex flex-wrap items-center gap-2">
           <Link href="/dashboard/library"
             className={`rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
-              !kindFilter ? "border-amber-400 bg-amber-400/10 text-amber-400" : "border-zinc-700 text-zinc-400 hover:border-zinc-500"
+              !kindFilter ? "border-amber-400 bg-amber-400/10 text-amber-400" : "border-app-border-strong text-app-text-muted hover:border-zinc-500"
             }`}>
-            All <span className="text-zinc-600">{items.length}</span>
+            All <span className="text-app-text-subtle">{items.length}</span>
           </Link>
           {(Object.keys(KIND_LABEL) as Kind[]).map((k) => (
             <Link key={k} href={`/dashboard/library?kind=${k}`}
               className={`flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
-                kindFilter === k ? "border-amber-400 bg-amber-400/10 text-amber-400" : "border-zinc-700 text-zinc-400 hover:border-zinc-500"
+                kindFilter === k ? "border-amber-400 bg-amber-400/10 text-amber-400" : "border-app-border-strong text-app-text-muted hover:border-zinc-500"
               }`}>
-              {KIND_LABEL[k].icon} {KIND_LABEL[k].label} <span className="text-zinc-600">{counts[k]}</span>
+              {KIND_LABEL[k].icon} {KIND_LABEL[k].label} <span className="text-app-text-subtle">{counts[k]}</span>
             </Link>
           ))}
-          <span className="mx-1 h-5 w-px bg-zinc-800" />
+          <span className="mx-1 h-5 w-px bg-app-surface-2" />
           <Link href={favOnly ? withKind("") : withKind("fav=1")}
             className={`flex items-center gap-1.5 rounded-full border px-4 py-1.5 text-sm font-medium transition-colors ${
-              favOnly ? "border-amber-400 bg-amber-400/10 text-amber-400" : "border-zinc-700 text-zinc-400 hover:border-zinc-500"
+              favOnly ? "border-amber-400 bg-amber-400/10 text-amber-400" : "border-app-border-strong text-app-text-muted hover:border-zinc-500"
             }`}>
-            ★ Favorites <span className="text-zinc-600">{byKind.filter((i) => i.favorite).length}</span>
+            ★ Favorites <span className="text-app-text-subtle">{byKind.filter((i) => i.favorite).length}</span>
           </Link>
         </div>
 
         {knownFolders.length > 0 && (
           <div className="mt-3 flex flex-wrap items-center gap-2">
-            <span className="text-xs text-zinc-600">Folders:</span>
+            <span className="text-xs text-app-text-subtle">Folders:</span>
             {knownFolders.map((f) => (
               <Link key={f} href={folderFilter === f ? withKind("") : withKind(`folder=${encodeURIComponent(f)}`)}
                 className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
-                  folderFilter === f ? "border-amber-400 bg-amber-400/10 text-amber-400" : "border-zinc-800 text-zinc-500 hover:border-zinc-600"
+                  folderFilter === f ? "border-amber-400 bg-amber-400/10 text-amber-400" : "border-app-border text-app-text-subtle hover:border-app-border-emphasis"
                 }`}>
                 📁 {f}
               </Link>
@@ -251,7 +251,7 @@ export default async function LibraryPage({
         {filtered.length === 0 ? (
           <div className="mt-16 text-center">
             <p className="text-3xl">🗂️</p>
-            <p className="mt-3 text-sm text-zinc-500">
+            <p className="mt-3 text-sm text-app-text-subtle">
               {needle || folderFilter || favOnly
                 ? "Nothing matches these filters."
                 : "Nothing here yet — generate something in Generate or Videos."}
@@ -261,9 +261,9 @@ export default async function LibraryPage({
           <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
             {filtered.map((item) => (
               <div key={`${item.kind}-${item.id}`}
-                className="group relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 transition-colors hover:border-zinc-600">
+                className="group relative overflow-hidden rounded-xl border border-app-border bg-app-surface transition-colors hover:border-app-border-emphasis">
                 <Link href={item.href} className="block">
-                  <div className="relative aspect-square overflow-hidden bg-zinc-950">
+                  <div className="relative aspect-square overflow-hidden bg-app-bg">
                     {item.thumbUrl ? (
                       item.kind === "video" ? (
                         <video src={item.thumbUrl} muted className="h-full w-full object-cover" />
@@ -281,8 +281,8 @@ export default async function LibraryPage({
                     </span>
                   </div>
                   <div className="p-2.5 pb-0">
-                    <p className="truncate text-xs font-medium text-zinc-200">{item.title}</p>
-                    {item.subtitle && <p className="truncate text-[10px] text-zinc-500">{item.subtitle}</p>}
+                    <p className="truncate text-xs font-medium text-app-text">{item.title}</p>
+                    {item.subtitle && <p className="truncate text-[10px] text-app-text-subtle">{item.subtitle}</p>}
                   </div>
                 </Link>
                 <div className="px-2.5 pb-2.5">

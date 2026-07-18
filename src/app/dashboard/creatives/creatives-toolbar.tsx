@@ -36,10 +36,10 @@ export function CreativesToolbar({ total, generating, ready, tags = [] }: Toolba
         <button type="button" onClick={() => update("status", "all")}
           className={`rounded-full px-3.5 py-1.5 font-medium transition-colors ${
             status === "all"
-              ? "bg-zinc-700 text-zinc-100"
-              : "text-zinc-500 hover:text-zinc-300"
+              ? "bg-app-surface-2 text-app-text"
+              : "text-app-text-subtle hover:text-app-text"
           }`}>
-          All <span className="ml-1 text-zinc-500">{total}</span>
+          All <span className="ml-1 text-app-text-subtle">{total}</span>
         </button>
 
         {generating > 0 && (
@@ -47,13 +47,13 @@ export function CreativesToolbar({ total, generating, ready, tags = [] }: Toolba
             className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-medium transition-colors ${
               status === "generating"
                 ? "bg-amber-950/60 text-amber-300"
-                : "text-zinc-500 hover:text-zinc-300"
+                : "text-app-text-subtle hover:text-app-text"
             }`}>
             <span className="relative flex h-1.5 w-1.5">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-400 opacity-75" />
               <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-amber-400" />
             </span>
-            Generating <span className="ml-0.5 text-zinc-500">{generating}</span>
+            Generating <span className="ml-0.5 text-app-text-subtle">{generating}</span>
           </button>
         )}
 
@@ -61,10 +61,10 @@ export function CreativesToolbar({ total, generating, ready, tags = [] }: Toolba
           className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 font-medium transition-colors ${
             status === "ready"
               ? "bg-emerald-950/60 text-emerald-300"
-              : "text-zinc-500 hover:text-zinc-300"
+              : "text-app-text-subtle hover:text-app-text"
           }`}>
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-          Ready <span className="ml-0.5 text-zinc-500">{ready}</span>
+          Ready <span className="ml-0.5 text-app-text-subtle">{ready}</span>
         </button>
       </div>
 
@@ -74,7 +74,7 @@ export function CreativesToolbar({ total, generating, ready, tags = [] }: Toolba
           {tags.map((t) => (
             <button key={t} type="button" onClick={() => update("tag", tag === t ? "all" : t)}
               className={`rounded-full border px-2.5 py-1 text-xs transition-colors ${
-                tag === t ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-zinc-700 text-zinc-500 hover:text-zinc-300"
+                tag === t ? "border-amber-400 bg-amber-400/10 text-amber-300" : "border-app-border-strong text-app-text-subtle hover:text-app-text"
               }`}>
               {t}
             </button>
@@ -84,9 +84,9 @@ export function CreativesToolbar({ total, generating, ready, tags = [] }: Toolba
 
       {/* Sort */}
       <div className="ml-auto flex items-center gap-2">
-        <span className="text-xs text-zinc-600">Sort by</span>
+        <span className="text-xs text-app-text-subtle">Sort by</span>
         <select value={sort} onChange={(e) => update("sort", e.target.value)}
-          className="rounded-lg border border-zinc-700 bg-zinc-900 px-3 py-1.5 text-xs text-zinc-300 outline-none focus:border-zinc-500">
+          className="rounded-lg border border-app-border-strong bg-app-surface px-3 py-1.5 text-xs text-app-text outline-none focus:border-zinc-500">
           <option value="newest">Newest first</option>
           <option value="score">Highest score</option>
           <option value="oldest">Oldest first</option>

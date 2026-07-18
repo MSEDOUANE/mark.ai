@@ -18,7 +18,7 @@ function safeHex(c: string) {
 function CharCounter({ value, max }: { value: string; max: number }) {
   const left = max - value.length;
   return (
-    <span className={`text-xs tabular-nums ${left <= 5 ? "text-red-400" : "text-zinc-600"}`}>
+    <span className={`text-xs tabular-nums ${left <= 5 ? "text-red-400" : "text-app-text-subtle"}`}>
       {left}
     </span>
   );
@@ -39,17 +39,17 @@ function StepIndicator({ current }: { current: number }) {
             <div className={`flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold transition-all duration-200 ${
               i < current  ? "bg-amber-400 text-zinc-950"
               : i === current ? "bg-amber-400 text-zinc-950 ring-4 ring-amber-400/25"
-              : "bg-zinc-800 text-zinc-500"}`}>
+              : "bg-app-surface-2 text-app-text-subtle"}`}>
               {i < current ? (
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
                 </svg>
               ) : i + 1}
             </div>
-            <span className={`mt-1.5 hidden text-xs font-medium sm:block ${i <= current ? "text-zinc-300" : "text-zinc-600"}`}>{label}</span>
+            <span className={`mt-1.5 hidden text-xs font-medium sm:block ${i <= current ? "text-app-text" : "text-app-text-subtle"}`}>{label}</span>
           </div>
           {i < STEP_LABELS.length - 1 ? (
-            <div className={`mx-2 mb-5 h-px w-8 flex-shrink-0 transition-all duration-300 sm:mx-3 sm:w-14 ${i < current ? "bg-amber-400" : "bg-zinc-800"}`} />
+            <div className={`mx-2 mb-5 h-px w-8 flex-shrink-0 transition-all duration-300 sm:mx-3 sm:w-14 ${i < current ? "bg-amber-400" : "bg-app-surface-2"}`} />
           ) : null}
         </div>
       ))}
@@ -125,7 +125,7 @@ function LivePreview({ brandColor, accentColor, logoUrl, photoUrl, headline, bod
 
   return (
     <div className="sticky top-20 space-y-3">
-      <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500">Live preview</p>
+      <p className="text-[11px] font-semibold uppercase tracking-widest text-app-text-subtle">Live preview</p>
       <div className="relative aspect-[4/5] w-full overflow-hidden rounded-2xl border border-white/10 shadow-2xl shadow-black/50" style={bgStyle}>
         <div className="absolute right-3 top-3 flex items-center rounded-full bg-emerald-500/90 px-2.5 py-1 text-[11px] font-bold text-white shadow-lg">~85</div>
         {logoUrl ? (
@@ -445,7 +445,7 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
-  const field = "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none transition-colors placeholder:text-zinc-600 focus:border-zinc-500";
+  const field = "w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none transition-colors placeholder:text-app-text-subtle focus:border-zinc-500";
 
   return (
     <div>
@@ -484,9 +484,9 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
 
               {/* Saved brand cards */}
               {savedBrands.length > 0 && (
-                <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+                <div className="rounded-2xl border border-app-border bg-app-surface/60 p-6">
                   <h2 className="text-lg font-semibold">Select your brand</h2>
-                  <p className="mt-1 text-sm text-zinc-400">Pick a saved brand to load its logo and colors automatically.</p>
+                  <p className="mt-1 text-sm text-app-text-muted">Pick a saved brand to load its logo and colors automatically.</p>
                   <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
                     {savedBrands.map((b) => {
                       const bc = safeHex(b.primaryColor ?? "#7c3aed");
@@ -507,7 +507,7 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                           }}
                           className={`flex flex-col gap-3 rounded-2xl border p-4 text-left transition-all ${
                             sel ? "border-amber-400 bg-amber-950/25 ring-1 ring-amber-400"
-                                : "border-zinc-700 bg-zinc-950/70 hover:border-zinc-600"}`}>
+                                : "border-app-border-strong bg-app-bg/70 hover:border-app-border-emphasis"}`}>
                           <div className="flex items-center gap-3">
                             {b.logoUrl ? (
                               // eslint-disable-next-line @next/next/no-img-element
@@ -519,7 +519,7 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                                 {b.name.slice(0, 2).toUpperCase()}
                               </div>
                             )}
-                            <span className="flex-1 truncate text-sm font-semibold text-zinc-100">{b.name}</span>
+                            <span className="flex-1 truncate text-sm font-semibold text-app-text">{b.name}</span>
                             <div className="h-4 w-4 shrink-0 rounded-full border border-white/20" style={{ backgroundColor: bc }} />
                           </div>
                           {sel && (
@@ -535,7 +535,7 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
 
                   {/* Toggle manual override */}
                   <button type="button" onClick={() => setShowManualBrand((v) => !v)}
-                    className="mt-4 text-xs text-zinc-500 hover:text-zinc-300 transition-colors">
+                    className="mt-4 text-xs text-app-text-subtle hover:text-app-text transition-colors">
                     {showManualBrand ? "Hide manual settings" : "Or customize colors & logo manually"}
                   </button>
                 </div>
@@ -543,16 +543,16 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
 
               {/* Manual brand form */}
               {showManualBrand && (
-                <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+                <div className="rounded-2xl border border-app-border bg-app-surface/60 p-6">
                   <h2 className="text-lg font-semibold">{savedBrands.length > 0 ? "Override brand settings" : "Brand identity"}</h2>
-                  <p className="mt-1 text-sm text-zinc-400">Sets the visual style across all creatives.</p>
+                  <p className="mt-1 text-sm text-app-text-muted">Sets the visual style across all creatives.</p>
 
                   <div className="mt-5 space-y-4">
                     {/* Brand color */}
                     <div>
-                      <label className="text-sm text-zinc-400">Brand color</label>
+                      <label className="text-sm text-app-text-muted">Brand color</label>
                       <div className="mt-1.5 flex items-center gap-3">
-                        <div className="relative h-11 w-11 shrink-0 cursor-pointer overflow-hidden rounded-xl border border-zinc-700">
+                        <div className="relative h-11 w-11 shrink-0 cursor-pointer overflow-hidden rounded-xl border border-app-border-strong">
                           <input type="color" value={safeHex(brandColor)} onChange={(e) => setBrandColor(e.target.value)}
                             className="absolute inset-0 h-full w-full cursor-pointer opacity-0" />
                           <div className="h-full w-full" style={{ backgroundColor: safeHex(brandColor) }} />
@@ -565,9 +565,9 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
 
                     {/* Accent color — drives the CTA button + accent bar */}
                     <div>
-                      <label className="text-sm text-zinc-400">Accent color <span className="text-zinc-600">(buttons &amp; highlights)</span></label>
+                      <label className="text-sm text-app-text-muted">Accent color <span className="text-app-text-subtle">(buttons &amp; highlights)</span></label>
                       <div className="mt-1.5 flex items-center gap-3">
-                        <div className="relative h-11 w-11 shrink-0 cursor-pointer overflow-hidden rounded-xl border border-zinc-700">
+                        <div className="relative h-11 w-11 shrink-0 cursor-pointer overflow-hidden rounded-xl border border-app-border-strong">
                           <input type="color" value={safeHex(accentColor)} onChange={(e) => setAccentColor(e.target.value)}
                             className="absolute inset-0 h-full w-full cursor-pointer opacity-0" />
                           <div className="h-full w-full" style={{ backgroundColor: safeHex(accentColor) }} />
@@ -580,12 +580,12 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
 
                     {/* Logo */}
                     <div>
-                      <label className="text-sm text-zinc-400">Brand logo</label>
-                      <div className="mt-1.5 flex gap-1 rounded-xl border border-zinc-700 bg-zinc-950 p-1">
+                      <label className="text-sm text-app-text-muted">Brand logo</label>
+                      <div className="mt-1.5 flex gap-1 rounded-xl border border-app-border-strong bg-app-bg p-1">
                         {(["url", "upload"] as const).map((tab) => (
                           <button key={tab} type="button" onClick={() => setLogoTab(tab)}
                             className={`flex-1 rounded-lg py-1.5 text-xs font-medium transition-colors ${
-                              logoTab === tab ? "bg-zinc-700 text-zinc-100" : "text-zinc-500 hover:text-zinc-300"}`}>
+                              logoTab === tab ? "bg-app-surface-2 text-app-text" : "text-app-text-subtle hover:text-app-text"}`}>
                             {tab === "url" ? "Paste URL" : "Upload file"}
                           </button>
                         ))}
@@ -599,7 +599,7 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                         <div className="mt-2">
                           <input ref={logoFileRef} type="file" accept="image/*" className="hidden" onChange={handleLogoFile} />
                           <button type="button" onClick={() => logoFileRef.current?.click()}
-                            className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-zinc-600 bg-zinc-950 py-4 text-sm text-zinc-400 transition-colors hover:border-zinc-500 hover:text-zinc-200">
+                            className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-app-border-emphasis bg-app-bg py-4 text-sm text-app-text-muted transition-colors hover:border-zinc-500 hover:text-app-text">
                             {logoUploadStatus === "loading" ? "Reading…"
                               : logoUploadStatus === "done" ? <span className="text-emerald-400">Logo uploaded — click to change</span>
                               : logoUploadStatus === "error" ? <span className="text-red-400">Must be under 2 MB</span>
@@ -613,7 +613,7 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                           <img src={logoUrl} alt="logo" className="h-8 w-auto max-w-[100px] rounded object-contain"
                             onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
                           <button type="button" onClick={() => { setLogoUrl(""); setLogoUploadStatus("idle"); }}
-                            className="text-xs text-zinc-600 hover:text-zinc-400">Remove</button>
+                            className="text-xs text-app-text-subtle hover:text-app-text-muted">Remove</button>
                         </div>
                       ) : null}
                     </div>
@@ -631,9 +631,9 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
 
               {/* Select your product — brand-scoped catalog */}
               {hasProductCatalog && (
-                <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+                <div className="rounded-2xl border border-app-border bg-app-surface/60 p-6">
                   <h2 className="text-lg font-semibold">Select your product</h2>
-                  <p className="mt-1 text-sm text-zinc-400">Pick a product to generate creatives for, or add a new one.</p>
+                  <p className="mt-1 text-sm text-app-text-muted">Pick a product to generate creatives for, or add a new one.</p>
                   <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3">
                     {brandProducts.map((p) => {
                       const sel = p.id === productSelectedId;
@@ -641,16 +641,16 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                         <button key={p.id} type="button" onClick={() => selectProduct(p)}
                           className={`flex flex-col gap-3 rounded-2xl border p-4 text-left transition-all ${
                             sel ? "border-amber-400 bg-amber-950/25 ring-1 ring-amber-400"
-                                : "border-zinc-700 bg-zinc-950/70 hover:border-zinc-600"}`}>
+                                : "border-app-border-strong bg-app-bg/70 hover:border-app-border-emphasis"}`}>
                           <div className="flex items-center gap-3">
                             {p.photoUrl ? (
                               // eslint-disable-next-line @next/next/no-img-element
                               <img src={p.photoUrl} alt={p.name} className="h-10 w-10 shrink-0 rounded-lg object-cover"
                                 onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }} />
                             ) : (
-                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-zinc-800 text-sm">📦</div>
+                              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-app-surface-2 text-sm">📦</div>
                             )}
-                            <span className="flex-1 truncate text-sm font-semibold text-zinc-100">{p.name}</span>
+                            <span className="flex-1 truncate text-sm font-semibold text-app-text">{p.name}</span>
                           </div>
                           {sel && (
                             <div className="flex items-center gap-1 text-[11px] font-semibold text-amber-400">
@@ -663,7 +663,7 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                     })}
                   </div>
                   <button type="button" onClick={() => (showNewProduct ? setShowNewProduct(false) : startNewProduct())}
-                    className="mt-4 text-xs text-zinc-500 hover:text-zinc-300 transition-colors">
+                    className="mt-4 text-xs text-app-text-subtle hover:text-app-text transition-colors">
                     {showNewProduct ? "Hide new product form" : "+ New product"}
                   </button>
                 </div>
@@ -671,21 +671,21 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
 
               {/* Product info — new / freeform */}
               {showProductForm && (
-              <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+              <div className="rounded-2xl border border-app-border bg-app-surface/60 p-6">
                 <h2 className="text-lg font-semibold">{hasProductCatalog ? "New product" : "What are you advertising?"}</h2>
-                <p className="mt-1 text-sm text-zinc-400">Product, service, offer — describe what this creative is for.</p>
+                <p className="mt-1 text-sm text-app-text-muted">Product, service, offer — describe what this creative is for.</p>
 
                 {/* URL scan */}
                 <div className="mt-5">
-                  <label className="text-sm text-zinc-400">Auto-fill from your website</label>
+                  <label className="text-sm text-app-text-muted">Auto-fill from your website</label>
                   <div className="mt-1.5 flex gap-2">
                     <input type="text" placeholder="yourstore.com" value={scanUrl}
                       onChange={(e) => setScanUrl(e.target.value)}
                       onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleScan(); } }}
-                      className="min-w-0 flex-1 rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500" />
+                      className="min-w-0 flex-1 rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500" />
                     <button type="button" onClick={handleScan}
                       disabled={scanStatus === "loading" || !scanUrl.trim()}
-                      className="flex shrink-0 items-center gap-1.5 rounded-xl border border-zinc-600 bg-zinc-800 px-4 py-2.5 text-sm font-medium text-zinc-200 hover:bg-zinc-700 disabled:opacity-50">
+                      className="flex shrink-0 items-center gap-1.5 rounded-xl border border-app-border-emphasis bg-app-surface-2 px-4 py-2.5 text-sm font-medium text-app-text hover:bg-app-surface-2 disabled:opacity-50">
                       {scanStatus === "loading" ? (
                         <><svg className="h-3.5 w-3.5 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Scanning…</>
                       ) : "Scan website"}
@@ -702,13 +702,13 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
 
                 <div className="mt-4 space-y-3">
                   <div>
-                    <label className="text-sm text-zinc-400">Product / service name *</label>
+                    <label className="text-sm text-app-text-muted">Product / service name *</label>
                     <input placeholder="e.g. Argan Face Serum, Summer Collection, NooRattan Chair…"
                       className={`mt-1.5 ${field}`}
                       value={productName} onChange={(e) => setProductName(e.target.value)} />
                   </div>
                   <div>
-                    <label className="text-sm text-zinc-400">Description</label>
+                    <label className="text-sm text-app-text-muted">Description</label>
                     <textarea rows={3} placeholder="Key features, benefits, or what makes it special…"
                       className={`mt-1.5 ${field}`}
                       value={productDescription} onChange={(e) => setProductDescription(e.target.value)} />
@@ -718,9 +718,9 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
               )}
 
               {/* Photo / background */}
-              <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+              <div className="rounded-2xl border border-app-border bg-app-surface/60 p-6">
                 <h2 className="text-lg font-semibold">Visuals</h2>
-                <p className="mt-1 text-sm text-zinc-400">How should your creative look?</p>
+                <p className="mt-1 text-sm text-app-text-muted">How should your creative look?</p>
 
                 <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
                   {([
@@ -733,11 +733,11 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                       className={`flex flex-col items-center gap-2 rounded-2xl border p-4 text-center transition-all ${
                         photoSource === src.key
                           ? "border-amber-400 bg-amber-950/30 ring-1 ring-amber-400"
-                          : "border-zinc-700 bg-zinc-950/70 hover:border-zinc-600"}`}>
+                          : "border-app-border-strong bg-app-bg/70 hover:border-app-border-emphasis"}`}>
                       <span className="text-2xl">{src.icon}</span>
                       <div>
-                        <p className="text-xs font-semibold text-zinc-200">{src.label}</p>
-                        <p className="mt-0.5 text-[10px] text-zinc-500">{src.desc}</p>
+                        <p className="text-xs font-semibold text-app-text">{src.label}</p>
+                        <p className="mt-0.5 text-[10px] text-app-text-subtle">{src.desc}</p>
                       </div>
                     </button>
                   ))}
@@ -748,18 +748,18 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                   <div className="mt-4">
                     <input ref={photoFileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoFile} />
                     {photoUrl && !photoUploading ? (
-                      <div className="flex items-center gap-3 rounded-xl border border-zinc-700 bg-zinc-950 p-3">
+                      <div className="flex items-center gap-3 rounded-xl border border-app-border-strong bg-app-bg p-3">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={photoUrl} alt="product" className="h-14 w-14 rounded-lg object-cover" />
                         <div className="flex-1 min-w-0">
-                          <p className="truncate text-xs text-zinc-400">{photoUrl.slice(0, 60)}…</p>
+                          <p className="truncate text-xs text-app-text-muted">{photoUrl.slice(0, 60)}…</p>
                         </div>
                         <button type="button" onClick={() => { setPhotoUrl(""); if (photoFileRef.current) photoFileRef.current.value = ""; }}
-                          className="text-xs text-zinc-600 hover:text-zinc-400 shrink-0">Remove</button>
+                          className="text-xs text-app-text-subtle hover:text-app-text-muted shrink-0">Remove</button>
                       </div>
                     ) : (
                       <button type="button" onClick={() => photoFileRef.current?.click()} disabled={photoUploading}
-                        className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-zinc-600 bg-zinc-950 py-5 text-sm text-zinc-400 transition-colors hover:border-zinc-500 hover:text-zinc-200 disabled:opacity-60">
+                        className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-app-border-emphasis bg-app-bg py-5 text-sm text-app-text-muted transition-colors hover:border-zinc-500 hover:text-app-text disabled:opacity-60">
                         {photoUploading ? (
                           <><svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>Uploading…</>
                         ) : (
@@ -773,7 +773,7 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
 
                 {/* Stock photo panel */}
                 {photoSource === "stock" && (
-                  <div className="mt-4 rounded-xl border border-zinc-700 bg-zinc-950 p-4">
+                  <div className="mt-4 rounded-xl border border-app-border-strong bg-app-bg p-4">
                     <StockPhotoPicker
                       selectedId={stockSelectedId}
                       defaultQuery={productName || "lifestyle product"}
@@ -783,12 +783,12 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                       }}
                     />
                     {photoUrl && stockSelectedId && (
-                      <div className="mt-3 flex items-center gap-2 border-t border-zinc-800 pt-3">
+                      <div className="mt-3 flex items-center gap-2 border-t border-app-border pt-3">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img src={photoUrl} alt="selected" className="h-10 w-10 rounded-lg object-cover" />
                         <p className="flex-1 truncate text-xs text-emerald-400">Photo selected</p>
                         <button type="button" onClick={() => { setPhotoUrl(""); setStockSelectedId(undefined); }}
-                          className="text-xs text-zinc-600 hover:text-zinc-400">Clear</button>
+                          className="text-xs text-app-text-subtle hover:text-app-text-muted">Clear</button>
                       </div>
                     )}
                   </div>
@@ -811,15 +811,15 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                     )}
 
                     {composeSlots.map((slot, i) => (
-                      <div key={slot.id} className="flex items-center gap-3 rounded-xl border border-zinc-700 bg-zinc-950 p-3">
+                      <div key={slot.id} className="flex items-center gap-3 rounded-xl border border-app-border-strong bg-app-bg p-3">
                         {/* Thumbnail / upload trigger */}
                         <button
                           type="button"
                           onClick={() => openCompositeUpload(slot.id)}
                           disabled={uploadingSlotId === slot.id}
-                          className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-zinc-700 bg-zinc-900 transition-colors hover:border-zinc-500 disabled:opacity-60">
+                          className="relative h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-app-border-strong bg-app-surface transition-colors hover:border-zinc-500 disabled:opacity-60">
                           {uploadingSlotId === slot.id ? (
-                            <svg className="absolute inset-0 m-auto h-5 w-5 animate-spin text-zinc-500" viewBox="0 0 24 24" fill="none">
+                            <svg className="absolute inset-0 m-auto h-5 w-5 animate-spin text-app-text-subtle" viewBox="0 0 24 24" fill="none">
                               <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
                               <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                             </svg>
@@ -827,7 +827,7 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                             // eslint-disable-next-line @next/next/no-img-element
                             <img src={slot.url} alt={slot.label} className="h-full w-full object-cover" />
                           ) : (
-                            <svg className="absolute inset-0 m-auto h-6 w-6 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                            <svg className="absolute inset-0 m-auto h-6 w-6 text-app-text-subtle" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5" />
                             </svg>
                           )}
@@ -835,10 +835,10 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
 
                         {/* Label + status */}
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-zinc-200">{slot.label}</p>
-                          <p className="mt-0.5 text-xs text-zinc-500">
+                          <p className="text-sm font-medium text-app-text">{slot.label}</p>
+                          <p className="mt-0.5 text-xs text-app-text-subtle">
                             {slot.url ? (
-                              <button type="button" onClick={() => openCompositeUpload(slot.id)} className="text-zinc-500 hover:text-zinc-300 transition-colors">
+                              <button type="button" onClick={() => openCompositeUpload(slot.id)} className="text-app-text-subtle hover:text-app-text transition-colors">
                                 Replace photo
                               </button>
                             ) : (
@@ -852,7 +852,7 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                         {/* Remove (not for the first slot) */}
                         {i > 0 && (
                           <button type="button" onClick={() => removeCompositeSlot(slot.id)}
-                            className="shrink-0 rounded-lg p-1.5 text-zinc-600 transition-colors hover:bg-zinc-800 hover:text-zinc-300">
+                            className="shrink-0 rounded-lg p-1.5 text-app-text-subtle transition-colors hover:bg-app-surface-2 hover:text-app-text">
                             <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                               <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                             </svg>
@@ -863,7 +863,7 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
 
                     {composeSlots.length < 4 && (
                       <button type="button" onClick={addCompositeSlot}
-                        className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-zinc-700 py-2.5 text-sm text-zinc-500 transition-colors hover:border-zinc-500 hover:text-zinc-300">
+                        className="flex w-full items-center justify-center gap-2 rounded-xl border border-dashed border-app-border-strong py-2.5 text-sm text-app-text-subtle transition-colors hover:border-zinc-500 hover:text-app-text">
                         <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                           <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
@@ -874,10 +874,10 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                     {/* Scene description */}
                     <div className="pt-1">
                       <div className="flex items-center justify-between gap-3">
-                        <label className="text-sm text-zinc-400">Scene description <span className="text-zinc-600">(optional)</span></label>
+                        <label className="text-sm text-app-text-muted">Scene description <span className="text-app-text-subtle">(optional)</span></label>
                         <button type="button" onClick={handleWriteScenePrompt}
                           disabled={sceneWriting || composeSlots.every((s) => !s.url)}
-                          className="flex shrink-0 items-center gap-1.5 rounded-lg border border-zinc-600 bg-zinc-800 px-3 py-1.5 text-xs font-semibold text-zinc-200 transition-colors hover:bg-zinc-700 disabled:opacity-50">
+                          className="flex shrink-0 items-center gap-1.5 rounded-lg border border-app-border-emphasis bg-app-surface-2 px-3 py-1.5 text-xs font-semibold text-app-text transition-colors hover:bg-app-surface-2 disabled:opacity-50">
                           {sceneWriting ? (
                             <><svg className="h-3 w-3 animate-spin" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" /><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" /></svg>Writing…</>
                           ) : (
@@ -907,15 +907,15 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
             <div className="space-y-4">
 
               {/* Copy mode */}
-              <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+              <div className="rounded-2xl border border-app-border bg-app-surface/60 p-6">
                 <h2 className="text-lg font-semibold">Ad copy</h2>
-                <p className="mt-1 text-sm text-zinc-400">Let AI craft conversion-focused copy, or write it yourself.</p>
+                <p className="mt-1 text-sm text-app-text-muted">Let AI craft conversion-focused copy, or write it yourself.</p>
 
-                <div className="mt-5 flex gap-1 rounded-xl border border-zinc-700 bg-zinc-950 p-1">
+                <div className="mt-5 flex gap-1 rounded-xl border border-app-border-strong bg-app-bg p-1">
                   {([["ai", "AI writes it", "Recommended"], ["manual", "I'll write it", ""]] as const).map(([mode, label, badge]) => (
                     <button key={mode} type="button" onClick={() => setTextMode(mode)}
                       className={`relative flex flex-1 items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium transition-colors ${
-                        textMode === mode ? "bg-zinc-700 text-zinc-100" : "text-zinc-500 hover:text-zinc-300"}`}>
+                        textMode === mode ? "bg-app-surface-2 text-app-text" : "text-app-text-subtle hover:text-app-text"}`}>
                       {label}
                       {badge && <span className="rounded-full bg-amber-400/20 px-2 py-0.5 text-[10px] font-semibold text-amber-400">{badge}</span>}
                     </button>
@@ -925,19 +925,19 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                 {textMode === "ai" ? (
                   <div className="mt-5 space-y-4">
                     <div>
-                      <label className="text-sm text-zinc-400">Creative goal *</label>
+                      <label className="text-sm text-app-text-muted">Creative goal *</label>
                       <input placeholder="Drive sales for the summer collection, grow brand awareness…"
                         className={`mt-1.5 ${field}`}
                         value={goal} onChange={(e) => setGoal(e.target.value)} />
                     </div>
                     <div>
-                      <label className="text-sm text-zinc-400">Target audience</label>
+                      <label className="text-sm text-app-text-muted">Target audience</label>
                       <input placeholder="Women 25–45 in Morocco, interested in home decor…"
                         className={`mt-1.5 ${field}`}
                         value={audience} onChange={(e) => setAudience(e.target.value)} />
                     </div>
                     <div>
-                      <label className="text-sm text-zinc-400">Call to action</label>
+                      <label className="text-sm text-app-text-muted">Call to action</label>
                       <input placeholder="Shop Now, Learn More, Get Started…"
                         className={`mt-1.5 ${field}`}
                         value={callToAction} onChange={(e) => setCallToAction(e.target.value)} />
@@ -948,7 +948,7 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                   <div className="mt-5 space-y-4">
                     <div>
                       <div className="flex items-center justify-between">
-                        <label className="text-sm text-zinc-400">Main headline *</label>
+                        <label className="text-sm text-app-text-muted">Main headline *</label>
                         <CharCounter value={headline} max={40} />
                       </div>
                       <input maxLength={40} placeholder="Your main headline here!"
@@ -957,7 +957,7 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                     </div>
                     <div>
                       <div className="flex items-center justify-between">
-                        <label className="text-sm text-zinc-400">Punchline / body</label>
+                        <label className="text-sm text-app-text-muted">Punchline / body</label>
                         <CharCounter value={body} max={90} />
                       </div>
                       <input maxLength={90} placeholder="Your punchline is here!"
@@ -966,7 +966,7 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                     </div>
                     <div>
                       <div className="flex items-center justify-between">
-                        <label className="text-sm text-zinc-400">Call to action</label>
+                        <label className="text-sm text-app-text-muted">Call to action</label>
                         <CharCounter value={callToAction} max={25} />
                       </div>
                       <input maxLength={25} placeholder="Shop Now"
@@ -974,7 +974,7 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                         value={callToAction} onChange={(e) => setCallToAction(e.target.value)} />
                     </div>
                     <div>
-                      <label className="text-sm text-zinc-400">Target audience</label>
+                      <label className="text-sm text-app-text-muted">Target audience</label>
                       <input placeholder="Women 25–45 in Morocco…"
                         className={`mt-1.5 ${field}`}
                         value={audience} onChange={(e) => setAudience(e.target.value)} />
@@ -984,20 +984,20 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
               </div>
 
               {/* Template */}
-              <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+              <div className="rounded-2xl border border-app-border bg-app-surface/60 p-6">
                 <h2 className="text-lg font-semibold">Ad template</h2>
-                <p className="mt-1 text-sm text-zinc-400">Controls how the text and image are laid out.</p>
+                <p className="mt-1 text-sm text-app-text-muted">Controls how the text and image are laid out.</p>
                 <div className="mt-5 grid grid-cols-2 gap-3">
                   {TEMPLATES.map((t) => (
                     <button key={t.id} type="button" onClick={() => setTemplate(t.id)}
                       className={`flex flex-col items-stretch gap-2 rounded-2xl border p-3 text-left transition-all ${
-                        template === t.id ? "border-amber-400 bg-amber-950/30 ring-1 ring-amber-400" : "border-zinc-700 bg-zinc-950/70 hover:border-zinc-600"}`}>
+                        template === t.id ? "border-amber-400 bg-amber-950/30 ring-1 ring-amber-400" : "border-app-border-strong bg-app-bg/70 hover:border-app-border-emphasis"}`}>
                       <div className="aspect-[3/2] w-full overflow-hidden rounded-lg">
                         <TemplateMini id={t.id} color={brandColor} />
                       </div>
                       <div>
-                        <p className="text-sm font-semibold text-zinc-200">{t.label}</p>
-                        <p className="mt-0.5 text-xs text-zinc-500">{t.desc}</p>
+                        <p className="text-sm font-semibold text-app-text">{t.label}</p>
+                        <p className="mt-0.5 text-xs text-app-text-subtle">{t.desc}</p>
                       </div>
                     </button>
                   ))}
@@ -1010,21 +1010,21 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
               STEP 3 — GENERATE
           ════════════════════════════════════════════════════ */}
           <div style={{ display: step === 3 ? undefined : "none" }}>
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+            <div className="rounded-2xl border border-app-border bg-app-surface/60 p-6">
               <h2 className="text-lg font-semibold">Ready to generate</h2>
-              <p className="mt-1 text-sm text-zinc-400">Review your inputs, then launch.</p>
+              <p className="mt-1 text-sm text-app-text-muted">Review your inputs, then launch.</p>
 
               <div className="mt-5 space-y-5">
                 {/* Summary */}
-                <div className="rounded-xl border border-zinc-800 bg-zinc-900 p-4 text-sm">
-                  <p className="mb-3 font-medium text-zinc-300">Summary</p>
-                  <dl className="space-y-1.5 text-zinc-500">
+                <div className="rounded-xl border border-app-border bg-app-surface p-4 text-sm">
+                  <p className="mb-3 font-medium text-app-text">Summary</p>
+                  <dl className="space-y-1.5 text-app-text-subtle">
                     {brandSelectedId && (
                       <div className="flex gap-2"><dt className="w-28 shrink-0">Brand</dt>
-                        <dd className="text-zinc-300">{savedBrands.find(b => b.id === brandSelectedId)?.name ?? "—"}</dd></div>
+                        <dd className="text-app-text">{savedBrands.find(b => b.id === brandSelectedId)?.name ?? "—"}</dd></div>
                     )}
-                    <div className="flex gap-2"><dt className="w-28 shrink-0">Product</dt><dd className="text-zinc-300 truncate">{productName || "—"}</dd></div>
-                    <div className="flex gap-2"><dt className="w-28 shrink-0">Visuals</dt><dd className="text-zinc-300">
+                    <div className="flex gap-2"><dt className="w-28 shrink-0">Product</dt><dd className="text-app-text truncate">{productName || "—"}</dd></div>
+                    <div className="flex gap-2"><dt className="w-28 shrink-0">Visuals</dt><dd className="text-app-text">
                       {photoSource === "ai"
                         ? `AI-generated (${imageModel})`
                         : photoSource === "compose"
@@ -1033,18 +1033,18 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                         ? "Stock photo (FLUX Redux)"
                         : "Uploaded photo (FLUX Redux)"}
                     </dd></div>
-                    <div className="flex gap-2"><dt className="w-28 shrink-0">Copy mode</dt><dd className="text-zinc-300">{textMode === "ai" ? "AI-generated (2–4 variants)" : "Manual (1 creative)"}</dd></div>
+                    <div className="flex gap-2"><dt className="w-28 shrink-0">Copy mode</dt><dd className="text-app-text">{textMode === "ai" ? "AI-generated (2–4 variants)" : "Manual (1 creative)"}</dd></div>
                     {textMode === "manual" && headline && (
-                      <div className="flex gap-2"><dt className="w-28 shrink-0">Headline</dt><dd className="text-zinc-300 truncate">{headline}</dd></div>
+                      <div className="flex gap-2"><dt className="w-28 shrink-0">Headline</dt><dd className="text-app-text truncate">{headline}</dd></div>
                     )}
-                    <div className="flex gap-2"><dt className="w-28 shrink-0">Template</dt><dd className="text-zinc-300 capitalize">{template}</dd></div>
-                    <div className="flex gap-2"><dt className="w-28 shrink-0">Sizes</dt><dd className="text-zinc-300">4:5 · 1:1 · 9:16 · Link</dd></div>
+                    <div className="flex gap-2"><dt className="w-28 shrink-0">Template</dt><dd className="text-app-text capitalize">{template}</dd></div>
+                    <div className="flex gap-2"><dt className="w-28 shrink-0">Sizes</dt><dd className="text-app-text">4:5 · 1:1 · 9:16 · Link</dd></div>
                   </dl>
                 </div>
 
                 {/* Project name + campaign */}
                 <div>
-                  <label className="text-sm text-zinc-400">Project name <span className="text-zinc-600">(optional)</span></label>
+                  <label className="text-sm text-app-text-muted">Project name <span className="text-app-text-subtle">(optional)</span></label>
                   <input name="projectName" placeholder="Summer 2025 Campaign"
                     className={`mt-1.5 ${field}`}
                     value={projectName} onChange={(e) => setProjectName(e.target.value)} />
@@ -1052,7 +1052,7 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
 
                 {campaigns.length > 0 && (
                   <div>
-                    <label className="text-sm text-zinc-400">Assign to campaign <span className="text-zinc-600">(optional)</span></label>
+                    <label className="text-sm text-app-text-muted">Assign to campaign <span className="text-app-text-subtle">(optional)</span></label>
                     <select name="campaignId" defaultValue={prefillCampaignId ?? ""} className={`mt-1.5 ${field}`}>
                       <option value="">None — save as standalone</option>
                       {campaigns.map((camp) => (
@@ -1064,7 +1064,7 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
 
                 {/* Image model */}
                 <div>
-                  <label className="text-sm text-zinc-400">Image generation model</label>
+                  <label className="text-sm text-app-text-muted">Image generation model</label>
                   <div className="mt-2 grid grid-cols-2 gap-3">
                     {([
                       { id: "nano-banana-2", label: "Nano Banana 2", desc: "High quality · AI reasoning", badge: "Recommended" },
@@ -1072,17 +1072,17 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
                     ] as const).map((m) => (
                       <button key={m.id} type="button" onClick={() => setImageModel(m.id)}
                         className={`flex flex-col gap-1 rounded-xl border p-3 text-left transition-all ${
-                          imageModel === m.id ? "border-amber-400 bg-amber-950/30 ring-1 ring-amber-400" : "border-zinc-700 bg-zinc-950/70 hover:border-zinc-600"}`}>
+                          imageModel === m.id ? "border-amber-400 bg-amber-950/30 ring-1 ring-amber-400" : "border-app-border-strong bg-app-bg/70 hover:border-app-border-emphasis"}`}>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-semibold text-zinc-200">{m.label}</span>
+                          <span className="text-sm font-semibold text-app-text">{m.label}</span>
                           {m.badge && <span className="rounded-full bg-amber-400/20 px-2 py-0.5 text-[10px] font-semibold text-amber-400">{m.badge}</span>}
                         </div>
-                        <p className="text-xs text-zinc-500">{m.desc}</p>
+                        <p className="text-xs text-app-text-subtle">{m.desc}</p>
                       </button>
                     ))}
                   </div>
                   {photoSource !== "ai" && photoUrl && (
-                    <p className="mt-2 text-xs text-zinc-600">When a product photo is set, FLUX Redux is used for image-to-image variation regardless of this choice.</p>
+                    <p className="mt-2 text-xs text-app-text-subtle">When a product photo is set, FLUX Redux is used for image-to-image variation regardless of this choice.</p>
                   )}
                 </div>
 
@@ -1104,13 +1104,13 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
           <div className="mt-5 flex items-center gap-3">
             {step > 0 && (
               <button type="button" onClick={handleBack}
-                className="rounded-xl border border-zinc-700 px-5 py-3 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-zinc-100">
+                className="rounded-xl border border-app-border-strong px-5 py-3 text-sm text-app-text transition-colors hover:border-zinc-500 hover:text-app-text">
                 ← Back
               </button>
             )}
             {step < STEP_LABELS.length - 1 && (
               <button type="button" onClick={handleNext}
-                className="rounded-xl bg-zinc-800 px-6 py-3 text-sm font-semibold text-zinc-100 transition-colors hover:bg-zinc-700">
+                className="rounded-xl bg-app-surface-2 px-6 py-3 text-sm font-semibold text-app-text transition-colors hover:bg-app-surface-2">
                 Next step →
               </button>
             )}

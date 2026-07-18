@@ -39,12 +39,12 @@ export default async function CampaignsPage({
   const metaAccount = metaAccounts[0];
 
   return (
-    <main className="min-h-screen px-4 py-5 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-5 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
-        <div className="rounded-xl border border-white/10 bg-zinc-900/80 p-4 backdrop-blur-sm">
+        <div className="rounded-xl border border-white/10 bg-app-surface/80 p-4 backdrop-blur-sm">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <Link href="/dashboard" className="text-sm text-zinc-300 hover:text-white">
+              <Link href="/dashboard" className="text-sm text-app-text hover:text-white">
                 ← Dashboard
               </Link>
               <h1 className="mt-1 text-xl font-semibold">Campaigns</h1>
@@ -53,7 +53,7 @@ export default async function CampaignsPage({
               {metaAccount ? (
                 <form action={importMetaCampaigns}>
                   <input type="hidden" name="adAccountId" value={metaAccount.id} />
-                  <button className="rounded-full border border-white/10 bg-zinc-950 px-4 py-2.5 text-sm font-medium text-zinc-100 hover:bg-zinc-800 hover:border-white/20">
+                  <button className="rounded-full border border-white/10 bg-app-bg px-4 py-2.5 text-sm font-medium text-app-text hover:bg-app-surface-2 hover:border-white/20">
                     Import from Meta
                   </button>
                 </form>
@@ -82,7 +82,7 @@ export default async function CampaignsPage({
 
         <div className="mt-5 flex flex-col gap-2">
           {campaigns.length === 0 ? (
-            <p className="rounded-xl border border-white/10 bg-zinc-900/80 p-4 text-sm leading-7 text-zinc-200">
+            <p className="rounded-xl border border-white/10 bg-app-surface/80 p-4 text-sm leading-7 text-app-text">
               No campaigns yet. Create a brief, or{" "}
               {metaAccount ? "import your existing ones from Meta" : "connect an ad account"}.
             </p>
@@ -90,16 +90,16 @@ export default async function CampaignsPage({
             campaigns.map((c) => (
               <div
                 key={c.id}
-                className="flex flex-col gap-3 rounded-xl border border-white/10 bg-zinc-900/80 p-4 sm:flex-row sm:items-center sm:justify-between"
+                className="flex flex-col gap-3 rounded-xl border border-white/10 bg-app-surface/80 p-4 sm:flex-row sm:items-center sm:justify-between"
               >
                 <Link
                   href={`/dashboard/campaigns/${c.id}`}
                   className="group min-w-0 flex-1 rounded-md"
                 >
-                  <div className="truncate font-medium text-zinc-50 group-hover:text-white">
+                  <div className="truncate font-medium text-app-text group-hover:text-white">
                     {c.name}
                   </div>
-                  <div className="mt-1 truncate text-xs text-zinc-300">
+                  <div className="mt-1 truncate text-xs text-app-text">
                     {c.platform} · {c.status}
                     {c.budgetMinor != null
                       ? ` · ${(c.budgetMinor / 100).toFixed(2)} ${c.currency}/day`
@@ -117,7 +117,7 @@ export default async function CampaignsPage({
                   </Link>
                   <Link
                     href={`/dashboard/campaigns/${c.id}`}
-                    className="rounded-full border border-white/10 bg-zinc-950 px-3 py-2 text-center text-zinc-300 hover:border-white/20 hover:bg-zinc-800 hover:text-zinc-50"
+                    className="rounded-full border border-white/10 bg-app-bg px-3 py-2 text-center text-app-text hover:border-white/20 hover:bg-app-surface-2 hover:text-app-text"
                     aria-label={`Open ${c.name}`}
                   >
                     →

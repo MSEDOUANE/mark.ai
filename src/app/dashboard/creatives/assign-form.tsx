@@ -20,7 +20,7 @@ export function AssignForm({
       <select
         name="campaignId"
         defaultValue={currentCampaignId ?? ""}
-        className="min-w-0 flex-1 rounded-lg border border-zinc-700 bg-zinc-950 px-2 py-1.5 text-xs text-zinc-200 outline-none focus:border-zinc-500"
+        className="min-w-0 flex-1 rounded-lg border border-app-border-strong bg-app-bg px-2 py-1.5 text-xs text-app-text outline-none focus:border-zinc-500"
       >
         <option value="">Unassigned</option>
         {campaigns.map((c) => (
@@ -40,7 +40,7 @@ function AssignButton() {
     <button
       type="submit"
       disabled={pending}
-      className="shrink-0 rounded-lg border border-zinc-700 px-3 py-1.5 text-xs text-zinc-300 hover:border-zinc-500 hover:text-zinc-100 disabled:opacity-50"
+      className="shrink-0 rounded-lg border border-app-border-strong px-3 py-1.5 text-xs text-app-text hover:border-zinc-500 hover:text-app-text disabled:opacity-50"
     >
       {pending ? "…" : "Assign"}
     </button>

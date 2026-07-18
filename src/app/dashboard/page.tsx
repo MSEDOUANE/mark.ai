@@ -390,23 +390,23 @@ export default async function DashboardPage({
   const autonomyLabel = AUTONOMY_LABELS[org.autonomyLevel] ?? org.autonomyLevel;
 
   return (
-    <main className="min-h-screen px-4 py-5 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-5 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto flex max-w-5xl flex-col">
 
         {/* Header */}
         <header className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-2xl font-bold">Overview</h1>
-            <p className="mt-0.5 text-sm text-zinc-400">{org.name} · {user.email}</p>
+            <p className="mt-0.5 text-sm text-app-text-muted">{org.name} · {user.email}</p>
           </div>
           <form action={signOut}>
-            <button className="rounded-full border border-zinc-700 px-3 py-1.5 text-sm font-medium text-zinc-300 hover:border-zinc-500 hover:text-zinc-100">
+            <button className="rounded-full border border-app-border-strong px-3 py-1.5 text-sm font-medium text-app-text hover:border-zinc-500 hover:text-app-text">
               Sign out
             </button>
           </form>
         </header>
 
-        <nav className="sticky top-2 z-20 mt-3 rounded-xl border border-zinc-800 bg-zinc-950/90 p-2 backdrop-blur">
+        <nav className="sticky top-2 z-20 mt-3 rounded-xl border border-app-border bg-app-bg/90 p-2 backdrop-blur">
           <div className="flex flex-wrap gap-2">
             {[
               ["performance", "Performance"],
@@ -419,12 +419,12 @@ export default async function DashboardPage({
               <a
                 key={id}
                 href={`#${id}`}
-                className="rounded-full border border-zinc-700 px-3 py-1 text-xs text-zinc-300 hover:border-zinc-500 hover:text-zinc-100"
+                className="rounded-full border border-app-border-strong px-3 py-1 text-xs text-app-text hover:border-zinc-500 hover:text-app-text"
               >
                 {label}
               </a>
             ))}
-            <span className="mx-1 h-6 w-px self-center bg-zinc-800" />
+            <span className="mx-1 h-6 w-px self-center bg-app-surface-2" />
             {densityValues.map((mode) => (
               <Link
                 key={mode}
@@ -432,13 +432,13 @@ export default async function DashboardPage({
                 className={`rounded-full border px-3 py-1 text-xs ${
                   density === mode
                     ? "border-amber-400 bg-amber-400/10 text-amber-300"
-                    : "border-zinc-700 text-zinc-300 hover:border-zinc-500"
+                    : "border-app-border-strong text-app-text hover:border-zinc-500"
                 }`}
               >
                 {mode}
               </Link>
             ))}
-            <span className="mx-1 h-6 w-px self-center bg-zinc-800" />
+            <span className="mx-1 h-6 w-px self-center bg-app-surface-2" />
             {focusValues.map((mode) => (
               <Link
                 key={mode}
@@ -446,13 +446,13 @@ export default async function DashboardPage({
                 className={`rounded-full border px-3 py-1 text-xs ${
                   focus === mode
                     ? "border-amber-400 bg-amber-400/10 text-amber-300"
-                    : "border-zinc-700 text-zinc-300 hover:border-zinc-500"
+                    : "border-app-border-strong text-app-text hover:border-zinc-500"
                 }`}
               >
                 {mode}
               </Link>
             ))}
-            <span className="mx-1 h-6 w-px self-center bg-zinc-800" />
+            <span className="mx-1 h-6 w-px self-center bg-app-surface-2" />
             {[
               ["New", "/dashboard/campaigns/new"],
               ["Generate", "/dashboard/generate"],
@@ -462,15 +462,15 @@ export default async function DashboardPage({
               <Link
                 key={label}
                 href={href}
-                className="rounded-full border border-zinc-700 px-3 py-1 text-xs text-zinc-300 hover:border-zinc-500 hover:text-zinc-100"
+                className="rounded-full border border-app-border-strong px-3 py-1 text-xs text-app-text hover:border-zinc-500 hover:text-app-text"
               >
                 {label}
               </Link>
             ))}
-            <span className="mx-1 h-6 w-px self-center bg-zinc-800" />
+            <span className="mx-1 h-6 w-px self-center bg-app-surface-2" />
             <DashboardResetPreferencesButton
               href="/dashboard/preferences?reset=1&to=/dashboard"
-              className="rounded-full border border-zinc-700 px-3 py-1 text-xs text-zinc-300 hover:border-zinc-500 hover:text-zinc-100"
+              className="rounded-full border border-app-border-strong px-3 py-1 text-xs text-app-text hover:border-zinc-500 hover:text-app-text"
             />
             <DashboardSectionOrderer
               initialOrder={panelOrder}
@@ -500,17 +500,17 @@ export default async function DashboardPage({
         </div>
 
         {/* AI autonomy notice */}
-        <div className="mt-4 flex items-center gap-3 rounded-xl border border-zinc-800 bg-zinc-900/60 px-4 py-3">
+        <div className="mt-4 flex items-center gap-3 rounded-xl border border-app-border bg-app-surface/60 px-4 py-3">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-400/15">
             <svg className="h-4 w-4 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M9.813 15.904 9 18.75l-.813-2.846a4.5 4.5 0 0 0-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 0 0 3.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 0 0 3.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 0 0-3.09 3.09Z" />
             </svg>
           </div>
           <div className="min-w-0 flex-1">
-            <span className="text-sm text-zinc-300">AI autonomy: </span>
-            <span className="text-sm font-medium text-zinc-100">{autonomyLabel}</span>
+            <span className="text-sm text-app-text">AI autonomy: </span>
+            <span className="text-sm font-medium text-app-text">{autonomyLabel}</span>
           </div>
-          <Link href="/dashboard/settings" className="shrink-0 text-xs text-zinc-500 hover:text-zinc-300">
+          <Link href="/dashboard/settings" className="shrink-0 text-xs text-app-text-subtle hover:text-app-text">
             Change →
           </Link>
         </div>
@@ -519,29 +519,29 @@ export default async function DashboardPage({
           <Link
             href="/dashboard/campaigns/new"
             accessKey="n"
-            className="rounded-xl border border-zinc-800 bg-zinc-900/60 px-4 py-3 transition-colors hover:border-zinc-600"
+            className="rounded-xl border border-app-border bg-app-surface/60 px-4 py-3 transition-colors hover:border-app-border-emphasis"
             title="Keyboard shortcut: Alt+Shift+N"
           >
-            <div className="text-sm font-semibold text-zinc-50">New Campaign</div>
-            <div className="mt-1 text-xs text-zinc-500">Shortcut: Alt+Shift+N</div>
+            <div className="text-sm font-semibold text-app-text">New Campaign</div>
+            <div className="mt-1 text-xs text-app-text-subtle">Shortcut: Alt+Shift+N</div>
           </Link>
           <Link
             href="/dashboard/generate"
             accessKey="g"
-            className="rounded-xl border border-zinc-800 bg-zinc-900/60 px-4 py-3 transition-colors hover:border-zinc-600"
+            className="rounded-xl border border-app-border bg-app-surface/60 px-4 py-3 transition-colors hover:border-app-border-emphasis"
             title="Keyboard shortcut: Alt+Shift+G"
           >
-            <div className="text-sm font-semibold text-zinc-50">Open Generate</div>
-            <div className="mt-1 text-xs text-zinc-500">Shortcut: Alt+Shift+G</div>
+            <div className="text-sm font-semibold text-app-text">Open Generate</div>
+            <div className="mt-1 text-xs text-app-text-subtle">Shortcut: Alt+Shift+G</div>
           </Link>
           <Link
             href="/dashboard/assistant"
             accessKey="m"
-            className="rounded-xl border border-zinc-800 bg-zinc-900/60 px-4 py-3 transition-colors hover:border-zinc-600"
+            className="rounded-xl border border-app-border bg-app-surface/60 px-4 py-3 transition-colors hover:border-app-border-emphasis"
             title="Keyboard shortcut: Alt+Shift+M"
           >
-            <div className="text-sm font-semibold text-zinc-50">Open Assistant</div>
-            <div className="mt-1 text-xs text-zinc-500">Shortcut: Alt+Shift+M</div>
+            <div className="text-sm font-semibold text-app-text">Open Assistant</div>
+            <div className="mt-1 text-xs text-app-text-subtle">Shortcut: Alt+Shift+M</div>
           </Link>
         </section>
 
@@ -556,7 +556,7 @@ export default async function DashboardPage({
           </InfoPanel>
 
           <InfoPanel title="Credits Remaining" compact={isCompact}>
-            <div className="rounded-xl border border-dashed border-zinc-800 bg-zinc-950/60 p-4 text-sm text-zinc-400">
+            <div className="rounded-xl border border-dashed border-app-border bg-app-bg/60 p-4 text-sm text-app-text-muted">
               Credits are not modeled yet. Wire billing here later and keep this card as the main balance indicator.
             </div>
           </InfoPanel>
@@ -571,9 +571,9 @@ export default async function DashboardPage({
             ) : (
               <div className="space-y-2">
                 {recentBrands.map((brand) => (
-                  <Link key={brand.id} href="/dashboard/brands" className="block rounded-xl border border-zinc-800 bg-zinc-950/60 px-4 py-3 hover:border-zinc-600">
-                    <div className="text-sm font-semibold text-zinc-50">{brand.name}</div>
-                    <div className="mt-1 text-xs text-zinc-500">{brand.tone ?? "No tone set"}</div>
+                  <Link key={brand.id} href="/dashboard/brands" className="block rounded-xl border border-app-border bg-app-bg/60 px-4 py-3 hover:border-app-border-emphasis">
+                    <div className="text-sm font-semibold text-app-text">{brand.name}</div>
+                    <div className="mt-1 text-xs text-app-text-subtle">{brand.tone ?? "No tone set"}</div>
                   </Link>
                 ))}
               </div>
@@ -582,13 +582,13 @@ export default async function DashboardPage({
 
           <InfoPanel title="Notifications" compact={isCompact}>
             <div className="space-y-3">
-              <div className="rounded-xl border border-zinc-800 bg-zinc-950/60 px-4 py-3">
-                <div className="text-xs uppercase tracking-[0.12em] text-zinc-500">Pending approvals</div>
-                <div className="mt-1 text-2xl font-semibold tabular-nums text-zinc-100">{pendingApprovalsCount}</div>
+              <div className="rounded-xl border border-app-border bg-app-bg/60 px-4 py-3">
+                <div className="text-xs uppercase tracking-[0.12em] text-app-text-subtle">Pending approvals</div>
+                <div className="mt-1 text-2xl font-semibold tabular-nums text-app-text">{pendingApprovalsCount}</div>
               </div>
-              <div className="rounded-xl border border-zinc-800 bg-zinc-950/60 px-4 py-3">
-                <div className="text-xs uppercase tracking-[0.12em] text-zinc-500">Open alerts</div>
-                <div className="mt-1 text-2xl font-semibold tabular-nums text-zinc-100">{openAlerts.length}</div>
+              <div className="rounded-xl border border-app-border bg-app-bg/60 px-4 py-3">
+                <div className="text-xs uppercase tracking-[0.12em] text-app-text-subtle">Open alerts</div>
+                <div className="mt-1 text-2xl font-semibold tabular-nums text-app-text">{openAlerts.length}</div>
               </div>
               <Link href="/dashboard/notifications" className="block text-sm font-medium text-amber-300 hover:text-amber-200">
                 Open notification inbox →
@@ -597,10 +597,10 @@ export default async function DashboardPage({
           </InfoPanel>
         </section>
 
-        <section className="mt-6 rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+        <section className="mt-6 rounded-xl border border-app-border bg-app-surface/60 p-5">
           <div className="flex items-center justify-between gap-3">
-            <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500">Quick Generate Buttons</h2>
-            <Link href="/dashboard/generate" className="text-xs text-zinc-500 hover:text-zinc-300">
+            <h2 className="text-sm font-semibold uppercase tracking-wider text-app-text-subtle">Quick Generate Buttons</h2>
+            <Link href="/dashboard/generate" className="text-xs text-app-text-subtle hover:text-app-text">
               View all tools →
             </Link>
           </div>
@@ -612,9 +612,9 @@ export default async function DashboardPage({
               ["Voice", "/dashboard/generate/voice", "Create voiceover"],
             ].map(([label, href, cta]) => (
               <Link key={label} href={href as string}
-                className="group rounded-xl border border-zinc-800 bg-zinc-950/60 px-4 py-3 transition-colors hover:border-zinc-600">
-                <div className="text-sm font-semibold text-zinc-100">{label}</div>
-                <div className="mt-1 text-xs text-zinc-500 group-hover:text-zinc-400">{cta}</div>
+                className="group rounded-xl border border-app-border bg-app-bg/60 px-4 py-3 transition-colors hover:border-app-border-emphasis">
+                <div className="text-sm font-semibold text-app-text">{label}</div>
+                <div className="mt-1 text-xs text-app-text-subtle group-hover:text-app-text-muted">{cta}</div>
               </Link>
             ))}
           </div>
@@ -643,13 +643,13 @@ export default async function DashboardPage({
             ) : (
               <div className="space-y-2">
                 {pinnedProjects.map((project) => (
-                  <Link key={project.id} href={`/dashboard/campaigns/${project.id}`} className="block rounded-xl border border-zinc-800 bg-zinc-950/60 px-4 py-3 hover:border-zinc-600">
+                  <Link key={project.id} href={`/dashboard/campaigns/${project.id}`} className="block rounded-xl border border-app-border bg-app-bg/60 px-4 py-3 hover:border-app-border-emphasis">
                     <div className="flex items-center justify-between gap-3">
                       <div>
-                        <div className="text-sm font-semibold text-zinc-50">{project.name}</div>
-                        <div className="mt-1 text-xs text-zinc-500">{project.status}</div>
+                        <div className="text-sm font-semibold text-app-text">{project.name}</div>
+                        <div className="mt-1 text-xs text-app-text-subtle">{project.status}</div>
                       </div>
-                      <span className="rounded-full border border-zinc-700 px-2 py-0.5 text-[11px] uppercase tracking-wide text-zinc-400">
+                      <span className="rounded-full border border-app-border-strong px-2 py-0.5 text-[11px] uppercase tracking-wide text-app-text-muted">
                         Pinned
                       </span>
                     </div>
@@ -669,13 +669,13 @@ export default async function DashboardPage({
                   className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
                     projectStatusFilter === status
                       ? "border-amber-400 bg-amber-400/10 text-amber-300"
-                      : "border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
+                      : "border-app-border-strong text-app-text-muted hover:border-app-border-emphasis hover:text-app-text"
                   }`}
                 >
                   {status === "all" ? "All" : status.replace(/_/g, " ")}
                 </Link>
               ))}
-              <span className="mx-1 h-4 w-px bg-zinc-800" />
+              <span className="mx-1 h-4 w-px bg-app-surface-2" />
               {projectSortValues.map((sort) => (
                 <Link
                   key={sort}
@@ -683,7 +683,7 @@ export default async function DashboardPage({
                   className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
                     projectSort === sort
                       ? "border-sky-400 bg-sky-400/10 text-sky-300"
-                      : "border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
+                      : "border-app-border-strong text-app-text-muted hover:border-app-border-emphasis hover:text-app-text"
                   }`}
                 >
                   sort: {sort}
@@ -699,13 +699,13 @@ export default async function DashboardPage({
             ) : (
               <div className="space-y-2">
                 {visibleRecentCampaigns.map((project) => (
-                  <Link key={project.id} href={`/dashboard/campaigns/${project.id}`} className="block rounded-xl border border-zinc-800 bg-zinc-950/60 px-4 py-3 hover:border-zinc-600">
+                  <Link key={project.id} href={`/dashboard/campaigns/${project.id}`} className="block rounded-xl border border-app-border bg-app-bg/60 px-4 py-3 hover:border-app-border-emphasis">
                     <div className="flex items-center justify-between gap-3">
                       <div>
-                        <div className="text-sm font-semibold text-zinc-50">{project.name}</div>
-                        <div className="mt-1 text-xs text-zinc-500">{project.status}</div>
+                        <div className="text-sm font-semibold text-app-text">{project.name}</div>
+                        <div className="mt-1 text-xs text-app-text-subtle">{project.status}</div>
                       </div>
-                      <div className="text-xs text-zinc-500">
+                      <div className="text-xs text-app-text-subtle">
                         {project.budgetMinor != null ? `${(project.budgetMinor / 100).toFixed(2)} ${project.currency}` : "No budget"}
                       </div>
                     </div>
@@ -729,9 +729,9 @@ export default async function DashboardPage({
                 {recentGenerations.map((generation) => {
                   const input = (generation.input ?? {}) as Record<string, unknown>;
                   return (
-                    <Link key={generation.id} href={`/dashboard/generate/${generation.tool}`} className="block rounded-xl border border-zinc-800 bg-zinc-950/60 px-4 py-3 hover:border-zinc-600">
-                      <div className="text-sm font-semibold text-zinc-50">{input.productName ? String(input.productName) : generation.tool.replace(/-/g, " ")}</div>
-                      <div className="mt-1 text-xs text-zinc-500">{new Date(generation.createdAt).toLocaleString()}</div>
+                    <Link key={generation.id} href={`/dashboard/generate/${generation.tool}`} className="block rounded-xl border border-app-border bg-app-bg/60 px-4 py-3 hover:border-app-border-emphasis">
+                      <div className="text-sm font-semibold text-app-text">{input.productName ? String(input.productName) : generation.tool.replace(/-/g, " ")}</div>
+                      <div className="mt-1 text-xs text-app-text-subtle">{new Date(generation.createdAt).toLocaleString()}</div>
                     </Link>
                   );
                 })}
@@ -752,13 +752,13 @@ export default async function DashboardPage({
                   className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
                     assetKindFilter === kind
                       ? "border-amber-400 bg-amber-400/10 text-amber-300"
-                      : "border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
+                      : "border-app-border-strong text-app-text-muted hover:border-app-border-emphasis hover:text-app-text"
                   }`}
                 >
                   {kind === "all" ? "All" : kind}
                 </Link>
               ))}
-              <span className="mx-1 h-4 w-px bg-zinc-800" />
+              <span className="mx-1 h-4 w-px bg-app-surface-2" />
               {assetSortValues.map((sort) => (
                 <Link
                   key={sort}
@@ -766,7 +766,7 @@ export default async function DashboardPage({
                   className={`rounded-full border px-3 py-1 text-xs font-medium transition-colors ${
                     assetSort === sort
                       ? "border-sky-400 bg-sky-400/10 text-sky-300"
-                      : "border-zinc-700 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200"
+                      : "border-app-border-strong text-app-text-muted hover:border-app-border-emphasis hover:text-app-text"
                   }`}
                 >
                   sort: {sort}
@@ -790,15 +790,15 @@ export default async function DashboardPage({
                         ? meta.concept
                         : `${creative.type} creative`;
                   return (
-                    <Link key={creative.id} href="/dashboard/creatives" className="block rounded-xl border border-zinc-800 bg-zinc-950/60 px-4 py-3 hover:border-zinc-600">
+                    <Link key={creative.id} href="/dashboard/creatives" className="block rounded-xl border border-app-border bg-app-bg/60 px-4 py-3 hover:border-app-border-emphasis">
                       <div className="flex items-center justify-between gap-3">
                         <div>
-                          <div className="text-sm font-semibold text-zinc-50">{title}</div>
-                          <div className="mt-1 text-xs text-zinc-500">
+                          <div className="text-sm font-semibold text-app-text">{title}</div>
+                          <div className="mt-1 text-xs text-app-text-subtle">
                             {creative.type} · {creative.status} · {new Date(creative.createdAt).toLocaleString()}
                           </div>
                         </div>
-                        <span className="text-xs text-zinc-500">Open →</span>
+                        <span className="text-xs text-app-text-subtle">Open →</span>
                       </div>
                     </Link>
                   );
@@ -819,9 +819,9 @@ export default async function DashboardPage({
             ) : (
               <div className="space-y-2">
                 {recentConversations.map((turn) => (
-                  <Link key={turn.id} href="/dashboard/assistant" className="block rounded-xl border border-zinc-800 bg-zinc-950/60 px-4 py-3 hover:border-zinc-600">
-                    <div className="text-sm font-semibold text-zinc-50">{turn.role === "user" ? "You" : "Assistant"}</div>
-                    <div className="mt-1 line-clamp-2 text-sm text-zinc-400">{turn.content}</div>
+                  <Link key={turn.id} href="/dashboard/assistant" className="block rounded-xl border border-app-border bg-app-bg/60 px-4 py-3 hover:border-app-border-emphasis">
+                    <div className="text-sm font-semibold text-app-text">{turn.role === "user" ? "You" : "Assistant"}</div>
+                    <div className="mt-1 line-clamp-2 text-sm text-app-text-muted">{turn.content}</div>
                   </Link>
                 ))}
               </div>
@@ -836,9 +836,9 @@ export default async function DashboardPage({
             ) : (
               <div className="space-y-2">
                 {teamActivity.map((entry) => (
-                  <div key={entry.id} className="rounded-xl border border-zinc-800 bg-zinc-950/60 px-4 py-3">
-                    <div className="text-sm font-semibold text-zinc-50">{entry.action.replace(/_/g, " ")}</div>
-                    <div className="mt-1 text-xs text-zinc-500">
+                  <div key={entry.id} className="rounded-xl border border-app-border bg-app-bg/60 px-4 py-3">
+                    <div className="text-sm font-semibold text-app-text">{entry.action.replace(/_/g, " ")}</div>
+                    <div className="mt-1 text-xs text-app-text-subtle">
                       {entry.actor} · {new Date(entry.createdAt).toLocaleString()}
                     </div>
                   </div>
@@ -865,7 +865,7 @@ export default async function DashboardPage({
                     d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
                 </svg>
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm leading-relaxed text-zinc-200">{a.message}</p>
+                  <p className="text-sm leading-relaxed text-app-text">{a.message}</p>
                   <Link href={`/dashboard/campaigns/${a.campaignId}`}
                     className={`mt-1 inline-block text-xs font-medium hover:underline ${
                       a.severity === "critical" ? "text-red-300" : "text-amber-300"
@@ -875,7 +875,7 @@ export default async function DashboardPage({
                 </div>
                 <form action={dismissAlert}>
                   <input type="hidden" name="id" value={a.id} />
-                  <button className="shrink-0 rounded-lg px-2 py-1 text-xs text-zinc-500 transition-colors hover:bg-zinc-800 hover:text-zinc-300">
+                  <button className="shrink-0 rounded-lg px-2 py-1 text-xs text-app-text-subtle transition-colors hover:bg-app-surface-2 hover:text-app-text">
                     Dismiss
                   </button>
                 </form>
@@ -1003,8 +1003,8 @@ export default async function DashboardPage({
         </div>
 
         {/* Workflow steps */}
-        <section id="workflow" className="mt-6 rounded-xl border border-zinc-800 bg-zinc-900/60 p-5 scroll-mt-20" style={{ order: sectionOrder.workflow }}>
-          <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500">Launch workflow</h2>
+        <section id="workflow" className="mt-6 rounded-xl border border-app-border bg-app-surface/60 p-5 scroll-mt-20" style={{ order: sectionOrder.workflow }}>
+          <h2 className="text-sm font-semibold uppercase tracking-wider text-app-text-subtle">Launch workflow</h2>
           <div className="mt-4 flex flex-wrap items-center gap-2">
             {[
               { step: "1", label: "Write brief", href: "/dashboard/campaigns/new" },
@@ -1017,9 +1017,9 @@ export default async function DashboardPage({
               <div key={step} className="flex items-center gap-2">
                 <Link
                   href={href}
-                  className="flex items-center gap-2 rounded-full border border-zinc-700 bg-zinc-950 px-3.5 py-1.5 text-sm text-zinc-200 hover:border-zinc-500 hover:text-white"
+                  className="flex items-center gap-2 rounded-full border border-app-border-strong bg-app-bg px-3.5 py-1.5 text-sm text-app-text hover:border-zinc-500 hover:text-white"
                 >
-                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-zinc-700 text-[10px] font-bold text-zinc-300">{step}</span>
+                  <span className="flex h-4 w-4 items-center justify-center rounded-full bg-app-surface-2 text-[10px] font-bold text-app-text">{step}</span>
                   {label}
                 </Link>
                 {i < arr.length - 1 && (
@@ -1058,31 +1058,31 @@ function AllocationCard({
         <h2 className="text-sm font-semibold uppercase tracking-wider text-amber-200">
           Budget reallocation proposed
         </h2>
-        <span className="text-xs text-zinc-500">
+        <span className="text-xs text-app-text-subtle">
           total {money(payload.totalMinor)} → {money(payload.proposedTotal)} / day
         </span>
       </div>
-      <p className="mt-2 text-sm leading-relaxed text-zinc-300">{proposal.summary}</p>
+      <p className="mt-2 text-sm leading-relaxed text-app-text">{proposal.summary}</p>
 
       <div className="mt-4 space-y-2">
         {proposal.lines.map((l) => {
           const delta = l.proposedDailyBudgetMinor - l.currentDailyBudgetMinor;
           return (
             <div key={l.campaignId}
-              className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border border-zinc-800 bg-zinc-950/60 px-3 py-2 text-sm">
+              className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border border-app-border bg-app-bg/60 px-3 py-2 text-sm">
               <Link href={`/dashboard/campaigns/${l.campaignId}`}
-                className="min-w-0 flex-1 truncate font-medium text-zinc-200 hover:underline">
+                className="min-w-0 flex-1 truncate font-medium text-app-text hover:underline">
                 {l.campaignName}
               </Link>
-              <span className="tabular-nums text-zinc-400">
+              <span className="tabular-nums text-app-text-muted">
                 {money(l.currentDailyBudgetMinor)} → {money(l.proposedDailyBudgetMinor)}
               </span>
               <span className={`text-xs font-semibold tabular-nums ${
-                delta > 0 ? "text-emerald-400" : delta < 0 ? "text-red-400" : "text-zinc-600"
+                delta > 0 ? "text-emerald-400" : delta < 0 ? "text-red-400" : "text-app-text-subtle"
               }`}>
                 {delta > 0 ? "+" : ""}{(delta / 100).toFixed(2)}
               </span>
-              <p className="w-full text-xs text-zinc-500">{l.rationale}</p>
+              <p className="w-full text-xs text-app-text-subtle">{l.rationale}</p>
             </div>
           );
         })}
@@ -1097,11 +1097,11 @@ function AllocationCard({
         </form>
         <form action={rejectAllocation}>
           <input type="hidden" name="approvalId" value={approvalId} />
-          <button className="rounded-xl border border-zinc-700 px-5 py-2.5 text-sm text-zinc-300 transition-colors hover:border-zinc-500 hover:text-zinc-100">
+          <button className="rounded-xl border border-app-border-strong px-5 py-2.5 text-sm text-app-text transition-colors hover:border-zinc-500 hover:text-app-text">
             Reject
           </button>
         </form>
-        <span className="text-xs text-zinc-600">
+        <span className="text-xs text-app-text-subtle">
           Approving updates the real ad-set budgets on Meta for linked campaigns.
         </span>
       </div>
@@ -1119,8 +1119,8 @@ function InfoPanel({
   compact?: boolean;
 }) {
   return (
-    <section className={`rounded-xl border border-zinc-800 bg-zinc-900/60 ${compact ? "p-4" : "p-5"}`}>
-      <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500">{title}</h2>
+    <section className={`rounded-xl border border-app-border bg-app-surface/60 ${compact ? "p-4" : "p-5"}`}>
+      <h2 className="text-sm font-semibold uppercase tracking-wider text-app-text-subtle">{title}</h2>
       <div className="mt-4">{children}</div>
     </section>
   );
@@ -1128,9 +1128,9 @@ function InfoPanel({
 
 function Metric({ label, value, compact }: { label: string; value: number; compact?: boolean }) {
   return (
-    <div className={`rounded-xl border border-zinc-800 bg-zinc-950/60 ${compact ? "px-3 py-1.5" : "px-3 py-2"}`}>
-      <div className="text-[11px] uppercase tracking-wide text-zinc-500">{label}</div>
-      <div className={`${compact ? "mt-0.5 text-base" : "mt-1 text-lg"} font-semibold tabular-nums text-zinc-100`}>{value}</div>
+    <div className={`rounded-xl border border-app-border bg-app-bg/60 ${compact ? "px-3 py-1.5" : "px-3 py-2"}`}>
+      <div className="text-[11px] uppercase tracking-wide text-app-text-subtle">{label}</div>
+      <div className={`${compact ? "mt-0.5 text-base" : "mt-1 text-lg"} font-semibold tabular-nums text-app-text`}>{value}</div>
     </div>
   );
 }
@@ -1145,8 +1145,8 @@ function EmptyText({
   ctaHref?: string;
 }) {
   return (
-    <div className="rounded-xl border border-dashed border-zinc-800 bg-zinc-950/60 p-4">
-      <p className="text-sm text-zinc-500">{text}</p>
+    <div className="rounded-xl border border-dashed border-app-border bg-app-bg/60 p-4">
+      <p className="text-sm text-app-text-subtle">{text}</p>
       {ctaLabel && ctaHref ? (
         <Link href={ctaHref} className="mt-3 inline-block text-sm font-medium text-amber-300 hover:text-amber-200">
           {ctaLabel} →
@@ -1169,17 +1169,17 @@ function WeeklyReportCard({
     `${(minor / 100).toFixed(2)} ${report.totals?.currency ?? ""}`.trim();
 
   return (
-    <section className="mt-6 rounded-xl border border-zinc-800 bg-zinc-900/60 p-5">
+    <section className="mt-6 rounded-xl border border-app-border bg-app-surface/60 p-5">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
-        <h2 className="text-sm font-semibold uppercase tracking-wider text-zinc-500">
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-app-text-subtle">
           AI weekly report
         </h2>
-        <span className="text-xs text-zinc-600">
+        <span className="text-xs text-app-text-subtle">
           {periodStart} → {periodEnd}
         </span>
       </div>
 
-      <p className="mt-3 text-sm leading-relaxed text-zinc-300">{report.summary}</p>
+      <p className="mt-3 text-sm leading-relaxed text-app-text">{report.summary}</p>
 
       {report.totals ? (
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
@@ -1189,9 +1189,9 @@ function WeeklyReportCard({
             ["Clicks", report.totals.clicks.toLocaleString("en-US")],
             ["Conversions", report.totals.conversions.toLocaleString("en-US")],
           ].map(([label, value]) => (
-            <div key={label} className="rounded-lg border border-zinc-800 bg-zinc-950/60 px-3 py-2">
-              <p className="text-[11px] uppercase tracking-wider text-zinc-600">{label}</p>
-              <p className="mt-0.5 text-sm font-semibold tabular-nums text-zinc-100">{value}</p>
+            <div key={label} className="rounded-lg border border-app-border bg-app-bg/60 px-3 py-2">
+              <p className="text-[11px] uppercase tracking-wider text-app-text-subtle">{label}</p>
+              <p className="mt-0.5 text-sm font-semibold tabular-nums text-app-text">{value}</p>
             </div>
           ))}
         </div>
@@ -1208,7 +1208,7 @@ function WeeklyReportCard({
               <p className={`text-xs font-semibold uppercase tracking-wider ${color}`}>{label}</p>
               <ul className="mt-2 space-y-1.5">
                 {items.slice(0, 4).map((item, i) => (
-                  <li key={i} className="text-xs leading-relaxed text-zinc-400">• {item}</li>
+                  <li key={i} className="text-xs leading-relaxed text-app-text-muted">• {item}</li>
                 ))}
               </ul>
             </div>
@@ -1235,9 +1235,9 @@ function StatCard({
   return (
     <Link
       href={href}
-      className={`group flex flex-col rounded-xl border border-zinc-800 bg-zinc-900/60 transition-colors hover:border-zinc-600 hover:bg-zinc-900 ${compact ? "p-3" : "p-4"}`}
+      className={`group flex flex-col rounded-xl border border-app-border bg-app-surface/60 transition-colors hover:border-app-border-emphasis hover:bg-app-surface ${compact ? "p-3" : "p-4"}`}
     >
-      <span className="text-xs font-medium uppercase tracking-wider text-zinc-500">{label}</span>
+      <span className="text-xs font-medium uppercase tracking-wider text-app-text-subtle">{label}</span>
       <span className={`${compact ? "mt-1.5 text-2xl" : "mt-2 text-3xl"} font-bold tabular-nums`}>{value}</span>
       {badge ? (
         <span className="mt-1.5 self-start rounded-full bg-amber-400/15 px-2 py-0.5 text-[11px] font-medium text-amber-400">
@@ -1253,7 +1253,7 @@ const ACCENT_STYLES: Record<string, string> = {
   violet: "border-violet-400/20 bg-violet-400/5 text-violet-400",
   emerald: "border-emerald-400/20 bg-emerald-400/5 text-emerald-400",
   sky: "border-sky-400/20 bg-sky-400/5 text-sky-400",
-  zinc: "border-zinc-700 bg-zinc-800/50 text-zinc-400",
+  zinc: "border-app-border-strong bg-app-surface-2/50 text-app-text-muted",
 };
 
 function parsePanelOrder(value: string | undefined): PanelSectionId[] | null {
@@ -1288,14 +1288,14 @@ function QuickCard({
   return (
     <Link
       href={href}
-      className={`group flex flex-col rounded-xl border border-zinc-800 bg-zinc-900/60 transition-all hover:border-zinc-600 hover:shadow-xl hover:shadow-black/30 ${compact ? "p-4" : "p-5"}`}
+      className={`group flex flex-col rounded-xl border border-app-border bg-app-surface/60 transition-all hover:border-app-border-emphasis hover:shadow-xl hover:shadow-black/30 ${compact ? "p-4" : "p-5"}`}
     >
       <span className={`self-start rounded-full border px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wider ${ACCENT_STYLES[accent] ?? ACCENT_STYLES.zinc}`}>
         {tag}
       </span>
       <h3 className={`${compact ? "mt-2" : "mt-3"} font-semibold`}>{title}</h3>
-      <p className="mt-1.5 flex-1 text-sm leading-relaxed text-zinc-400">{description}</p>
-      <span className={`${compact ? "mt-3" : "mt-4"} text-sm font-medium text-zinc-300 group-hover:text-white transition-colors`}>
+      <p className="mt-1.5 flex-1 text-sm leading-relaxed text-app-text-muted">{description}</p>
+      <span className={`${compact ? "mt-3" : "mt-4"} text-sm font-medium text-app-text group-hover:text-white transition-colors`}>
         {cta} →
       </span>
     </Link>

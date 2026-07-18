@@ -75,17 +75,17 @@ export default async function NewCampaignPage({
   }));
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
         <div className="mb-6">
           <Link
             href="/dashboard/campaigns"
-            className="text-sm text-zinc-400 hover:text-zinc-200"
+            className="text-sm text-app-text-muted hover:text-app-text"
           >
             ← Campaigns
           </Link>
           <h1 className="mt-2 text-2xl font-bold">New campaign brief</h1>
-          <p className="mt-1 text-sm text-zinc-400">
+          <p className="mt-1 text-sm text-app-text-muted">
             Give the agent a goal — it researches the market, writes the
             strategy, and prepares on-brand creatives.
           </p>

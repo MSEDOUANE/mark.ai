@@ -7,7 +7,7 @@ import { db, schema } from "@/db";
 
 const CTR_BAND_COLOR: Record<string, string> = {
   "Below average": "bg-red-500/15 text-red-300 border-red-500/25",
-  "Average": "bg-zinc-700/40 text-zinc-300 border-zinc-600",
+  "Average": "bg-app-surface-2/40 text-app-text border-app-border-emphasis",
   "Above average": "bg-blue-500/15 text-blue-300 border-blue-500/25",
   "Excellent": "bg-emerald-500/15 text-emerald-300 border-emerald-500/25",
 };
@@ -71,7 +71,7 @@ export default async function PredictPage() {
   const predictedWinner = scored[0];
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
         <div className="mb-6 flex items-center gap-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-400/15 text-2xl">
@@ -79,7 +79,7 @@ export default async function PredictPage() {
           </div>
           <div>
             <h1 className="text-2xl font-bold">Predict</h1>
-            <p className="mt-0.5 text-sm text-zinc-400">
+            <p className="mt-0.5 text-sm text-app-text-muted">
               Creative scoring, ad-fatigue detection, and ranking.
             </p>
           </div>
@@ -97,7 +97,7 @@ export default async function PredictPage() {
         {/* Ad fatigue alerts */}
         {fatigueAlerts.length > 0 && (
           <section className="mb-8">
-            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500">Ad fatigue detected</h2>
+            <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-app-text-subtle">Ad fatigue detected</h2>
             <div className="space-y-2">
               {fatigueAlerts.map((a) => (
                 <div key={a.id} className="flex items-start gap-3 rounded-xl border border-amber-400/25 bg-amber-950/20 px-4 py-3">
@@ -118,12 +118,12 @@ export default async function PredictPage() {
 
         {/* Ranked creatives */}
         <section>
-          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-zinc-500">Creative ranking</h2>
+          <h2 className="mb-3 text-sm font-semibold uppercase tracking-wider text-app-text-subtle">Creative ranking</h2>
 
           {scored.length === 0 ? (
-            <div className="rounded-2xl border border-dashed border-zinc-800 p-12 text-center">
+            <div className="rounded-2xl border border-dashed border-app-border p-12 text-center">
               <p className="text-3xl">📊</p>
-              <p className="mt-3 text-sm text-zinc-500">No scored creatives yet — generate some in Creatives or Generate.</p>
+              <p className="mt-3 text-sm text-app-text-subtle">No scored creatives yet — generate some in Creatives or Generate.</p>
             </div>
           ) : (
             <div className="space-y-2">
@@ -131,15 +131,15 @@ export default async function PredictPage() {
                 const isWinner = c.id === predictedWinner?.id;
                 return (
                   <div key={c.id} className={`flex items-center gap-4 rounded-xl border p-4 ${
-                    isWinner ? "border-amber-400/40 bg-amber-950/15" : "border-zinc-800 bg-zinc-900"
+                    isWinner ? "border-amber-400/40 bg-amber-950/15" : "border-app-border bg-app-surface"
                   }`}>
-                    <span className="w-6 shrink-0 text-center text-sm font-bold text-zinc-600">{i + 1}</span>
+                    <span className="w-6 shrink-0 text-center text-sm font-bold text-app-text-subtle">{i + 1}</span>
 
                     {c.assetUrl && c.type === "image" ? (
                       // eslint-disable-next-line @next/next/no-img-element
                       <img src={c.assetUrl} alt="" className="h-14 w-14 shrink-0 rounded-lg object-cover" />
                     ) : (
-                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-zinc-800 text-lg">
+                      <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-app-surface-2 text-lg">
                         {c.type === "video" ? "🎬" : "🎨"}
                       </div>
                     )}
@@ -151,9 +151,9 @@ export default async function PredictPage() {
                             Predicted winner
                           </span>
                         )}
-                        <p className="truncate text-sm font-medium text-zinc-200">{c.campaignName ?? "Unassigned"}</p>
+                        <p className="truncate text-sm font-medium text-app-text">{c.campaignName ?? "Unassigned"}</p>
                       </div>
-                      {c.meta.scoreRationale && <p className="mt-0.5 truncate text-xs text-zinc-500">{c.meta.scoreRationale}</p>}
+                      {c.meta.scoreRationale && <p className="mt-0.5 truncate text-xs text-app-text-subtle">{c.meta.scoreRationale}</p>}
                       <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
                         {c.meta.predictedCtrBand && (
                           <span className={`rounded-full border px-2 py-0.5 text-[10px] font-medium ${CTR_BAND_COLOR[c.meta.predictedCtrBand] ?? ""}`}>
@@ -161,7 +161,7 @@ export default async function PredictPage() {
                           </span>
                         )}
                         {c.meta.conversionLikelihood && (
-                          <span className={`text-[10px] font-medium ${LIKELIHOOD_COLOR[c.meta.conversionLikelihood] ?? "text-zinc-400"}`}>
+                          <span className={`text-[10px] font-medium ${LIKELIHOOD_COLOR[c.meta.conversionLikelihood] ?? "text-app-text-muted"}`}>
                             Conversion likelihood: {c.meta.conversionLikelihood}
                           </span>
                         )}

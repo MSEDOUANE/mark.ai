@@ -7,7 +7,7 @@ import { SubmitButton } from "./submit-button";
 import { LanguagePicker } from "@/components/language-picker";
 
 const field =
-  "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none transition-colors placeholder:text-zinc-600 focus:border-zinc-500";
+  "w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none transition-colors placeholder:text-app-text-subtle focus:border-zinc-500";
 
 function safeHex(c: string | null | undefined) {
   return c && /^#[0-9a-f]{6}$/i.test(c) ? c : "#7c3aed";
@@ -108,9 +108,9 @@ export function BriefForm({
 
       {/* ── Brand ─────────────────────────────────────────────────────── */}
       {brands.length > 0 && (
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+        <div className="rounded-2xl border border-app-border bg-app-surface/60 p-6">
           <h2 className="text-lg font-semibold">Brand</h2>
-          <p className="mt-1 text-sm text-zinc-400">
+          <p className="mt-1 text-sm text-app-text-muted">
             Pick a brand — the agent writes strategy and copy in its voice, and
             uses its colors and logo on the creatives.
           </p>
@@ -126,7 +126,7 @@ export function BriefForm({
                   className={`flex flex-col gap-3 rounded-2xl border p-4 text-left transition-all ${
                     sel
                       ? "border-amber-400 bg-amber-950/25 ring-1 ring-amber-400"
-                      : "border-zinc-700 bg-zinc-950/70 hover:border-zinc-600"
+                      : "border-app-border-strong bg-app-bg/70 hover:border-app-border-emphasis"
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -148,7 +148,7 @@ export function BriefForm({
                         {b.name.slice(0, 2).toUpperCase()}
                       </div>
                     )}
-                    <span className="flex-1 truncate text-sm font-semibold text-zinc-100">
+                    <span className="flex-1 truncate text-sm font-semibold text-app-text">
                       {b.name}
                     </span>
                     <div
@@ -170,7 +170,7 @@ export function BriefForm({
           </div>
           <Link
             href="/dashboard/brands/new"
-            className="mt-4 inline-block text-xs text-zinc-500 transition-colors hover:text-zinc-300"
+            className="mt-4 inline-block text-xs text-app-text-subtle transition-colors hover:text-app-text"
           >
             + New brand profile
           </Link>
@@ -178,9 +178,9 @@ export function BriefForm({
       )}
 
       {/* ── Product ───────────────────────────────────────────────────── */}
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+      <div className="rounded-2xl border border-app-border bg-app-surface/60 p-6">
         <h2 className="text-lg font-semibold">Product</h2>
-        <p className="mt-1 text-sm text-zinc-400">
+        <p className="mt-1 text-sm text-app-text-muted">
           {brandProducts.length > 0
             ? "Pick a saved product, or describe a new one below."
             : "What is this campaign selling?"}
@@ -198,7 +198,7 @@ export function BriefForm({
                   className={`flex flex-col gap-3 rounded-2xl border p-4 text-left transition-all ${
                     sel
                       ? "border-amber-400 bg-amber-950/25 ring-1 ring-amber-400"
-                      : "border-zinc-700 bg-zinc-950/70 hover:border-zinc-600"
+                      : "border-app-border-strong bg-app-bg/70 hover:border-app-border-emphasis"
                   }`}
                 >
                   <div className="flex items-center gap-3">
@@ -213,11 +213,11 @@ export function BriefForm({
                         }}
                       />
                     ) : (
-                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-zinc-800 text-sm">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-app-surface-2 text-sm">
                         📦
                       </div>
                     )}
-                    <span className="flex-1 truncate text-sm font-semibold text-zinc-100">
+                    <span className="flex-1 truncate text-sm font-semibold text-app-text">
                       {p.name}
                     </span>
                   </div>
@@ -237,7 +237,7 @@ export function BriefForm({
 
         <div className="mt-5 space-y-3">
           <label className="flex flex-col gap-1 text-sm">
-            <span className="text-zinc-400">Product name *</span>
+            <span className="text-app-text-muted">Product name *</span>
             <input
               name="productName"
               required
@@ -247,7 +247,7 @@ export function BriefForm({
             />
           </label>
           <label className="flex flex-col gap-1 text-sm">
-            <span className="text-zinc-400">Product description</span>
+            <span className="text-app-text-muted">Product description</span>
             <textarea
               name="productDescription"
               rows={3}
@@ -257,9 +257,9 @@ export function BriefForm({
             />
           </label>
           <label className="flex flex-col gap-1 text-sm">
-            <span className="text-zinc-400">
+            <span className="text-app-text-muted">
               Product photo URL{" "}
-              <span className="text-zinc-600">
+              <span className="text-app-text-subtle">
                 — used as ad background (blank = AI-generated background)
               </span>
             </span>
@@ -276,16 +276,16 @@ export function BriefForm({
       </div>
 
       {/* ── Campaign ──────────────────────────────────────────────────── */}
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+      <div className="rounded-2xl border border-app-border bg-app-surface/60 p-6">
         <h2 className="text-lg font-semibold">Campaign</h2>
-        <p className="mt-1 text-sm text-zinc-400">
+        <p className="mt-1 text-sm text-app-text-muted">
           The agent researches the market, writes the strategy, and prepares
           creatives from this.
         </p>
 
         <div className="mt-5 space-y-4">
           <label className="flex flex-col gap-1 text-sm">
-            <span className="text-zinc-400">Campaign goal *</span>
+            <span className="text-app-text-muted">Campaign goal *</span>
             <input
               name="goal"
               required
@@ -296,7 +296,7 @@ export function BriefForm({
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label className="flex flex-col gap-1 text-sm">
-              <span className="text-zinc-400">Target audience</span>
+              <span className="text-app-text-muted">Target audience</span>
               <input
                 name="audience"
                 className={field}
@@ -305,10 +305,10 @@ export function BriefForm({
               />
             </label>
             <label className="flex flex-col gap-1 text-sm">
-              <span className="text-zinc-400">
+              <span className="text-app-text-muted">
                 Budget
                 {billingCurrency ? (
-                  <span className="text-zinc-600">
+                  <span className="text-app-text-subtle">
                     {" "}— your ad account bills in {billingCurrency}; other
                     currencies are auto-converted
                   </span>
@@ -329,7 +329,7 @@ export function BriefForm({
           {/* Click destination: website vs WhatsApp chat */}
           <input type="hidden" name="destination" value={destination} />
           <div>
-            <span className="text-sm text-zinc-400">Where should a click go?</span>
+            <span className="text-sm text-app-text-muted">Where should a click go?</span>
             <div className="mt-1.5 grid grid-cols-2 gap-2">
               {([
                 { id: "website" as const, label: "🌐 Website", desc: "Clicks open your landing page" },
@@ -342,16 +342,16 @@ export function BriefForm({
                   className={`rounded-xl border p-3 text-left transition-all ${
                     destination === d.id
                       ? "border-amber-400 bg-amber-950/25 ring-1 ring-amber-400"
-                      : "border-zinc-700 bg-zinc-950/70 hover:border-zinc-600"
+                      : "border-app-border-strong bg-app-bg/70 hover:border-app-border-emphasis"
                   }`}
                 >
-                  <p className="text-sm font-semibold text-zinc-100">{d.label}</p>
-                  <p className="mt-0.5 text-xs text-zinc-500">{d.desc}</p>
+                  <p className="text-sm font-semibold text-app-text">{d.label}</p>
+                  <p className="mt-0.5 text-xs text-app-text-subtle">{d.desc}</p>
                 </button>
               ))}
             </div>
             {destination === "whatsapp" && (
-              <p className="mt-1.5 text-xs text-zinc-600">
+              <p className="mt-1.5 text-xs text-app-text-subtle">
                 Requires a WhatsApp Business number connected to your Facebook
                 Page. No landing page needed.
               </p>
@@ -360,7 +360,7 @@ export function BriefForm({
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label className="flex flex-col gap-1 text-sm">
-              <span className="text-zinc-400">
+              <span className="text-app-text-muted">
                 {destination === "whatsapp"
                   ? "Website URL (optional)"
                   : "Destination URL (needed to launch)"}
@@ -375,7 +375,7 @@ export function BriefForm({
               />
             </label>
             <label className="flex flex-col gap-1 text-sm">
-              <span className="text-zinc-400">Target countries</span>
+              <span className="text-app-text-muted">Target countries</span>
               <input name="geoCountries" placeholder="US, MA, FR" className={field} />
             </label>
           </div>
@@ -386,9 +386,9 @@ export function BriefForm({
       <LanguagePicker />
 
       {/* ── Brand overrides (auto-filled from the selected brand) ─────── */}
-      <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6">
+      <div className="rounded-2xl border border-app-border bg-app-surface/60 p-6">
         <h2 className="text-lg font-semibold">Brand style</h2>
-        <p className="mt-1 text-sm text-zinc-400">
+        <p className="mt-1 text-sm text-app-text-muted">
           {brandId
             ? "Auto-filled from the selected brand — edit to override for this campaign."
             : "Optional — or pick a brand above to fill these automatically."}
@@ -396,7 +396,7 @@ export function BriefForm({
 
         <div className="mt-5 space-y-4">
           <label className="flex flex-col gap-1 text-sm">
-            <span className="text-zinc-400">Brand tone</span>
+            <span className="text-app-text-muted">Brand tone</span>
             <input
               name="tone"
               placeholder="e.g. playful, premium, bold"
@@ -407,7 +407,7 @@ export function BriefForm({
           </label>
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
             <label className="flex flex-col gap-1 text-sm">
-              <span className="text-zinc-400">Brand color</span>
+              <span className="text-app-text-muted">Brand color</span>
               <input
                 name="brandColor"
                 placeholder="#6d28d9"
@@ -417,7 +417,7 @@ export function BriefForm({
               />
             </label>
             <label className="flex flex-col gap-1 text-sm">
-              <span className="text-zinc-400">Logo URL</span>
+              <span className="text-app-text-muted">Logo URL</span>
               <input
                 name="logoUrl"
                 placeholder="https://…/logo.png"

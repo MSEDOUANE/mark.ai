@@ -25,7 +25,7 @@ export function ContentGenerator({ brands = [] }: { brands?: BrandContextOption[
             className={`flex items-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-medium transition-colors ${
               type === t.id
                 ? "border-amber-400 bg-amber-400/10 text-amber-300"
-                : "border-zinc-700 text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
+                : "border-app-border-strong text-app-text-muted hover:border-zinc-500 hover:text-app-text"
             }`}>
             <span>{t.icon}</span>
             {t.label}

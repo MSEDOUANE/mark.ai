@@ -105,10 +105,10 @@ export function SidebarNav({
         onClick={onNavigate}
         className={
           current
-            ? `flex items-center justify-between rounded-lg border border-amber-300/25 bg-amber-950/25 px-3 py-2 text-sm font-medium text-zinc-50 ${item.nested ? "ml-3" : ""}`
+            ? `flex items-center justify-between rounded-lg border border-amber-300/25 bg-amber-950/25 px-3 py-2 text-sm font-medium text-app-text ${item.nested ? "ml-3" : ""}`
             : sectionActive
-              ? `flex items-center justify-between rounded-lg border border-transparent bg-zinc-900/70 px-3 py-2 text-sm font-medium text-zinc-100 ${item.nested ? "ml-3" : ""}`
-              : `flex items-center justify-between rounded-lg border border-transparent px-3 py-2 text-sm text-zinc-300 hover:border-white/10 hover:bg-zinc-900 hover:text-zinc-50 ${item.nested ? "ml-3" : ""}`
+              ? `flex items-center justify-between rounded-lg border border-transparent bg-app-surface/70 px-3 py-2 text-sm font-medium text-app-text ${item.nested ? "ml-3" : ""}`
+              : `flex items-center justify-between rounded-lg border border-transparent px-3 py-2 text-sm text-app-text hover:border-white/10 hover:bg-app-surface hover:text-app-text ${item.nested ? "ml-3" : ""}`
         }
       >
         <span>{item.label}</span>
@@ -126,7 +126,7 @@ export function SidebarNav({
       {navSections.map((section, si) => (
         <div key={section.heading ?? `group-${si}`} className={si > 0 ? "mt-4" : ""}>
           {section.heading ? (
-            <p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-zinc-500">
+            <p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-app-text-subtle">
               {section.heading}
             </p>
           ) : null}
@@ -161,9 +161,9 @@ export function MobileNav({ approvalsCount = 0 }: { approvalsCount?: number }) {
   }, [isOpen]);
 
   return (
-    <div className="sticky top-0 z-40 border-b border-white/10 bg-zinc-950/90 px-4 py-3 backdrop-blur-xl md:hidden">
+    <div className="sticky top-0 z-40 border-b border-white/10 bg-app-bg/90 px-4 py-3 backdrop-blur-xl md:hidden">
       <div className="flex items-center justify-between">
-        <Link href="/dashboard" className="text-base font-semibold text-zinc-50">
+        <Link href="/dashboard" className="text-base font-semibold text-app-text">
           MarkAI
         </Link>
         <button
@@ -172,7 +172,7 @@ export function MobileNav({ approvalsCount = 0 }: { approvalsCount?: number }) {
           aria-controls="mobile-navigation"
           aria-label={isOpen ? "Close navigation menu" : "Open navigation menu"}
           onClick={() => setIsOpen((open) => !open)}
-          className="rounded-lg border border-white/10 bg-zinc-900 p-2 text-zinc-200 hover:bg-zinc-800"
+          className="rounded-lg border border-white/10 bg-app-surface p-2 text-app-text hover:bg-app-surface-2"
         >
           <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             {isOpen ? (
@@ -197,10 +197,10 @@ export function MobileNav({ approvalsCount = 0 }: { approvalsCount?: number }) {
             role="dialog"
             aria-modal="true"
             aria-label="Navigation menu"
-            className="flex h-full w-72 flex-col border-l border-white/10 bg-zinc-950 shadow-2xl shadow-black/50"
+            className="flex h-full w-72 flex-col border-l border-white/10 bg-app-bg shadow-2xl shadow-black/50"
           >
             <SidebarNav onNavigate={() => setIsOpen(false)} approvalsCount={approvalsCount} />
-            <p className="border-t border-white/10 px-4 py-3 text-xs text-zinc-400">
+            <p className="border-t border-white/10 px-4 py-3 text-xs text-app-text-muted">
               AI recommendations stay gated by approval.
             </p>
           </aside>

@@ -52,9 +52,9 @@ export function AnimationStudioClient() {
 
   return (
     <div className="grid gap-6 lg:grid-cols-[360px_1fr]">
-      <div className="space-y-4 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+      <div className="space-y-4 rounded-2xl border border-app-border bg-app-surface/60 p-5">
         <h2 className="text-lg font-semibold">Animate a still image</h2>
-        <p className="text-sm text-zinc-400">
+        <p className="text-sm text-app-text-muted">
           Upload an image and turn it into a short motion clip with subtle camera movement.
         </p>
 
@@ -62,13 +62,13 @@ export function AnimationStudioClient() {
         <button
           type="button"
           onClick={() => fileRef.current?.click()}
-          className="w-full rounded-xl border border-dashed border-zinc-700 bg-zinc-950 px-4 py-6 text-sm text-zinc-400 hover:border-zinc-500 hover:text-zinc-200"
+          className="w-full rounded-xl border border-dashed border-app-border-strong bg-app-bg px-4 py-6 text-sm text-app-text-muted hover:border-zinc-500 hover:text-app-text"
         >
           {uploading ? "Uploading…" : imageUrl ? "Change image" : "Upload image"}
         </button>
 
         {imageUrl ? (
-          <div className="overflow-hidden rounded-xl border border-white/10 bg-zinc-950">
+          <div className="overflow-hidden rounded-xl border border-white/10 bg-app-bg">
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src={imageUrl} alt="Uploaded source" className="aspect-square w-full object-contain" />
           </div>
@@ -86,18 +86,18 @@ export function AnimationStudioClient() {
         {error ? <p className="text-sm text-red-400">{error}</p> : null}
       </div>
 
-      <div className="space-y-4 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+      <div className="space-y-4 rounded-2xl border border-app-border bg-app-surface/60 p-5">
         <h2 className="text-lg font-semibold">Preview</h2>
         {videoUrl ? (
-          <video src={videoUrl} controls className="w-full rounded-xl border border-white/10 bg-zinc-950" />
+          <video src={videoUrl} controls className="w-full rounded-xl border border-white/10 bg-app-bg" />
         ) : (
-          <div className="flex min-h-[360px] items-center justify-center rounded-xl border border-dashed border-zinc-800 bg-zinc-950 text-sm text-zinc-500">
+          <div className="flex min-h-[360px] items-center justify-center rounded-xl border border-dashed border-app-border bg-app-bg text-sm text-app-text-subtle">
             Your motion preview will appear here.
           </div>
         )}
 
         {videoUrl ? (
-          <a href={videoUrl} download target="_blank" rel="noreferrer" className="inline-flex rounded-xl border border-white/10 px-4 py-2 text-sm text-zinc-200 hover:border-white/20 hover:text-white">
+          <a href={videoUrl} download target="_blank" rel="noreferrer" className="inline-flex rounded-xl border border-white/10 px-4 py-2 text-sm text-app-text hover:border-white/20 hover:text-white">
             Download clip
           </a>
         ) : null}

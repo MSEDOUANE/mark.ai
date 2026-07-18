@@ -35,7 +35,7 @@ export default async function AnalyzePage() {
   if (!user) redirect("/login");
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
         <div className="mb-8 flex items-center gap-4">
           <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-400/15 text-2xl">
@@ -43,7 +43,7 @@ export default async function AnalyzePage() {
           </div>
           <div>
             <h1 className="text-2xl font-bold">Analyze</h1>
-            <p className="mt-0.5 text-sm text-zinc-400">
+            <p className="mt-0.5 text-sm text-app-text-muted">
               Competitor research, website audits, and performance — in one place.
             </p>
           </div>
@@ -52,10 +52,10 @@ export default async function AnalyzePage() {
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
           {CARDS.map((c) => (
             <Link key={c.href} href={c.href}
-              className="group flex flex-col rounded-2xl border border-zinc-800 bg-zinc-900 p-6 transition-all hover:border-zinc-600 hover:shadow-xl hover:shadow-black/40">
+              className="group flex flex-col rounded-2xl border border-app-border bg-app-surface p-6 transition-all hover:border-app-border-emphasis hover:shadow-xl hover:shadow-black/40">
               <span className="text-2xl">{c.icon}</span>
-              <h3 className="mt-3 font-semibold text-zinc-100">{c.label}</h3>
-              <p className="mt-1.5 flex-1 text-sm leading-relaxed text-zinc-400">{c.description}</p>
+              <h3 className="mt-3 font-semibold text-app-text">{c.label}</h3>
+              <p className="mt-1.5 flex-1 text-sm leading-relaxed text-app-text-muted">{c.description}</p>
               <div className="mt-4 flex items-center text-sm font-medium text-amber-400">
                 Open
                 <svg className="ml-1.5 h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>

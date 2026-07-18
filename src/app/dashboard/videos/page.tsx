@@ -11,7 +11,7 @@ import { AvatarPicker } from "./avatar-picker";
 import { VoicePicker } from "./voice-picker";
 
 const field =
-  "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500";
+  "w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500";
 
 const STYLES = [
   { id: "avatar", icon: "🎤", label: "UGC Avatar", desc: "Real lip-synced creator presents your product to camera" },
@@ -24,7 +24,7 @@ const STATUS_STYLE: Record<string, string> = {
   ready: "bg-emerald-400/15 text-emerald-300",
   rendering: "bg-amber-400/15 text-amber-300",
   failed: "bg-red-400/15 text-red-300",
-  draft: "bg-zinc-700/40 text-zinc-400",
+  draft: "bg-app-surface-2/40 text-app-text-muted",
 };
 
 export default async function VideosPage({
@@ -57,10 +57,10 @@ export default async function VideosPage({
   ]);
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
         <h1 className="text-2xl font-bold">Video Studio</h1>
-        <p className="mt-1 text-sm text-zinc-400">
+        <p className="mt-1 text-sm text-app-text-muted">
           AI writes the script, films each scene, adds the voiceover, and cuts
           the final video — then you adjust any scene and re-render.
         </p>
@@ -75,14 +75,14 @@ export default async function VideosPage({
           {/* New video form */}
           <form
             action={createVideoProject}
-            className="h-fit space-y-4 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-6"
+            className="h-fit space-y-4 rounded-2xl border border-app-border bg-app-surface/60 p-6"
           >
             <h2 className="text-lg font-semibold">New video</h2>
 
             {products.length > 0 ? (
               <label className="block text-sm">
                 <div className="flex items-center justify-between">
-                  <span className="text-zinc-400">Product</span>
+                  <span className="text-app-text-muted">Product</span>
                   <Link href="/dashboard/products/new" className="text-xs text-amber-400 hover:underline">
                     + New product
                   </Link>
@@ -96,10 +96,10 @@ export default async function VideosPage({
             ) : (
               <div>
                 <label className="block text-sm">
-                  <span className="text-zinc-400">Title / product *</span>
+                  <span className="text-app-text-muted">Title / product *</span>
                   <input name="title" placeholder="Reveria Signature Collection" className={`mt-1.5 ${field}`} />
                 </label>
-                <p className="mt-1.5 text-xs text-zinc-600">
+                <p className="mt-1.5 text-xs text-app-text-subtle">
                   Or{" "}
                   <Link href="/dashboard/products/new" className="text-amber-400 hover:underline">
                     add a product to your catalog
@@ -110,16 +110,16 @@ export default async function VideosPage({
             )}
 
             <div className="text-sm">
-              <span className="text-zinc-400">Style</span>
+              <span className="text-app-text-muted">Style</span>
               <div className="mt-1.5 space-y-2">
                 {STYLES.map((s, i) => (
                   <label key={s.id}
-                    className="flex cursor-pointer items-start gap-3 rounded-xl border border-zinc-700 bg-zinc-950/70 p-3 has-[:checked]:border-amber-400 has-[:checked]:bg-amber-950/25 has-[:checked]:ring-1 has-[:checked]:ring-amber-400">
+                    className="flex cursor-pointer items-start gap-3 rounded-xl border border-app-border-strong bg-app-bg/70 p-3 has-[:checked]:border-amber-400 has-[:checked]:bg-amber-950/25 has-[:checked]:ring-1 has-[:checked]:ring-amber-400">
                     <input type="radio" name="style" value={s.id} defaultChecked={i === 0} className="sr-only" />
                     <span className="text-xl">{s.icon}</span>
                     <span>
-                      <span className="block text-sm font-semibold text-zinc-100">{s.label}</span>
-                      <span className="block text-xs text-zinc-500">{s.desc}</span>
+                      <span className="block text-sm font-semibold text-app-text">{s.label}</span>
+                      <span className="block text-xs text-app-text-subtle">{s.desc}</span>
                     </span>
                   </label>
                 ))}
@@ -133,15 +133,15 @@ export default async function VideosPage({
               dialects={ARABIC_DIALECTS.map((d) => ({ id: d.id, label: d.label }))}
             />
 
-            <div className="space-y-3 rounded-xl border border-zinc-800 bg-zinc-950/60 p-4">
-              <p className="text-sm font-semibold text-zinc-200">Creative brief (optional)</p>
-              <p className="text-xs text-zinc-500">
+            <div className="space-y-3 rounded-xl border border-app-border bg-app-bg/60 p-4">
+              <p className="text-sm font-semibold text-app-text">Creative brief (optional)</p>
+              <p className="text-xs text-app-text-subtle">
                 Add direction for script tone, key points, and outcomes so the generated
                 video matches your exact goal.
               </p>
 
               <label className="block text-sm">
-                <span className="text-zinc-400">Goal / objective</span>
+                <span className="text-app-text-muted">Goal / objective</span>
                 <input
                   name="objective"
                   placeholder="Example: Drive WhatsApp inquiries from first-time buyers"
@@ -150,7 +150,7 @@ export default async function VideosPage({
               </label>
 
               <label className="block text-sm">
-                <span className="text-zinc-400">Prompt for the video generator</span>
+                <span className="text-app-text-muted">Prompt for the video generator</span>
                 <textarea
                   name="creativePrompt"
                   rows={3}
@@ -160,7 +160,7 @@ export default async function VideosPage({
               </label>
 
               <label className="block text-sm">
-                <span className="text-zinc-400">Key points to include</span>
+                <span className="text-app-text-muted">Key points to include</span>
                 <textarea
                   name="keyPoints"
                   rows={3}
@@ -170,7 +170,7 @@ export default async function VideosPage({
               </label>
 
               <label className="block text-sm">
-                <span className="text-zinc-400">Call to action preference</span>
+                <span className="text-app-text-muted">Call to action preference</span>
                 <input
                   name="cta"
                   placeholder="Example: Send us a WhatsApp message now"
@@ -179,7 +179,7 @@ export default async function VideosPage({
               </label>
 
               <label className="block text-sm">
-                <span className="text-zinc-400">Must avoid / constraints</span>
+                <span className="text-app-text-muted">Must avoid / constraints</span>
                 <textarea
                   name="mustAvoid"
                   rows={2}
@@ -189,7 +189,7 @@ export default async function VideosPage({
               </label>
 
               <label className="block text-sm">
-                <span className="text-zinc-400">Approximate length</span>
+                <span className="text-app-text-muted">Approximate length</span>
                 <select name="sceneCount" className={`mt-1.5 ${field}`} defaultValue="3">
                   <option value="2">Short (2 scenes)</option>
                   <option value="3">Standard (3 scenes)</option>
@@ -199,13 +199,13 @@ export default async function VideosPage({
               </label>
 
               <label className="block text-sm">
-                <span className="text-zinc-400">Background music (optional)</span>
+                <span className="text-app-text-muted">Background music (optional)</span>
                 <input
                   name="musicPrompt"
                   placeholder="Example: upbeat lo-fi hip hop, warm and optimistic"
                   className={`mt-1.5 ${field}`}
                 />
-                <span className="mt-1 block text-xs text-zinc-600">
+                <span className="mt-1 block text-xs text-app-text-subtle">
                   Leave blank for voiceover only. Not used on the Avatar style.
                 </span>
               </label>
@@ -214,7 +214,7 @@ export default async function VideosPage({
             <button className="w-full rounded-xl bg-amber-400 px-5 py-3 text-sm font-bold text-zinc-950 shadow shadow-amber-500/20 transition-colors hover:bg-amber-300">
               Generate video →
             </button>
-            <p className="text-xs text-zinc-600">
+            <p className="text-xs text-app-text-subtle">
               Script in your brand voice · ~3 scenes · voiceover · final cut in
               a few minutes.
             </p>
@@ -223,19 +223,19 @@ export default async function VideosPage({
           {/* Project list */}
           <div className="space-y-3">
             {projects.length === 0 ? (
-              <div className="rounded-2xl border border-dashed border-zinc-800 p-10 text-center text-sm text-zinc-500">
+              <div className="rounded-2xl border border-dashed border-app-border p-10 text-center text-sm text-app-text-subtle">
                 No videos yet — pick a product and a style to make your first one.
               </div>
             ) : (
               projects.map((p) => (
                 <Link key={p.id} href={`/dashboard/videos/${p.id}`}
-                  className="flex items-center gap-4 rounded-2xl border border-zinc-800 bg-zinc-900/60 p-4 transition-colors hover:border-zinc-600">
-                  <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-zinc-950 text-xl">
+                  className="flex items-center gap-4 rounded-2xl border border-app-border bg-app-surface/60 p-4 transition-colors hover:border-app-border-emphasis">
+                  <div className="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-app-bg text-xl">
                     {p.status === "ready" && p.finalUrl ? "🎥" : STYLES.find((s) => s.id === p.style)?.icon ?? "🎥"}
                   </div>
                   <div className="min-w-0 flex-1">
                     <p className="truncate font-semibold">{p.title}</p>
-                    <p className="text-xs capitalize text-zinc-500">
+                    <p className="text-xs capitalize text-app-text-subtle">
                       {p.style} · {p.language === "fr" ? "Français" : "English"}
                     </p>
                   </div>

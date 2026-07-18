@@ -23,13 +23,13 @@ function money(minor: number, currency: string) {
   return `${(minor / 100).toFixed(2)} ${currency}`;
 }
 
-const panelClass = "rounded-lg border border-zinc-800 bg-zinc-900 p-4";
+const panelClass = "rounded-lg border border-app-border bg-app-surface p-4";
 const fieldClass =
-  "rounded-xl border border-white/10 bg-zinc-950 px-4 py-3 text-sm text-zinc-50 outline-none focus:border-amber-300";
+  "rounded-xl border border-white/10 bg-app-bg px-4 py-3 text-sm text-app-text outline-none focus:border-amber-300";
 const primaryButtonClass =
   "rounded-full bg-white px-4 py-2.5 text-sm font-semibold text-zinc-950 hover:bg-zinc-100";
 const secondaryButtonClass =
-  "rounded-full border border-white/10 bg-zinc-950 px-4 py-2.5 text-sm font-medium text-zinc-100 hover:bg-zinc-800 hover:border-white/20";
+  "rounded-full border border-white/10 bg-app-bg px-4 py-2.5 text-sm font-medium text-app-text hover:bg-app-surface-2 hover:border-white/20";
 
 export default async function CampaignChatPage({
   params,
@@ -150,16 +150,16 @@ export default async function CampaignChatPage({
   }
 
   return (
-    <main className="min-h-screen px-4 py-5 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-5 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
-        <Link href={`/dashboard/campaigns/${campaign.id}`} className="text-sm text-zinc-300 hover:text-white">
+        <Link href={`/dashboard/campaigns/${campaign.id}`} className="text-sm text-app-text hover:text-white">
           ← Campaign detail
         </Link>
 
-        <header className="mt-3 rounded-xl border border-white/10 bg-zinc-900/80 p-4 backdrop-blur-sm">
+        <header className="mt-3 rounded-xl border border-white/10 bg-app-surface/80 p-4 backdrop-blur-sm">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h1 className="text-xl font-semibold">Optimization chat</h1>
-            <p className="text-sm text-zinc-300">
+            <p className="text-sm text-app-text">
               {campaign.name} · {campaign.status}
             </p>
           </div>
@@ -172,10 +172,10 @@ export default async function CampaignChatPage({
         ) : null}
 
         {/* Conversation thread (oldest → newest) */}
-        <section className="mt-5 rounded-xl border border-white/10 bg-zinc-900/80 p-4">
+        <section className="mt-5 rounded-xl border border-white/10 bg-app-surface/80 p-4">
           <h2 className="text-lg font-medium">Conversation</h2>
           {optimizationChats.length === 0 ? (
-            <p className="mt-3 text-sm text-zinc-300">
+            <p className="mt-3 text-sm text-app-text">
               No messages yet — ask MarkAI about this campaign below.
             </p>
           ) : (
@@ -183,15 +183,15 @@ export default async function CampaignChatPage({
               {[...optimizationChats].reverse().map((chat, index) => (
                 <div key={index} className="space-y-2">
                   {chat.userQuery ? (
-                    <div className="ml-auto max-w-2xl rounded-xl border border-white/10 bg-zinc-950 p-4 text-sm text-zinc-50 shadow-[0_0_0_1px_rgba(255,255,255,0.02)]">
-                      <div className="text-[11px] uppercase tracking-[0.22em] text-zinc-400">
+                    <div className="ml-auto max-w-2xl rounded-xl border border-white/10 bg-app-bg p-4 text-sm text-app-text shadow-[0_0_0_1px_rgba(255,255,255,0.02)]">
+                      <div className="text-[11px] uppercase tracking-[0.22em] text-app-text-muted">
                         You
                       </div>
                       <p className="mt-2 leading-7">{chat.userQuery}</p>
                     </div>
                   ) : null}
                   {chat.assistantAnswer ? (
-                    <div className="max-w-2xl rounded-xl border border-amber-300/20 bg-zinc-950 p-4 text-sm text-zinc-50 shadow-[0_0_0_1px_rgba(251,191,36,0.04)]">
+                    <div className="max-w-2xl rounded-xl border border-amber-300/20 bg-app-bg p-4 text-sm text-app-text shadow-[0_0_0_1px_rgba(251,191,36,0.04)]">
                       <div className="text-[11px] uppercase tracking-[0.22em] text-amber-200">
                         MarkAI
                       </div>
@@ -217,9 +217,9 @@ export default async function CampaignChatPage({
               anything updates on Meta.
             </p>
             <dl className="mt-3 grid grid-cols-2 gap-2 text-sm">
-              <dt className="text-zinc-400">Action</dt>
+              <dt className="text-app-text-muted">Action</dt>
               <dd className="font-medium uppercase">{optimization.action}</dd>
-              <dt className="text-zinc-400">Confidence</dt>
+              <dt className="text-app-text-muted">Confidence</dt>
               <dd>{optimization.confidence}</dd>
             </dl>
 
@@ -267,12 +267,12 @@ export default async function CampaignChatPage({
                   <div className="text-[11px] font-semibold uppercase tracking-[0.22em] text-amber-100">
                     Changes to apply
                   </div>
-                  <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-zinc-50">
+                  <ul className="mt-2 list-disc space-y-1 pl-5 text-sm text-app-text">
                     {lines.map((l, i) => (
                       <li key={i}>{l}</li>
                     ))}
                   </ul>
-                  <p className="mt-2 text-xs text-zinc-300">
+                  <p className="mt-2 text-xs text-app-text">
                     {a === "keep" || a === "refresh_creatives"
                       ? "Nothing will be sent to Meta."
                       : reachesMeta
@@ -300,14 +300,14 @@ export default async function CampaignChatPage({
 
         {/* Message input — always available so the conversation can continue */}
         {isLive ? (
-          <section className="mt-5 rounded-xl border border-white/10 bg-zinc-900/80 p-4">
+          <section className="mt-5 rounded-xl border border-white/10 bg-app-surface/80 p-4">
             <form action={requestOptimization} className="space-y-3">
               <input type="hidden" name="campaignId" value={campaign.id} />
               <input type="hidden" name="since" value={rangeSince} />
               <input type="hidden" name="until" value={rangeUntil} />
               <input type="hidden" name="returnTo" value={returnTo} />
               <label className="block">
-                <span className="text-sm text-zinc-300">
+                <span className="text-sm text-app-text">
                   Ask MarkAI about this campaign
                 </span>
                 <textarea
@@ -319,13 +319,13 @@ export default async function CampaignChatPage({
               </label>
               <button className={primaryButtonClass}>Send</button>
             </form>
-            <p className="mt-2 text-xs text-zinc-400">
+            <p className="mt-2 text-xs text-app-text-muted">
               Analyses the selected range: {rangeSince} → {rangeUntil}
               {hasCustom ? " (custom)" : ""}
             </p>
           </section>
         ) : (
-          <p className="mt-5 text-sm text-zinc-300">
+          <p className="mt-5 text-sm text-app-text">
             Optimization chat is available once the campaign is active or paused.
           </p>
         )}

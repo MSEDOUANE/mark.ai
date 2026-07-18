@@ -4,7 +4,7 @@ import { useState } from "react";
 import { LANGUAGES, ARABIC_DIALECTS } from "@/lib/ai/languages";
 
 const field =
-  "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none focus:border-zinc-500";
+  "w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none focus:border-zinc-500";
 
 /**
  * Language + Arabic-dialect picker for text-generation tools (ad copy,
@@ -22,7 +22,7 @@ export function LanguagePicker({
   const [language, setLanguage] = useState(defaultLanguage);
 
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 space-y-3">
+    <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5 space-y-3">
       <h3 className="font-semibold">Language</h3>
       <select
         name="language"
@@ -38,9 +38,9 @@ export function LanguagePicker({
       {/* Dialect — only meaningful for Arabic. Kept mounted (hidden) so its
           value still submits; defaults to Moroccan Darija. */}
       <label className={`block text-sm ${language === "ar" ? "" : "hidden"}`}>
-        <span className="text-zinc-400">
+        <span className="text-app-text-muted">
           Arabic dialect{" "}
-          <span className="text-zinc-600">— written how this audience actually speaks</span>
+          <span className="text-app-text-subtle">— written how this audience actually speaks</span>
         </span>
         <select name="dialect" className={`mt-1.5 ${field}`} defaultValue={defaultDialect}>
           {ARABIC_DIALECTS.map((d) => (

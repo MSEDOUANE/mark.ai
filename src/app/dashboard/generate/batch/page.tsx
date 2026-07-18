@@ -29,17 +29,17 @@ export default async function BatchGeneratePage({
     .orderBy(desc(schema.products.createdAt));
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-4xl">
         <div className="mb-8">
-          <Link href="/dashboard/generate" className="text-sm text-zinc-400 hover:text-zinc-200">
+          <Link href="/dashboard/generate" className="text-sm text-app-text-muted hover:text-app-text">
             ← Generate
           </Link>
           <div className="mt-3 flex items-center gap-3">
             <span className="text-3xl">⚡</span>
             <div>
               <h1 className="text-2xl font-bold">Batch Generation</h1>
-              <p className="mt-0.5 text-sm text-zinc-400">
+              <p className="mt-0.5 text-sm text-app-text-muted">
                 One shared brief, applied across every product you pick — each gets its own AI-written, scored creative.
               </p>
             </div>
@@ -51,9 +51,9 @@ export default async function BatchGeneratePage({
         )}
 
         {products.length === 0 ? (
-          <div className="rounded-2xl border border-dashed border-zinc-800 p-12 text-center">
+          <div className="rounded-2xl border border-dashed border-app-border p-12 text-center">
             <p className="text-3xl">📦</p>
-            <p className="mt-3 text-sm text-zinc-500">Add products to your catalog first.</p>
+            <p className="mt-3 text-sm text-app-text-subtle">Add products to your catalog first.</p>
             <Link href="/dashboard/products/new" className="mt-4 inline-block rounded-xl bg-amber-400 px-5 py-2.5 text-sm font-bold text-zinc-950 hover:bg-amber-300">
               + New product
             </Link>

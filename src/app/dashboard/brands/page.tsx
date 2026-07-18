@@ -20,13 +20,13 @@ export default async function BrandsPage() {
     .orderBy(desc(schema.brandProfiles.createdAt));
 
   return (
-    <main className="min-h-screen px-4 py-6 text-zinc-100 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
       <div className="mx-auto max-w-5xl">
         {/* Header */}
         <div className="flex items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl font-bold">Brand Profiles</h1>
-            <p className="mt-1 text-sm text-zinc-400">
+            <p className="mt-1 text-sm text-app-text-muted">
               Save your brand identity once — reuse it across all creatives.
             </p>
           </div>
@@ -39,15 +39,15 @@ export default async function BrandsPage() {
         {brands.length === 0 ? (
           /* Empty state */
           <div className="mt-20 flex flex-col items-center text-center">
-            <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-zinc-800/80">
-              <svg className="h-9 w-9 text-zinc-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}>
+            <div className="flex h-20 w-20 items-center justify-center rounded-3xl bg-app-surface-2/80">
+              <svg className="h-9 w-9 text-app-text-subtle" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.2}>
                 <path strokeLinecap="round" strokeLinejoin="round"
                   d="M9.568 3H5.25A2.25 2.25 0 003 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 005.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 009.568 3z" />
                 <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6z" />
               </svg>
             </div>
             <h2 className="mt-5 text-lg font-semibold">No brand profiles yet</h2>
-            <p className="mt-2 max-w-sm text-sm text-zinc-500">
+            <p className="mt-2 max-w-sm text-sm text-app-text-subtle">
               Create a brand profile with your logo and colors. When generating
               creatives, pick a brand to auto-fill everything.
             </p>
@@ -64,7 +64,7 @@ export default async function BrandsPage() {
 
             {/* Add new card */}
             <Link href="/dashboard/brands/new"
-              className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-zinc-700 py-10 text-zinc-500 transition-colors hover:border-zinc-500 hover:text-zinc-300">
+              className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-app-border-strong py-10 text-app-text-subtle transition-colors hover:border-zinc-500 hover:text-app-text">
               <svg className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
               </svg>
@@ -87,7 +87,7 @@ function BrandCard({ brand }: {
   const color = brand.primaryColor ?? "#7c3aed";
 
   return (
-    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 transition-shadow hover:shadow-xl hover:shadow-black/40">
+    <div className="group relative flex flex-col overflow-hidden rounded-2xl border border-app-border bg-app-surface transition-shadow hover:shadow-xl hover:shadow-black/40">
       {/* Color band + logo */}
       <div className="relative flex h-28 items-center justify-center overflow-hidden"
         style={{ background: `linear-gradient(135deg, ${color}33 0%, ${color}0a 100%)` }}>
@@ -103,27 +103,27 @@ function BrandCard({ brand }: {
         )}
 
         {/* Color dot */}
-        <div className="absolute right-3 top-3 h-5 w-5 rounded-full border-2 border-zinc-800 shadow"
+        <div className="absolute right-3 top-3 h-5 w-5 rounded-full border-2 border-app-border shadow"
           style={{ backgroundColor: color }} />
       </div>
 
       {/* Content */}
       <div className="flex flex-1 flex-col p-4">
-        <h3 className="font-semibold text-zinc-100">{brand.name}</h3>
+        <h3 className="font-semibold text-app-text">{brand.name}</h3>
         {brand.tone ? (
-          <p className="mt-0.5 text-xs text-zinc-500 capitalize">{brand.tone}</p>
+          <p className="mt-0.5 text-xs text-app-text-subtle capitalize">{brand.tone}</p>
         ) : null}
         {brand.description ? (
-          <p className="mt-1.5 line-clamp-2 text-xs text-zinc-500">{brand.description}</p>
+          <p className="mt-1.5 line-clamp-2 text-xs text-app-text-subtle">{brand.description}</p>
         ) : null}
         {brand.websiteUrl ? (
-          <p className="mt-1.5 truncate text-[11px] text-zinc-600">{brand.websiteUrl}</p>
+          <p className="mt-1.5 truncate text-[11px] text-app-text-subtle">{brand.websiteUrl}</p>
         ) : null}
 
         {/* Actions */}
-        <div className="mt-4 flex items-center gap-2 border-t border-zinc-800 pt-3">
+        <div className="mt-4 flex items-center gap-2 border-t border-app-border pt-3">
           <Link href={`/dashboard/brands/${brand.id}/edit`}
-            className="flex-1 rounded-lg border border-zinc-700 py-1.5 text-center text-xs font-medium text-zinc-300 transition-colors hover:border-zinc-500 hover:text-zinc-100">
+            className="flex-1 rounded-lg border border-app-border-strong py-1.5 text-center text-xs font-medium text-app-text transition-colors hover:border-zinc-500 hover:text-app-text">
             Edit
           </Link>
           <Link

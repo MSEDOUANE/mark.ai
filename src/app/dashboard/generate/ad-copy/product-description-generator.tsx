@@ -27,7 +27,7 @@ function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
   return (
     <button type="button" onClick={() => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1800); }}
-      className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs text-zinc-500 transition-colors hover:bg-zinc-700 hover:text-zinc-200">
+      className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs text-app-text-subtle transition-colors hover:bg-app-surface-2 hover:text-app-text">
       {copied ? "Copied" : "Copy"}
     </button>
   );
@@ -39,29 +39,29 @@ export function ProductDescriptionGenerator({ brands = [] }: { brands?: BrandCon
     { status: "idle" },
   );
 
-  const field = "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500";
+  const field = "w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500";
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1fr_340px]">
       <form action={action} className="space-y-5">
         <BrandContextPicker brands={brands} />
         <LanguagePicker />
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 space-y-4">
+        <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5 space-y-4">
           <h3 className="font-semibold">Product</h3>
           <div>
-            <label className="text-sm text-zinc-400">Product name *</label>
+            <label className="text-sm text-app-text-muted">Product name *</label>
             <input name="productName" placeholder="Argan Glow Serum" className={`mt-1.5 ${field}`} />
           </div>
           <div>
-            <label className="text-sm text-zinc-400">Key features / materials</label>
+            <label className="text-sm text-app-text-muted">Key features / materials</label>
             <textarea name="features" rows={3} placeholder="What it's made of, how it works, what's included" className={`mt-1.5 ${field}`} />
           </div>
           <div>
-            <label className="text-sm text-zinc-400">Target audience</label>
+            <label className="text-sm text-app-text-muted">Target audience</label>
             <input name="audience" placeholder="Who this is for" className={`mt-1.5 ${field}`} />
           </div>
           <div>
-            <label className="text-sm text-zinc-400">SEO keywords to consider</label>
+            <label className="text-sm text-app-text-muted">SEO keywords to consider</label>
             <input name="keywords" placeholder="organic argan oil, face serum, moroccan skincare" className={`mt-1.5 ${field}`} />
           </div>
         </div>
@@ -74,56 +74,56 @@ export function ProductDescriptionGenerator({ brands = [] }: { brands?: BrandCon
 
       <div className="space-y-4">
         {state.status === "idle" && !pending && (
-          <div className="rounded-2xl border border-dashed border-zinc-800 p-8 text-center">
+          <div className="rounded-2xl border border-dashed border-app-border p-8 text-center">
             <p className="text-2xl">📄</p>
-            <p className="mt-3 font-medium text-zinc-400">Your product copy will appear here</p>
+            <p className="mt-3 font-medium text-app-text-muted">Your product copy will appear here</p>
           </div>
         )}
         {pending && (
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-8 text-center">
+          <div className="rounded-2xl border border-app-border bg-app-surface/60 p-8 text-center">
             <svg className="mx-auto h-8 w-8 animate-spin text-amber-400" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-            <p className="mt-3 text-sm text-zinc-400">Writing product copy…</p>
+            <p className="mt-3 text-sm text-app-text-muted">Writing product copy…</p>
           </div>
         )}
         {state.status === "success" && !pending && (
           <>
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900">
-              <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-2.5">
-                <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Short (card)</span>
+            <div className="rounded-2xl border border-app-border bg-app-surface">
+              <div className="flex items-center justify-between border-b border-app-border px-4 py-2.5">
+                <span className="text-xs font-semibold uppercase tracking-wider text-app-text-subtle">Short (card)</span>
                 <CopyButton text={state.result.short} />
               </div>
-              <p className="p-4 text-sm text-zinc-300">{state.result.short}</p>
+              <p className="p-4 text-sm text-app-text">{state.result.short}</p>
             </div>
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900">
-              <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-2.5">
-                <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Medium</span>
+            <div className="rounded-2xl border border-app-border bg-app-surface">
+              <div className="flex items-center justify-between border-b border-app-border px-4 py-2.5">
+                <span className="text-xs font-semibold uppercase tracking-wider text-app-text-subtle">Medium</span>
                 <CopyButton text={state.result.medium} />
               </div>
-              <p className="p-4 text-sm text-zinc-300">{state.result.medium}</p>
+              <p className="p-4 text-sm text-app-text">{state.result.medium}</p>
             </div>
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900">
-              <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-2.5">
-                <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500">Long (SEO)</span>
+            <div className="rounded-2xl border border-app-border bg-app-surface">
+              <div className="flex items-center justify-between border-b border-app-border px-4 py-2.5">
+                <span className="text-xs font-semibold uppercase tracking-wider text-app-text-subtle">Long (SEO)</span>
                 <CopyButton text={state.result.long} />
               </div>
-              <p className="p-4 text-sm leading-relaxed text-zinc-300">{state.result.long}</p>
+              <p className="p-4 text-sm leading-relaxed text-app-text">{state.result.long}</p>
             </div>
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-4">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">Bullet points</p>
+            <div className="rounded-2xl border border-app-border bg-app-surface p-4">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-app-text-subtle">Bullet points</p>
               <ul className="space-y-1.5">
                 {state.result.bulletPoints.map((b, i) => (
-                  <li key={i} className="flex items-start gap-2 text-sm text-zinc-300"><span className="mt-0.5 text-amber-400">•</span>{b}</li>
+                  <li key={i} className="flex items-start gap-2 text-sm text-app-text"><span className="mt-0.5 text-amber-400">•</span>{b}</li>
                 ))}
               </ul>
             </div>
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-900 p-4">
-              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-zinc-500">SEO metadata</p>
-              <p className="text-xs text-zinc-500">Meta title</p>
-              <p className="text-sm text-zinc-300">{state.result.metaTitle}</p>
-              <p className="mt-2 text-xs text-zinc-500">Meta description</p>
-              <p className="text-sm text-zinc-300">{state.result.metaDescription}</p>
+            <div className="rounded-2xl border border-app-border bg-app-surface p-4">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-app-text-subtle">SEO metadata</p>
+              <p className="text-xs text-app-text-subtle">Meta title</p>
+              <p className="text-sm text-app-text">{state.result.metaTitle}</p>
+              <p className="mt-2 text-xs text-app-text-subtle">Meta description</p>
+              <p className="text-sm text-app-text">{state.result.metaDescription}</p>
               <div className="mt-3 flex flex-wrap gap-1.5">
-                {state.result.seoKeywords.map((k) => <span key={k} className="rounded-full bg-zinc-800 px-2 py-0.5 text-[11px] text-zinc-400">{k}</span>)}
+                {state.result.seoKeywords.map((k) => <span key={k} className="rounded-full bg-app-surface-2 px-2 py-0.5 text-[11px] text-app-text-muted">{k}</span>)}
               </div>
             </div>
           </>

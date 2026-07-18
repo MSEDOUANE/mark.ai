@@ -28,7 +28,7 @@ function CopyButton({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
   return (
     <button type="button" onClick={() => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1800); }}
-      className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs text-zinc-500 transition-colors hover:bg-zinc-700 hover:text-zinc-200">
+      className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs text-app-text-subtle transition-colors hover:bg-app-surface-2 hover:text-app-text">
       {copied ? "Copied" : "Copy"}
     </button>
   );
@@ -41,7 +41,7 @@ export function MarketingCopyGenerator({ brands = [] }: { brands?: BrandContextO
   );
   const [selectedFormats, setSelectedFormats] = useState<string[]>(["Email", "Landing Hero"]);
 
-  const field = "w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-sm text-zinc-100 outline-none placeholder:text-zinc-600 focus:border-zinc-500";
+  const field = "w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500";
 
   function toggleFormat(id: string) {
     setSelectedFormats((prev) => prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]);
@@ -54,39 +54,39 @@ export function MarketingCopyGenerator({ brands = [] }: { brands?: BrandContextO
         <BrandContextPicker brands={brands} />
         <LanguagePicker />
 
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5 space-y-4">
+        <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5 space-y-4">
           <h3 className="font-semibold">Product / campaign</h3>
           <div>
-            <label className="text-sm text-zinc-400">Name *</label>
+            <label className="text-sm text-app-text-muted">Name *</label>
             <input name="productName" placeholder="Summer Sale" className={`mt-1.5 ${field}`} />
           </div>
           <div>
-            <label className="text-sm text-zinc-400">Goal</label>
+            <label className="text-sm text-app-text-muted">Goal</label>
             <input name="goal" placeholder="Drive sign-ups, announce a sale…" className={`mt-1.5 ${field}`} />
           </div>
           <div>
-            <label className="text-sm text-zinc-400">Offer / promotion</label>
+            <label className="text-sm text-app-text-muted">Offer / promotion</label>
             <input name="offer" placeholder="20% off, free shipping…" className={`mt-1.5 ${field}`} />
           </div>
           <div>
-            <label className="text-sm text-zinc-400">Audience</label>
+            <label className="text-sm text-app-text-muted">Audience</label>
             <input name="audience" placeholder="Who is this for" className={`mt-1.5 ${field}`} />
           </div>
         </div>
 
-        <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-5">
+        <div className="rounded-2xl border border-app-border bg-app-surface/60 p-5">
           <h3 className="font-semibold">Formats</h3>
-          <p className="mt-0.5 text-sm text-zinc-400">Select one or more — each gets its own piece.</p>
+          <p className="mt-0.5 text-sm text-app-text-muted">Select one or more — each gets its own piece.</p>
           <div className="mt-4 grid grid-cols-2 gap-2">
             {MARKETING_FORMATS.map((f) => {
               const on = selectedFormats.includes(f.id);
               return (
                 <button key={f.id} type="button" onClick={() => toggleFormat(f.id)}
                   className={`flex flex-col items-start gap-0.5 rounded-xl border p-3 text-left transition-all ${
-                    on ? "border-amber-400/50 bg-amber-950/25 ring-1 ring-amber-400" : "border-zinc-700 bg-zinc-950/50 hover:border-zinc-600"
+                    on ? "border-amber-400/50 bg-amber-950/25 ring-1 ring-amber-400" : "border-app-border-strong bg-app-bg/50 hover:border-app-border-emphasis"
                   }`}>
-                  <span className={`text-sm font-semibold ${on ? "text-amber-200" : "text-zinc-300"}`}>{f.label}</span>
-                  <span className="text-[10px] text-zinc-500">{f.desc}</span>
+                  <span className={`text-sm font-semibold ${on ? "text-amber-200" : "text-app-text"}`}>{f.label}</span>
+                  <span className="text-[10px] text-app-text-subtle">{f.desc}</span>
                 </button>
               );
             })}
@@ -101,26 +101,26 @@ export function MarketingCopyGenerator({ brands = [] }: { brands?: BrandContextO
 
       <div className="space-y-4">
         {state.status === "idle" && !pending && (
-          <div className="rounded-2xl border border-dashed border-zinc-800 p-8 text-center">
+          <div className="rounded-2xl border border-dashed border-app-border p-8 text-center">
             <p className="text-2xl">📣</p>
-            <p className="mt-3 font-medium text-zinc-400">Your marketing copy will appear here</p>
+            <p className="mt-3 font-medium text-app-text-muted">Your marketing copy will appear here</p>
           </div>
         )}
         {pending && (
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-900/60 p-8 text-center">
+          <div className="rounded-2xl border border-app-border bg-app-surface/60 p-8 text-center">
             <svg className="mx-auto h-8 w-8 animate-spin text-amber-400" viewBox="0 0 24 24" fill="none"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
-            <p className="mt-3 text-sm text-zinc-400">Writing {selectedFormats.length} piece{selectedFormats.length !== 1 ? "s" : ""}…</p>
+            <p className="mt-3 text-sm text-app-text-muted">Writing {selectedFormats.length} piece{selectedFormats.length !== 1 ? "s" : ""}…</p>
           </div>
         )}
         {state.status === "success" && !pending && state.result.pieces.map((p, i) => (
-          <div key={i} className="overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900">
-            <div className="flex items-center justify-between border-b border-zinc-800 px-4 py-2.5">
-              <span className="rounded-full border border-zinc-700 px-2.5 py-0.5 text-xs font-semibold text-zinc-300">{p.format}</span>
+          <div key={i} className="overflow-hidden rounded-2xl border border-app-border bg-app-surface">
+            <div className="flex items-center justify-between border-b border-app-border px-4 py-2.5">
+              <span className="rounded-full border border-app-border-strong px-2.5 py-0.5 text-xs font-semibold text-app-text">{p.format}</span>
               <CopyButton text={[p.headline, p.body].filter(Boolean).join("\n\n")} />
             </div>
             <div className="space-y-2 p-4">
-              {p.headline && <p className="text-base font-bold text-zinc-100">{p.headline}</p>}
-              <p className="text-sm leading-relaxed text-zinc-300">{p.body}</p>
+              {p.headline && <p className="text-base font-bold text-app-text">{p.headline}</p>}
+              <p className="text-sm leading-relaxed text-app-text">{p.body}</p>
             </div>
           </div>
         ))}

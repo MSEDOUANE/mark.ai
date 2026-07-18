@@ -133,11 +133,11 @@ export function CommandPalette() {
         role="dialog"
         aria-modal="true"
         aria-label="Command palette"
-        className="w-full max-w-lg overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-900 shadow-2xl shadow-black/50"
+        className="w-full max-w-lg overflow-hidden rounded-2xl border border-app-border bg-app-surface shadow-2xl shadow-black/50"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-2.5 border-b border-zinc-800 px-4 py-3">
-          <svg className="h-4 w-4 shrink-0 text-zinc-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        <div className="flex items-center gap-2.5 border-b border-app-border px-4 py-3">
+          <svg className="h-4 w-4 shrink-0 text-app-text-subtle" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
             <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
           </svg>
           <input
@@ -146,14 +146,14 @@ export function CommandPalette() {
             onChange={(e) => { setQuery(e.target.value); setActiveIndex(0); }}
             onKeyDown={onInputKeyDown}
             placeholder="Search campaigns, brands, products… or jump to a page"
-            className="flex-1 bg-transparent text-sm text-zinc-100 outline-none placeholder:text-zinc-600"
+            className="flex-1 bg-transparent text-sm text-app-text outline-none placeholder:text-app-text-subtle"
           />
-          <kbd className="shrink-0 rounded border border-zinc-700 px-1.5 py-0.5 text-[10px] text-zinc-500">Esc</kbd>
+          <kbd className="shrink-0 rounded border border-app-border-strong px-1.5 py-0.5 text-[10px] text-app-text-subtle">Esc</kbd>
         </div>
 
         <div className="max-h-80 overflow-y-auto p-2">
           {combined.length === 0 ? (
-            <p className="px-3 py-6 text-center text-sm text-zinc-600">
+            <p className="px-3 py-6 text-center text-sm text-app-text-subtle">
               {loading ? "Searching…" : "No matches"}
             </p>
           ) : (
@@ -164,12 +164,12 @@ export function CommandPalette() {
                 onClick={() => go(item.href)}
                 onMouseEnter={() => setActiveIndex(i)}
                 className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm transition-colors ${
-                  i === activeIndex ? "bg-amber-400/10 text-amber-300" : "text-zinc-200 hover:bg-zinc-800"
+                  i === activeIndex ? "bg-amber-400/10 text-amber-300" : "text-app-text hover:bg-app-surface-2"
                 }`}
               >
                 <span className="shrink-0">{item.icon}</span>
                 <span className="min-w-0 flex-1 truncate">{item.label}</span>
-                <span className="shrink-0 text-xs text-zinc-600">{item.subtitle}</span>
+                <span className="shrink-0 text-xs text-app-text-subtle">{item.subtitle}</span>
               </button>
             ))
           )}

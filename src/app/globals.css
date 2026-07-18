@@ -10,6 +10,41 @@
   --accent: #f8fafc;
   --accent-strong: #ffffff;
   --accent-cool: #d8dee9;
+
+  /*
+   * Dashboard chrome theme tokens — deliberately SEPARATE from Tailwind's
+   * built-in zinc/amber palette (never redefine --color-zinc-*): several
+   * zinc shades are dual-purpose in this app (e.g. zinc-950 is both the
+   * page's darkest background AND the fixed dark text color used on amber
+   * CTA buttons for contrast). Overriding the shared palette would flip
+   * button text unreadable. These app-* tokens only replace the ~150
+   * zinc-950/900/800/700/600 CHROME usages (backgrounds, borders, body
+   * text) migrated via scripts/migrate-theme-tokens — never the raw
+   * zinc/amber classes still used directly for fixed-contrast elements.
+   * Values below match today's dark-only look exactly (zero visual change
+   * until a user opts into light via the ThemeToggle).
+   */
+  --app-bg: #09090b;
+  --app-surface: #18181b;
+  --app-surface-2: #27272a;
+  --app-border: #27272a;
+  --app-border-strong: #3f3f46;
+  --app-border-emphasis: #52525b;
+  --app-text: #f4f4f5;
+  --app-text-muted: #a1a1aa;
+  --app-text-subtle: #71717a;
+}
+
+:root[data-theme="light"] {
+  --app-bg: #fafafa;
+  --app-surface: #ffffff;
+  --app-surface-2: #f4f4f5;
+  --app-border: #e4e4e7;
+  --app-border-strong: #d4d4d8;
+  --app-border-emphasis: #a1a1aa;
+  --app-text: #18181b;
+  --app-text-muted: #52525b;
+  --app-text-subtle: #71717a;
 }
 
 @theme inline {
@@ -17,6 +52,19 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* Registers app-bg/app-surface/etc. as real Tailwind utilities
+     (bg-app-bg, text-app-text-muted, border-app-border, ...), including
+     opacity-modifier support (bg-app-surface/60) like any built-in color. */
+  --color-app-bg: var(--app-bg);
+  --color-app-surface: var(--app-surface);
+  --color-app-surface-2: var(--app-surface-2);
+  --color-app-border: var(--app-border);
+  --color-app-border-strong: var(--app-border-strong);
+  --color-app-border-emphasis: var(--app-border-emphasis);
+  --color-app-text: var(--app-text);
+  --color-app-text-muted: var(--app-text-muted);
+  --color-app-text-subtle: var(--app-text-subtle);
 }
 
 html {
@@ -44,6 +92,67 @@ body::before {
 ::selection {
   background: rgba(255, 255, 255, 0.85);
   color: #0b0d10;
+}
+
+/* Light theme — only affects the dashboard shell (marketing/landing pages
+   keep their own fixed dark gradient; the toggle lives inside /dashboard). */
+[data-theme="light"] {
+  --background: #fafafa;
+  --foreground: #18181b;
+}
+
+[data-theme="light"] html {
+  background: #fafafa;
+}
+
+[data-theme="light"] body {
+  background: #fafafa;
+}
+
+[data-theme="light"] ::selection {
+  background: rgba(24, 24, 27, 0.15);
+  color: #18181b;
+}
+
+[data-theme="light"] input,
+[data-theme="light"] select,
+[data-theme="light"] textarea {
+  color: var(--app-text);
+  background-color: #ffffff;
+  border-color: #d4d4d8;
+}
+
+[data-theme="light"] input::placeholder,
+[data-theme="light"] textarea::placeholder {
+  color: #71717a;
+}
+
+[data-theme="light"] input:focus,
+[data-theme="light"] select:focus,
+[data-theme="light"] textarea:focus {
+  box-shadow:
+    0 0 0 1px rgba(24, 24, 27, 0.18),
+    0 0 0 4px rgba(217, 119, 6, 0.22);
+}
+
+[data-theme="light"] button:focus-visible,
+[data-theme="light"] a:focus-visible {
+  box-shadow:
+    0 0 0 1px rgba(24, 24, 27, 0.16),
+    0 0 0 4px rgba(217, 119, 6, 0.25);
+}
+
+/* ThemeToggle's icon/label swap: both variants render in the DOM on every
+   pass (identical server/client markup, no hydration mismatch, no React
+   state needed) — only visibility flips off the data-theme attribute. */
+.theme-toggle-light-only {
+  display: none;
+}
+[data-theme="light"] .theme-toggle-dark-only {
+  display: none;
+}
+[data-theme="light"] .theme-toggle-light-only {
+  display: inline-flex;
 }
 
 a,
