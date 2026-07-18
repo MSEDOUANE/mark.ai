@@ -81,6 +81,17 @@ Two big bodies of work, both merged to `main` and pushed:
 - **Live browser verification of Phases 7–9 and the MENA work** — never done (see environment gotchas above). Worth a pass once you have login access.
 - **Familiarize with the `7463823` feature drop** — Billing, Team Management, Notifications, Profile, Preferences, Animation Studio, and a dashboard customization/section-reordering system all landed in that one commit. Read `docs/implementation-specs.md` (already in the repo) for the forward-looking route/component spec those changes are working toward. (Correction, 2026-07-17: the feared team-invite *duplication* did not exist — `team/page.tsx` and the old Settings team section shared one actions file, not two competing implementations. Now consolidated: team management lives solely at `/dashboard/team`, actions at `src/app/dashboard/team/team-actions.ts`, and Settings just links to it. See commit `0e31aac`.)
 
+## Follow-up session — new services + platform gaps
+
+After the items above closed out, further work (audit against the full 74-service AdCreative.ai catalog + a UX-workflow spec the user pasted in) found the catalog itself ~fully covered, but identified real platform-chrome gaps. Built so far, all `tsc`+`eslint` clean and live-verified where possible:
+
+- **5 new Generate-hub services**: Marketing Calendar (MENA seasonality planner), Brand Safety Check (compliance/voice scorer), Funnel Designer (TOFU/MOFU/BOFU + Morocco COD playbook), Email Marketing (single + sequences), Content Scheduler (Claude planner + `scheduled_posts` queue + Inngest auto-publish, gated so nothing fires without a connected Page).
+- **Templates gallery** (`/dashboard/templates`) — live WYSIWYG previews of the 3 layout templates by reusing `creativeArtwork()` directly as React elements (it's plain divs/imgs, renders fine outside Satori); deep-links into the creative wizard with `?template=` prefilled.
+- **Library upgrade** — `library_item_meta` table adds favorites + folders across the 4 heterogeneous asset tables without touching any of their schemas; plus a real text search.
+- **Real bug caught by running the app**: `team/page.tsx`'s role `<select>` had an `onChange` handler in a Server Component — "Event handlers cannot be passed to Client Component props", 500s the page. Pre-existing, but this session's earlier team-consolidation made it load-bearing. Fixed with an explicit Save button.
+
+**Still gapped** (from the UX-workflow audit, not urgent): command palette (Ctrl+K) / global search, undo/redo + version history, credits/billing metering (needs a product decision on the SaaS model first), dark-mode toggle, voice cloning, inpainting/outpainting/style-transfer tools, heatmaps (needs real engagement data). None started — either need a product decision or are lower-value than what's been built.
+
 ## Standing working rhythm (established over the whole session)
 
 - Build the real feature, not a stub.
