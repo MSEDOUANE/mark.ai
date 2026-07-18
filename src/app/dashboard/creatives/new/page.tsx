@@ -9,7 +9,7 @@ import { CreativeWizard } from "./creative-wizard";
 export default async function NewCreativePage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; campaignId?: string; brandId?: string; photoUrl?: string }>;
+  searchParams: Promise<{ error?: string; campaignId?: string; brandId?: string; photoUrl?: string; template?: string }>;
 }) {
   const supabase = await createClient();
   const {
@@ -17,7 +17,7 @@ export default async function NewCreativePage({
   } = await supabase.auth.getUser();
   if (!user) redirect("/login");
   const { org } = await ensureProfile(user);
-  const { error, campaignId: prefillCampaignId, brandId, photoUrl: prefillPhotoUrl } = await searchParams;
+  const { error, campaignId: prefillCampaignId, brandId, photoUrl: prefillPhotoUrl, template: prefillTemplate } = await searchParams;
 
   const [campaigns, brands, productRows] = await Promise.all([
     db
@@ -115,6 +115,7 @@ export default async function NewCreativePage({
           prefillCampaignId={prefillCampaignId}
           prefillBrand={prefillBrand}
           prefillPhotoUrl={prefillPhotoUrl}
+          prefillTemplate={prefillTemplate}
           error={error}
         />
       </div>

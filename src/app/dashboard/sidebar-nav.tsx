@@ -32,6 +32,7 @@ const navSections: NavSection[] = [
       { href: "/dashboard/creatives", label: "Creatives" },
       { href: "/dashboard/videos", label: "Videos" },
       { href: "/dashboard/pages", label: "Pages" },
+      { href: "/dashboard/templates", label: "Templates" },
     ],
   },
   {

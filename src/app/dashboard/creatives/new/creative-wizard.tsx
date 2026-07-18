@@ -203,6 +203,7 @@ interface WizardProps {
   prefillCampaignId?: string;
   prefillBrand?: PrefillBrand | null;
   prefillPhotoUrl?: string;
+  prefillTemplate?: string;
   error?: string;
 }
 
@@ -210,7 +211,9 @@ interface WizardProps {
 // Main wizard
 // ─────────────────────────────────────────────────────────────────────────────
 
-export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = [], prefillCampaignId, prefillBrand, prefillPhotoUrl, error }: WizardProps) {
+const TEMPLATE_IDS = TEMPLATES.map((t) => t.id) as readonly string[];
+
+export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = [], prefillCampaignId, prefillBrand, prefillPhotoUrl, prefillTemplate, error }: WizardProps) {
   const [step, setStep]           = useState(0);
   const [stepError, setStepError] = useState<string | null>(null);
 
@@ -261,7 +264,9 @@ export function CreativeWizard({ campaigns, savedBrands = [], savedProducts = []
   const [callToAction, setCallToAction] = useState("");
   const [headline, setHeadline]         = useState("");
   const [body, setBody]                 = useState("");
-  const [template, setTemplate]         = useState("auto");
+  const [template, setTemplate]         = useState(
+    prefillTemplate && TEMPLATE_IDS.includes(prefillTemplate) ? prefillTemplate : "auto",
+  );
 
   // ── Step 3: Generate ─────────────────────────────────────────────────────
   const [projectName, setProjectName] = useState("");
