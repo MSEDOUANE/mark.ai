@@ -6,7 +6,7 @@
  *   • sfxGenerate     — fal-ai/elevenlabs/sound-effects/v2: text → one-shot SFX
  *   • composeVideo    — fal ffmpeg compose: scene clips + voiceover → final mp4
  *   • avatarGenerate  — VEED preset talking avatars: script → lip-synced video
- *   • omnihumanGenerate — ByteDance OmniHuman: user's OWN photo + audio →
+ *   • customAvatarGenerate — Kling AI Avatar v2: user's OWN photo + audio →
  *                       realistic talking-head video (bring-your-own avatar)
  *
  * Endpoint ids are pinned here so a model swap is a one-line change.
@@ -256,11 +256,16 @@ export async function avatarGenerate(args: {
 }
 
 /**
- * Bring-your-own avatar: ByteDance OmniHuman turns the user's OWN photo +
- * a voiceover audio track into a realistic lip-synced talking-head video.
- * The photo may be a public URL or a data: URI (fal accepts both).
+ * Bring-your-own avatar: Kling AI Avatar v2 (standard) turns the user's OWN
+ * photo + a voiceover audio track into a realistic lip-synced talking-head
+ * video. The photo may be a public URL or a data: URI (fal accepts both).
+ *
+ * Swapped from ByteDance OmniHuman ($0.14/s, 30s audio cap) to Kling AI
+ * Avatar v2 standard ($0.0562/s, 2-60s audio, ≤5MB audio file) — 60% cheaper
+ * per rendered second and double the narration budget. Rollback endpoint:
+ * fal-ai/bytedance/omnihuman (payload identical minus `prompt`).
  */
-export async function omnihumanGenerate(args: {
+export async function customAvatarGenerate(args: {
   imageUrl: string;
   audioUrl: string;
   apiKey: string;
@@ -269,38 +274,41 @@ export async function omnihumanGenerate(args: {
     Authorization: `Key ${args.apiKey}`,
     "Content-Type": "application/json",
   };
-  const submit = await fetch("https://queue.fal.run/fal-ai/bytedance/omnihuman", {
-    method: "POST",
-    headers,
-    body: JSON.stringify({ image_url: args.imageUrl, audio_url: args.audioUrl }),
-  });
+  const submit = await fetch(
+    "https://queue.fal.run/fal-ai/kling-video/ai-avatar/v2/standard",
+    {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ image_url: args.imageUrl, audio_url: args.audioUrl }),
+    },
+  );
   if (!submit.ok) {
-    throw new Error(`omnihuman submit: ${submit.status} ${(await submit.text()).slice(0, 200)}`);
+    throw new Error(`custom-avatar submit: ${submit.status} ${(await submit.text()).slice(0, 200)}`);
   }
   const job = (await submit.json()) as { status_url?: string; response_url?: string };
   if (!job.status_url || !job.response_url) {
-    throw new Error("omnihuman: queue response missing status/response URLs");
+    throw new Error("custom-avatar: queue response missing status/response URLs");
   }
 
   const deadline = Date.now() + 12 * 60_000;
   for (;;) {
-    if (Date.now() > deadline) throw new Error("omnihuman: timed out");
+    if (Date.now() > deadline) throw new Error("custom-avatar: timed out");
     await new Promise((r) => setTimeout(r, 6000));
     const st = await fetch(job.status_url, { headers });
     if (!st.ok) continue;
     const s = (await st.json()) as { status?: string };
     if (s.status === "COMPLETED") break;
     if (s.status === "FAILED" || s.status === "CANCELLED") {
-      throw new Error(`omnihuman: generation ${s.status}`);
+      throw new Error(`custom-avatar: generation ${s.status}`);
     }
   }
 
   const result = await fetch(job.response_url, { headers });
   if (!result.ok) {
-    throw new Error(`omnihuman result: ${result.status} ${(await result.text()).slice(0, 200)}`);
+    throw new Error(`custom-avatar result: ${result.status} ${(await result.text()).slice(0, 200)}`);
   }
   const data = (await result.json()) as { video?: { url?: string } };
-  if (!data.video?.url) throw new Error("omnihuman: no video URL in response");
+  if (!data.video?.url) throw new Error("custom-avatar: no video URL in response");
   return data.video.url;
 }
 

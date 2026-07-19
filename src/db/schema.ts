@@ -513,7 +513,8 @@ export const videoProjects = pgTable("video_projects", {
   // VEED avatar id — used by the "avatar" style (lip-synced UGC creator).
   avatar: text("avatar"),
   // User's own avatar photo (data URI or URL). When set on an "avatar" style
-  // project, the custom OmniHuman path renders it instead of a VEED preset.
+  // project, the custom-avatar path (Kling AI Avatar) renders it instead of
+  // a VEED preset.
   avatarImageUrl: text("avatar_image_url"),
   // Optional background-music description (e.g. "upbeat lo-fi, warm"). When
   // set, the render pipeline generates a music bed and layers it under the

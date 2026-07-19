@@ -4,7 +4,7 @@ import { db, schema } from "@/db";
 import { generateVideoScript, type VideoScript } from "@/lib/ai/video-script";
 import type { VideoScriptInput } from "@/lib/ai/video-script";
 import { TEXT_MODELS, DEFAULT_TEXT_MODEL, VIDEO_MODEL } from "@/lib/creative/image-models/registry";
-import { ttsGenerate, composeVideo, avatarGenerate, omnihumanGenerate, musicGenerate, AVATARS } from "@/lib/creative/image-models/fal-audio-video";
+import { ttsGenerate, composeVideo, avatarGenerate, customAvatarGenerate, musicGenerate, AVATARS } from "@/lib/creative/image-models/fal-audio-video";
 
 function wordCount(text: string): number {
   return text.trim().split(/\s+/).filter(Boolean).length;
@@ -18,10 +18,10 @@ function trimToWords(text: string, maxWords: number): string {
 }
 
 /**
- * OmniHuman rejects audio >30s. We keep the CTA and trim body copy to fit a
- * conservative spoken-length budget.
+ * Kling AI Avatar rejects audio >60s. We keep the CTA and trim body copy to
+ * fit a conservative spoken-length budget.
  */
-function buildOmniHumanNarration(script: VideoScript, maxWords: number): string {
+function buildAvatarNarration(script: VideoScript, maxWords: number): string {
   const body = script.scenes.map((s) => s.voiceover).filter(Boolean).join(" ");
   const cta = (script.ctaLine ?? "").trim();
   const full = [body, cta].filter(Boolean).join(" ").trim();
@@ -139,19 +139,20 @@ export const generateVideoProject = inngest.createFunction(
         let finalUrl: string;
         if (project.avatarImageUrl) {
           // Bring-your-own avatar: voice the script (any language incl.
-          // Arabic), then drive the user's photo with OmniHuman.
-          const omnihumanNarration = buildOmniHumanNarration(script, 55);
+          // Arabic), then drive the user's photo with Kling AI Avatar.
+          // 60s audio cap ≈ ~130 spoken words with margin.
+          const narration = buildAvatarNarration(script, 130);
           const audioUrl = await step.run("avatar-voice", () =>
             ttsGenerate({
-              text: omnihumanNarration,
+              text: narration,
               language: project.language,
               voice: project.voice,
               apiKey,
             }),
           );
           try {
-            finalUrl = await step.run("avatar-omnihuman", () =>
-              omnihumanGenerate({
+            finalUrl = await step.run("avatar-custom", () =>
+              customAvatarGenerate({
                 imageUrl: project.avatarImageUrl!,
                 audioUrl,
                 apiKey,
@@ -159,9 +160,11 @@ export const generateVideoProject = inngest.createFunction(
             );
           } catch (err) {
             const msg = err instanceof Error ? err.message : String(err);
-            if (!msg.includes("audio_duration_too_long")) throw err;
+            // Provider error strings vary ("audio_duration_too_long",
+            // "audio duration exceeds..."); match loosely on audio+length.
+            if (!/audio.{0,40}(duration|too.?long|exceed)/i.test(msg)) throw err;
 
-            const shorterNarration = buildOmniHumanNarration(script, 32);
+            const shorterNarration = buildAvatarNarration(script, 70);
             const shortAudioUrl = await step.run("avatar-voice-short", () =>
               ttsGenerate({
                 text: shorterNarration,
@@ -170,8 +173,8 @@ export const generateVideoProject = inngest.createFunction(
                 apiKey,
               }),
             );
-            finalUrl = await step.run("avatar-omnihuman-short", () =>
-              omnihumanGenerate({
+            finalUrl = await step.run("avatar-custom-short", () =>
+              customAvatarGenerate({
                 imageUrl: project.avatarImageUrl!,
                 audioUrl: shortAudioUrl,
                 apiKey,

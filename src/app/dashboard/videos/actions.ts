@@ -85,7 +85,7 @@ export async function createVideoProject(formData: FormData) {
       ? sceneCountRaw
       : 3;
   // User-uploaded avatar photo (data URI from /api/upload-asset). Only kept
-  // for the avatar style; drives the OmniHuman custom-avatar path.
+  // for the avatar style; drives the custom-avatar (Kling AI Avatar) path.
   const avatarImageUrl = clean(formData, "avatarImageUrl");
   const musicPrompt = clean(formData, "musicPrompt");
 

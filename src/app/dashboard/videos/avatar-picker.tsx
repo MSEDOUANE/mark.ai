@@ -7,7 +7,7 @@ const field =
 
 /**
  * Avatar chooser for the "UGC Avatar" style: pick a ready-made presenter, or
- * upload your own photo to be the talking creator (drives the OmniHuman path).
+ * upload your own photo to be the talking creator (custom-avatar path).
  * Renders inside the studio form — the hidden `avatarImageUrl` submits the
  * uploaded photo; when empty the selected preset `avatar` is used.
  */

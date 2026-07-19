@@ -1,6 +1,9 @@
 /**
- * Kling 2.1 (standard) image-to-video via fal.ai — animates a still ad scene
- * into a ~5s clip.
+ * Kling 2.6 Pro image-to-video via fal.ai — animates a still ad scene into a
+ * ~5s clip. Upgraded from 2.1 standard ($0.05/s) to 2.6 Pro ($0.07/s) for a
+ * large motion/detail quality jump at +$0.10 per 5s scene. Native audio is
+ * explicitly DISABLED — it doubles the price to $0.14/s and the pipeline lays
+ * its own voiceover/music in the compose step anyway.
  *
  * Video generation takes minutes, so this uses fal's QUEUE API (submit →
  * poll status_url → fetch response_url) instead of the synchronous fal.run
@@ -11,7 +14,7 @@
 import type { ImageToVideoFn } from "./types";
 
 const SUBMIT_URL =
-  "https://queue.fal.run/fal-ai/kling-video/v2.1/standard/image-to-video";
+  "https://queue.fal.run/fal-ai/kling-video/v2.6/pro/image-to-video";
 const POLL_INTERVAL_MS = 5_000;
 const TIMEOUT_MS = 8 * 60_000;
 
@@ -57,8 +60,9 @@ export const generate: ImageToVideoFn = async ({
       prompt:
         prompt ||
         "Subtle cinematic motion: gentle camera push-in, soft ambient movement, product stays sharp and centered.",
-      image_url: imageInput,
+      start_image_url: imageInput,
       duration: String(durationSeconds === 10 ? 10 : 5),
+      generate_audio: false,
     }),
   });
   if (!submit.ok) {

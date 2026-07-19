@@ -134,3 +134,17 @@ scripts/add-landing-page-language.ts
 ```
 
 Every DB migration above was run against the **hosted** Supabase instance via `npx tsx scripts/<name>.ts` — `src/db/schema.ts` was hand-updated to match each one.
+
+---
+
+## Video model swap — cheaper custom avatars, higher-quality scene clips
+
+**Why:** OmniHuman ($0.14/s) made a 30s bring-your-own-photo avatar video cost ~$4.20, and Kling 2.1 *standard* scene clips looked soft. Research (July 2026 pricing) showed the fix is swapping **models**, not providers — fal.ai itself hosts cheaper/better options, so no new API key or integration pattern was needed.
+
+**Custom avatar (BYO photo + audio):** `fal-ai/bytedance/omnihuman` → **`fal-ai/kling-video/ai-avatar/v2/standard`** ($0.0562/s — **60% cheaper**, a 30s video drops $4.20 → ~$1.69). Bonus: audio cap doubles 30s → 60s, so `generate-video.ts`'s narration budget went 55 → 130 words (retry fallback 32 → 70). `omnihumanGenerate` was renamed `customAvatarGenerate` and the endpoint pinned in `fal-audio-video.ts` (rollback endpoint documented in the function comment). The audio-too-long retry now matches error text loosely (`/audio.{0,40}(duration|too.?long|exceed)/i`) since Kling's error string differs from OmniHuman's `audio_duration_too_long`.
+
+**Scene image-to-video:** `kling-video/v2.1/standard` ($0.05/s) → **`kling-video/v2.6/pro`** ($0.07/s, +$0.10 per 5s scene) for a major motion/detail quality jump. Two schema landmines handled in `fal-kling-video.ts`: the param is **`start_image_url`** (2.1 used `image_url`), and **`generate_audio` defaults to `true` which silently doubles the price to $0.14/s** — explicitly set `false` because the pipeline lays its own TTS voiceover + music in the compose step.
+
+**Alternatives priced and rejected:** OmniHuman on WaveSpeed ($0.12/s — marginal saving, new provider integration + key); InfiniteTalk on WaveSpeed ($0.03–0.06/s — cheapest, but wan-based quality is a downgrade and quality was half the complaint); OmniHuman 1.5 on fal ($0.16/s — better quality but *more* expensive); fal's own InfiniTalk ($0.20/s — overpriced there).
+
+**Verification honesty:** `tsc` + `eslint` clean; request/response shapes match fal's published API schemas. **No live render was possible — the fal balance is still exhausted (known 403 billing block).** First real render after top-up should be watched: if Kling AI Avatar rejects a `data:` URI photo or the 2.6 payload errors, the old endpoints are one-line rollbacks documented in each file's header.
