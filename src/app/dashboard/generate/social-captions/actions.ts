@@ -6,7 +6,13 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { strategistModel } from "@/lib/ai/models";
-import { readBrandContext, saveGeneration } from "@/lib/ai/tool-context";
+import {
+  readBrandContext,
+  saveGeneration,
+  loadRefineParent,
+  readRefineFeedback,
+  refineDirective,
+} from "@/lib/ai/tool-context";
 import { languageDirective } from "@/lib/ai/languages";
 
 const captionVariantSchema = z.object({
@@ -27,7 +33,7 @@ export type SocialCaptionsResult = z.infer<typeof socialCaptionsResultSchema>;
 
 export type SocialCaptionsState =
   | { status: "idle" }
-  | { status: "success"; result: SocialCaptionsResult; platform: string; productName: string }
+  | { status: "success"; result: SocialCaptionsResult; platform: string; productName: string; generationId: string }
   | { status: "error"; message: string };
 
 const PLATFORM_GUIDANCE: Record<string, string> = {
@@ -48,9 +54,15 @@ export async function generateSocialCaptions(
   if (!user) redirect("/login");
   const { org } = await ensureProfile(user);
 
-  function field(key: string) {
+  const parent = await loadRefineParent(formData, org.id);
+  const feedback = readRefineFeedback(formData);
+  const savedInput = (parent?.input ?? {}) as Record<string, unknown>;
+
+  function field(key: string): string | null {
     const v = String(formData.get(key) ?? "").trim();
-    return v || null;
+    if (v) return v;
+    const saved = savedInput[key];
+    return typeof saved === "string" && saved ? saved : null;
   }
 
   const productName = field("productName");
@@ -59,6 +71,7 @@ export async function generateSocialCaptions(
 
   const guidance = PLATFORM_GUIDANCE[platform] ?? "";
   const brand = readBrandContext(formData);
+  const brandProfileId = brand.brandProfileId ?? (parent?.brandProfileId ?? null);
   const language = field("language") ?? "ar";
   const dialect = field("dialect");
 
@@ -74,6 +87,7 @@ export async function generateSocialCaptions(
     `\nPlatform guidance: ${guidance}`,
     `\nGenerate 4-6 distinct caption variants. Each must have a different angle and feel.`,
     `Do NOT repeat copy across variants. Make each one feel like it was written by a different person.`,
+    parent && feedback ? refineDirective(parent.output, feedback) : null,
   ].filter(Boolean).join("\n");
 
   try {
@@ -87,10 +101,10 @@ export async function generateSocialCaptions(
       prompt,
     });
 
-    await saveGeneration({
+    const generationId = await saveGeneration({
       orgId: org.id,
       tool: "social-captions",
-      brandProfileId: brand.brandProfileId,
+      brandProfileId,
       input: {
         productName,
         platform,
@@ -102,9 +116,11 @@ export async function generateSocialCaptions(
         dialect,
       },
       output: object,
+      parentId: parent?.id ?? null,
+      feedback: parent ? feedback : null,
     });
 
-    return { status: "success", result: object, platform, productName };
+    return { status: "success", result: object, platform, productName, generationId: generationId ?? "" };
   } catch (err) {
     return {
       status: "error",

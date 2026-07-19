@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { planContent, schedulePost, cancelScheduledPost, type PlannerState, type PostIdea } from "./actions";
 import { BrandContextPicker, type BrandContextOption } from "@/components/brand-context-picker";
 import { LanguagePicker } from "@/components/language-picker";
+import { RefinePanel, useRefinementRounds } from "@/components/refine-panel";
 
 export interface QueueItem {
   id: string;
@@ -84,6 +85,7 @@ export function Scheduler({
   error?: string;
 }) {
   const [state, action, pending] = useActionState<PlannerState, FormData>(planContent, { status: "idle" });
+  const { rounds: refineRounds, recordFeedback } = useRefinementRounds(state);
   const [caption, setCaption] = useState("");
   const [imageUrl, setImageUrl] = useState("");
 
@@ -202,6 +204,16 @@ export function Scheduler({
               <div className="mt-3 space-y-3">
                 {state.result.ideas.map((idea, i) => <IdeaCard key={i} idea={idea} onUse={setCaption} />)}
               </div>
+
+              {state.generationId ? (
+                <RefinePanel
+                  generationId={state.generationId}
+                  formAction={action}
+                  pending={pending}
+                  history={refineRounds}
+                  onSubmitFeedback={recordFeedback}
+                />
+              ) : null}
             </section>
           )}
 

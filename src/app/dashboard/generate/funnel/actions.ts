@@ -6,7 +6,13 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { strategistModel } from "@/lib/ai/models";
-import { readBrandContext, saveGeneration } from "@/lib/ai/tool-context";
+import {
+  readBrandContext,
+  saveGeneration,
+  loadRefineParent,
+  readRefineFeedback,
+  refineDirective,
+} from "@/lib/ai/tool-context";
 import { languageDirective } from "@/lib/ai/languages";
 
 const stageSchema = z.object({
@@ -33,7 +39,7 @@ export type FunnelResult = z.infer<typeof funnelSchema>;
 
 export type FunnelState =
   | { status: "idle" }
-  | { status: "success"; result: FunnelResult; productName: string }
+  | { status: "success"; result: FunnelResult; productName: string; generationId: string }
   | { status: "error"; message: string };
 
 export async function generateFunnel(
@@ -45,15 +51,22 @@ export async function generateFunnel(
   if (!user) redirect("/login");
   const { org } = await ensureProfile(user);
 
-  function field(key: string) {
+  const parent = await loadRefineParent(formData, org.id);
+  const feedback = readRefineFeedback(formData);
+  const savedInput = (parent?.input ?? {}) as Record<string, unknown>;
+
+  function field(key: string): string | null {
     const v = String(formData.get(key) ?? "").trim();
-    return v || null;
+    if (v) return v;
+    const saved = savedInput[key];
+    return typeof saved === "string" && saved ? saved : null;
   }
 
   const productName = field("productName");
   if (!productName) return { status: "error", message: "Product name is required." };
 
   const brand = readBrandContext(formData);
+  const brandProfileId = brand.brandProfileId ?? (parent?.brandProfileId ?? null);
   const language = field("language") ?? "ar";
   const dialect = field("dialect");
   const market = field("market") ?? "Morocco / MENA";
@@ -72,6 +85,7 @@ export async function generateFunnel(
     `Each stage must have a distinct objective, audience mindset, messaging angles, ad formats, a sample hook, CTA, and primary KPI.`,
     `The stages should tell one coherent story that moves a stranger to a buyer — not three disconnected campaigns.`,
     `For the local playbook, account for how this market actually converts: in Morocco/MENA that means cash-on-delivery (COD) trust-building, WhatsApp-based follow-up and objection handling, and cart-abandonment recovery.`,
+    parent && feedback ? refineDirective(parent.output, feedback) : null,
   ].filter(Boolean).join("\n");
 
   try {
@@ -85,15 +99,17 @@ export async function generateFunnel(
       prompt,
     });
 
-    await saveGeneration({
+    const generationId = await saveGeneration({
       orgId: org.id,
       tool: "funnel-design",
-      brandProfileId: brand.brandProfileId,
+      brandProfileId,
       input: { productName, description: field("description"), audience: field("audience"), goal: field("goal"), market, destination, language, dialect },
       output: object,
+      parentId: parent?.id ?? null,
+      feedback: parent ? feedback : null,
     });
 
-    return { status: "success", result: object, productName };
+    return { status: "success", result: object, productName, generationId: generationId ?? "" };
   } catch (err) {
     return {
       status: "error",

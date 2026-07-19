@@ -9,7 +9,13 @@ import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { db, schema } from "@/db";
 import { strategistModel } from "@/lib/ai/models";
-import { readBrandContext, saveGeneration } from "@/lib/ai/tool-context";
+import {
+  readBrandContext,
+  saveGeneration,
+  loadRefineParent,
+  readRefineFeedback,
+  refineDirective,
+} from "@/lib/ai/tool-context";
 import { languageDirective } from "@/lib/ai/languages";
 
 // ── Planner (Claude) ─────────────────────────────────────────────────────────
@@ -34,7 +40,7 @@ export type PlannerResult = z.infer<typeof plannerSchema>;
 
 export type PlannerState =
   | { status: "idle" }
-  | { status: "success"; result: PlannerResult }
+  | { status: "success"; result: PlannerResult; generationId: string }
   | { status: "error"; message: string };
 
 export async function planContent(
@@ -46,18 +52,28 @@ export async function planContent(
   if (!user) redirect("/login");
   const { org } = await ensureProfile(user);
 
-  function field(key: string) {
+  const parent = await loadRefineParent(formData, org.id);
+  const feedback = readRefineFeedback(formData);
+  const savedInput = (parent?.input ?? {}) as Record<string, unknown>;
+
+  function field(key: string): string | null {
     const v = String(formData.get(key) ?? "").trim();
-    return v || null;
+    if (v) return v;
+    const saved = savedInput[key];
+    return typeof saved === "string" && saved ? saved : null;
   }
 
   const productName = field("productName");
   if (!productName) return { status: "error", message: "Product name is required." };
 
   const brand = readBrandContext(formData);
+  const brandProfileId = brand.brandProfileId ?? (parent?.brandProfileId ?? null);
   const language = field("language") ?? "ar";
   const dialect = field("dialect");
-  const count = Math.min(Math.max(Number(field("count") ?? 5) || 5, 3), 8);
+  const rawCount = formData.get("count")
+    ? Number(formData.get("count"))
+    : typeof savedInput.count === "number" ? savedInput.count : 5;
+  const count = Math.min(Math.max(rawCount || 5, 3), 8);
 
   const prompt = [
     languageDirective(language, dialect),
@@ -68,6 +84,7 @@ export async function planContent(
     `\nPlan ${count} organic social posts for this brand — a mix of angles (value, social proof, behind-the-scenes, offer, engagement).`,
     `Each post needs a ready-to-publish caption in the brand voice, hashtags, a suggested day and local time, a format, and a one-line rationale.`,
     `Spread the posts across a week so it reads like a real content calendar, not ${count} variations of one post.`,
+    parent && feedback ? refineDirective(parent.output, feedback) : null,
   ].filter(Boolean).join("\n");
 
   try {
@@ -80,15 +97,17 @@ export async function planContent(
       prompt,
     });
 
-    await saveGeneration({
+    const generationId = await saveGeneration({
       orgId: org.id,
       tool: "content-planner",
-      brandProfileId: brand.brandProfileId,
+      brandProfileId,
       input: { productName, description: field("description"), goal: field("goal"), count, language, dialect },
       output: object,
+      parentId: parent?.id ?? null,
+      feedback: parent ? feedback : null,
     });
 
-    return { status: "success", result: object };
+    return { status: "success", result: object, generationId: generationId ?? "" };
   } catch (err) {
     return {
       status: "error",

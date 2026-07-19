@@ -6,7 +6,13 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { strategistModel } from "@/lib/ai/models";
-import { readBrandContext, saveGeneration } from "@/lib/ai/tool-context";
+import {
+  readBrandContext,
+  saveGeneration,
+  loadRefineParent,
+  readRefineFeedback,
+  refineDirective,
+} from "@/lib/ai/tool-context";
 import { languageDirective } from "@/lib/ai/languages";
 
 const issueSchema = z.object({
@@ -33,7 +39,7 @@ export type BrandSafetyResult = z.infer<typeof brandSafetySchema>;
 
 export type BrandSafetyState =
   | { status: "idle" }
-  | { status: "success"; result: BrandSafetyResult }
+  | { status: "success"; result: BrandSafetyResult; generationId: string }
   | { status: "error"; message: string };
 
 export async function checkBrandSafety(
@@ -45,15 +51,22 @@ export async function checkBrandSafety(
   if (!user) redirect("/login");
   const { org } = await ensureProfile(user);
 
-  function field(key: string) {
+  const parent = await loadRefineParent(formData, org.id);
+  const feedback = readRefineFeedback(formData);
+  const savedInput = (parent?.input ?? {}) as Record<string, unknown>;
+
+  function field(key: string): string | null {
     const v = String(formData.get(key) ?? "").trim();
-    return v || null;
+    if (v) return v;
+    const saved = savedInput[key];
+    return typeof saved === "string" && saved ? saved : null;
   }
 
   const copy = field("copy");
   if (!copy) return { status: "error", message: "Paste the copy you want checked." };
 
   const brand = readBrandContext(formData);
+  const brandProfileId = brand.brandProfileId ?? (parent?.brandProfileId ?? null);
   const language = field("language") ?? "ar";
   const dialect = field("dialect");
   const platform = field("platform");
@@ -71,6 +84,7 @@ export async function checkBrandSafety(
     `"""`,
     `\nFlag: off-brand-voice phrasing; unsupported or exaggerated claims; ad-compliance risks (misleading, superlatives, guarantees); cultural or religious sensitivity for the target market; platform ad-policy risks; and clarity problems.`,
     `Be strict but fair — do not invent issues. If the copy is clean, return an empty issues array and a high score.`,
+    parent && feedback ? refineDirective(parent.output, feedback) : null,
   ].filter(Boolean).join("\n");
 
   try {
@@ -84,15 +98,17 @@ export async function checkBrandSafety(
       prompt,
     });
 
-    await saveGeneration({
+    const generationId = await saveGeneration({
       orgId: org.id,
       tool: "brand-safety",
-      brandProfileId: brand.brandProfileId,
+      brandProfileId,
       input: { copy, platform, market, language, dialect },
       output: object,
+      parentId: parent?.id ?? null,
+      feedback: parent ? feedback : null,
     });
 
-    return { status: "success", result: object };
+    return { status: "success", result: object, generationId: generationId ?? "" };
   } catch (err) {
     return {
       status: "error",

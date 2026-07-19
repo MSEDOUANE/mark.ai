@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState } from "react";
+import { RefinePanel, useRefinementRounds } from "@/components/refine-panel";
 import { generateAudienceInsights, type AudienceInsightsState, type AudienceSegment } from "./actions";
 import { BrandContextPicker, type BrandContextOption } from "@/components/brand-context-picker";
 import { LanguagePicker } from "@/components/language-picker";
@@ -95,6 +96,7 @@ export function AudienceInsightsGenerator({ brands = [] }: { brands?: BrandConte
     generateAudienceInsights,
     { status: "idle" },
   );
+  const { rounds, recordFeedback } = useRefinementRounds(state);
 
   const field = "w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500";
 
@@ -173,6 +175,16 @@ export function AudienceInsightsGenerator({ brands = [] }: { brands?: BrandConte
               {result.segments.map((s, i) => (
                 <SegmentCard key={i} segment={s} isPrimary={s.name.includes(focusName)} />
               ))}
+
+              {state.generationId ? (
+                <RefinePanel
+                  generationId={state.generationId}
+                  formAction={action}
+                  pending={pending}
+                  history={rounds}
+                  onSubmitFeedback={recordFeedback}
+                />
+              ) : null}
             </>
           );
         })()}

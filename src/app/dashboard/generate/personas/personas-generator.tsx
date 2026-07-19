@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { RefinePanel, useRefinementRounds } from "@/components/refine-panel";
 import { generatePersonas, type PersonasState, type Persona } from "./actions";
 import { BrandContextPicker, type BrandContextOption } from "@/components/brand-context-picker";
 import { LanguagePicker } from "@/components/language-picker";
@@ -157,6 +158,7 @@ export function PersonasGenerator({ brands = [] }: { brands?: BrandContextOption
     generatePersonas,
     { status: "idle" },
   );
+  const { rounds, recordFeedback } = useRefinementRounds(state);
 
   const field = "w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500";
 
@@ -252,6 +254,16 @@ export function PersonasGenerator({ brands = [] }: { brands?: BrandContextOption
                   isPrimary={p.name.split(" ")[0] === primaryName}
                 />
               ))}
+
+              {state.generationId ? (
+                <RefinePanel
+                  generationId={state.generationId}
+                  formAction={action}
+                  pending={pending}
+                  history={rounds}
+                  onSubmitFeedback={recordFeedback}
+                />
+              ) : null}
             </>
           );
         })()}

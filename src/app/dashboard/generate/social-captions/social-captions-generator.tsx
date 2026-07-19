@@ -1,6 +1,7 @@
 "use client";
 
 import { useActionState, useState } from "react";
+import { RefinePanel, useRefinementRounds } from "@/components/refine-panel";
 import { generateSocialCaptions, type SocialCaptionsState, type CaptionVariant } from "./actions";
 import { BrandContextPicker, type BrandContextOption } from "@/components/brand-context-picker";
 import { LanguagePicker } from "@/components/language-picker";
@@ -104,6 +105,7 @@ export function SocialCaptionsGenerator({ brands = [] }: { brands?: BrandContext
     generateSocialCaptions,
     { status: "idle" },
   );
+  const { rounds, recordFeedback } = useRefinementRounds(state);
 
   const [platform, setPlatform] = useState("Instagram");
 
@@ -230,6 +232,16 @@ export function SocialCaptionsGenerator({ brands = [] }: { brands?: BrandContext
                 Best time to post: {state.result.bestPostingTimes}
               </p>
             </div>
+
+            {state.generationId ? (
+              <RefinePanel
+                generationId={state.generationId}
+                formAction={action}
+                pending={pending}
+                history={rounds}
+                onSubmitFeedback={recordFeedback}
+              />
+            ) : null}
           </>
         )}
       </div>

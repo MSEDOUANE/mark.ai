@@ -148,3 +148,25 @@ Every DB migration above was run against the **hosted** Supabase instance via `n
 **Alternatives priced and rejected:** OmniHuman on WaveSpeed ($0.12/s — marginal saving, new provider integration + key); InfiniteTalk on WaveSpeed ($0.03–0.06/s — cheapest, but wan-based quality is a downgrade and quality was half the complaint); OmniHuman 1.5 on fal ($0.16/s — better quality but *more* expensive); fal's own InfiniTalk ($0.20/s — overpriced there).
 
 **Verification honesty:** `tsc` + `eslint` clean; request/response shapes match fal's published API schemas. **No live render was possible — the fal balance is still exhausted (known 403 billing block).** First real render after top-up should be watched: if Kling AI Avatar rejects a `data:` URI photo or the 2.6 payload errors, the old endpoints are one-line rollbacks documented in each file's header.
+
+---
+
+## Refine-with-feedback: a "conversation" across all Generate-hub text tools
+
+**Why:** user asked whether AI-generated content could hold the conversation of its creation and keep improving with feedback, instead of every generation being a one-shot throwaway. Scoped via `AskUserQuestion`: **all** Generate-hub text tools (not just one), interaction style = a **free-form feedback box** (not a structured chat thread, not just exposing the existing auto-refine loop).
+
+**Mechanism** — `generations` gained two columns (`scripts/add-generation-thread-columns.ts`): `parent_id` (self-FK, nullable) and `feedback` (text, nullable). A generation's ancestry chain *is* the conversation — no new table needed. `saveGeneration` (`src/lib/ai/tool-context.ts`) now returns the inserted row's id (was `void`) and accepts `parentId`/`feedback`. Three new shared helpers in the same file:
+- `loadRefineParent(formData, orgId)` — org-scoped lookup of the generation a refine round continues from (reads `refineGenerationId` off the form).
+- `readRefineFeedback(formData)` — the user's free-text note (`refineFeedback`).
+- `refineDirective(previousOutput, feedback)` — appended to the tool's prompt: previous JSON output + the feedback + an instruction to fully incorporate it, not lightly restate the old result.
+
+Every one of the 9 tools (ad-copy, social-captions, personas, audience-insights, marketing-calendar, brand-safety, funnel-design, email-marketing, content-planner) got the same small diff to its `actions.ts`: load the refine parent, make every `field()` lookup fall back to the parent's stored `input` JSON when the form didn't resubmit it (a refine round only ever POSTs `refineGenerationId` + `refineFeedback` — none of the tool's own fields), append `refineDirective` to the prompt when refining, and save the new generation with `parentId`/`feedback` set. Each tool's `State` success variant gained one field: `generationId: string`.
+
+**UI** — `src/components/refine-panel.tsx`: a `<RefinePanel>` component (feedback textarea + submit button, submits through the SAME `useActionState` `formAction` so the result area updates in place) plus a `useRefinementRounds(state)` hook that accumulates a client-side round log (round number + the feedback that drove it) as `state` moves through successive successful generations — feedback text is captured synchronously at submit time since the server state doesn't echo it back. Dropped into all 9 generator client components with a 2-3 line diff each.
+
+**Scope cuts, documented rather than silently decided:**
+- No cross-page-load persistence of the round log — it's client-side session state, lost on refresh (though the underlying DB chain persists forever via `parentId`; a future "resume this thread" feature could read it back, not built).
+- No "restore an older round" — unlike brand-profile version history, there's no single canonical row to overwrite; the latest `useActionState` result IS the current state. Read-only history only.
+- `batch` (Inngest trigger, no `generateObject` call) and `scheduler`'s DB-mutation actions (`schedulePost`/`cancelScheduledPost`/`restoreScheduledPost`) are out of scope — not content generation.
+
+**Verified live** against the real Anthropic API + hosted Supabase via a throwaway spike (`scripts/tmp-verify-refine-loop.ts`, deleted after): round 1 generated real ad copy; round 2, using the actual `loadRefineParent`/`readRefineFeedback`/`refineDirective`/`saveGeneration` functions with a real `FormData`, asked for a specific discount + CTA change — the refined output kept the working headline and incorporated both requested changes exactly, and the DB round-trip confirmed `parentId`/`feedback` persisted correctly. `tsc` and `eslint` both clean (eslint's 3 errors/9 warnings are the pre-existing baseline, unchanged).

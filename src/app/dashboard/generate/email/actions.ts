@@ -6,7 +6,13 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { strategistModel } from "@/lib/ai/models";
-import { readBrandContext, saveGeneration } from "@/lib/ai/tool-context";
+import {
+  readBrandContext,
+  saveGeneration,
+  loadRefineParent,
+  readRefineFeedback,
+  refineDirective,
+} from "@/lib/ai/tool-context";
 import { languageDirective } from "@/lib/ai/languages";
 
 const emailStepSchema = z.object({
@@ -30,7 +36,7 @@ export type EmailResult = z.infer<typeof emailResultSchema>;
 
 export type EmailState =
   | { status: "idle" }
-  | { status: "success"; result: EmailResult; productName: string }
+  | { status: "success"; result: EmailResult; productName: string; generationId: string }
   | { status: "error"; message: string };
 
 const EMAIL_TYPES: Record<string, string> = {
@@ -51,15 +57,22 @@ export async function generateEmail(
   if (!user) redirect("/login");
   const { org } = await ensureProfile(user);
 
-  function field(key: string) {
+  const parent = await loadRefineParent(formData, org.id);
+  const feedback = readRefineFeedback(formData);
+  const savedInput = (parent?.input ?? {}) as Record<string, unknown>;
+
+  function field(key: string): string | null {
     const v = String(formData.get(key) ?? "").trim();
-    return v || null;
+    if (v) return v;
+    const saved = savedInput[key];
+    return typeof saved === "string" && saved ? saved : null;
   }
 
   const productName = field("productName");
   if (!productName) return { status: "error", message: "Product name is required." };
 
   const brand = readBrandContext(formData);
+  const brandProfileId = brand.brandProfileId ?? (parent?.brandProfileId ?? null);
   const language = field("language") ?? "ar";
   const dialect = field("dialect");
   const typeKey = field("emailType") ?? "single";
@@ -75,6 +88,7 @@ export async function generateEmail(
     `\nWrite ${emailType} for this product.`,
     `Match the number of emails to the type. Each email needs 2-3 A/B subject lines, a preheader, a full body in the brand voice, and a clear CTA.`,
     `Subject lines must earn the open without clickbait; bodies must be skimmable and lead to one clear action.`,
+    parent && feedback ? refineDirective(parent.output, feedback) : null,
   ].filter(Boolean).join("\n");
 
   try {
@@ -88,15 +102,17 @@ export async function generateEmail(
       prompt,
     });
 
-    await saveGeneration({
+    const generationId = await saveGeneration({
       orgId: org.id,
       tool: "email-marketing",
-      brandProfileId: brand.brandProfileId,
+      brandProfileId,
       input: { productName, description: field("description"), audience: field("audience"), offer: field("offer"), emailType: typeKey, language, dialect },
       output: object,
+      parentId: parent?.id ?? null,
+      feedback: parent ? feedback : null,
     });
 
-    return { status: "success", result: object, productName };
+    return { status: "success", result: object, productName, generationId: generationId ?? "" };
   } catch (err) {
     return {
       status: "error",

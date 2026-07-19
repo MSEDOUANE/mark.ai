@@ -10,6 +10,7 @@ import {
   date,
   unique,
   boolean,
+  type AnyPgColumn,
 } from "drizzle-orm/pg-core";
 
 /**
@@ -404,6 +405,15 @@ export const generations = pgTable("generations", {
   brandProfileId: uuid("brand_profile_id").references(() => brandProfiles.id, {
     onDelete: "set null",
   }),
+  // Self-reference: the generation this one refines, when the user gave
+  // feedback and asked for another pass. Null for an original generation.
+  // Walking this chain (oldest ancestor -> this row) is the "conversation".
+  parentId: uuid("parent_id").references((): AnyPgColumn => generations.id, {
+    onDelete: "set null",
+  }),
+  // The user's free-text feedback that produced THIS row from its parent.
+  // Null for an original (non-refined) generation.
+  feedback: text("feedback"),
   input: jsonb("input").notNull().default(sql`'{}'::jsonb`),
   output: jsonb("output").notNull().default(sql`'{}'::jsonb`),
   createdAt: timestamp("created_at", { withTimezone: true })

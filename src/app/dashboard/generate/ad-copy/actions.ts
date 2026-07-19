@@ -6,7 +6,13 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { strategistModel } from "@/lib/ai/models";
-import { readBrandContext, saveGeneration } from "@/lib/ai/tool-context";
+import {
+  readBrandContext,
+  saveGeneration,
+  loadRefineParent,
+  readRefineFeedback,
+  refineDirective,
+} from "@/lib/ai/tool-context";
 import { languageDirective } from "@/lib/ai/languages";
 
 const copyVariantSchema = z.object({
@@ -27,7 +33,7 @@ export type AdCopyResult  = z.infer<typeof adCopyResultSchema>;
 
 export type AdCopyState =
   | { status: "idle" }
-  | { status: "success"; result: AdCopyResult; productName: string }
+  | { status: "success"; result: AdCopyResult; productName: string; generationId: string }
   | { status: "error"; message: string };
 
 export async function generateAdCopy(
@@ -39,20 +45,32 @@ export async function generateAdCopy(
   if (!user) redirect("/login");
   const { org } = await ensureProfile(user);
 
-  function field(key: string) {
+  // A refine round only resubmits refineGenerationId/refineFeedback — every
+  // other field falls back to what the parent generation was called with.
+  const parent = await loadRefineParent(formData, org.id);
+  const feedback = readRefineFeedback(formData);
+  const savedInput = (parent?.input ?? {}) as Record<string, unknown>;
+
+  function field(key: string): string | null {
     const v = String(formData.get(key) ?? "").trim();
-    return v || null;
+    if (v) return v;
+    const saved = savedInput[key];
+    return typeof saved === "string" && saved ? saved : null;
   }
 
   const productName = field("productName");
   if (!productName) return { status: "error", message: "Product name is required." };
 
   const selectedFrameworks = formData.getAll("frameworks") as string[];
+  const savedFrameworks = Array.isArray(savedInput.frameworks) ? savedInput.frameworks as string[] : [];
   const frameworks = selectedFrameworks.length
     ? selectedFrameworks
-    : ["AIDA", "PAS", "Hook-Story-Offer", "Benefit-Led", "Social Proof"];
+    : savedFrameworks.length
+      ? savedFrameworks
+      : ["AIDA", "PAS", "Hook-Story-Offer", "Benefit-Led", "Social Proof"];
 
   const brand = readBrandContext(formData);
+  const brandProfileId = brand.brandProfileId ?? (parent?.brandProfileId ?? null);
   const language = field("language") ?? "ar";
   const dialect = field("dialect");
 
@@ -68,6 +86,7 @@ export async function generateAdCopy(
     `\nGenerate one copy variant for each of these frameworks: ${frameworks.join(", ")}.`,
     `Write for performance ads (Meta / Instagram). Be specific, concrete, benefit-driven.`,
     `Each variant must feel distinct — different angle, different emotion, different hook.`,
+    parent && feedback ? refineDirective(parent.output, feedback) : null,
   ].filter(Boolean).join("\n");
 
   try {
@@ -81,10 +100,10 @@ export async function generateAdCopy(
       prompt,
     });
 
-    await saveGeneration({
+    const generationId = await saveGeneration({
       orgId: org.id,
       tool: "ad-copy",
-      brandProfileId: brand.brandProfileId,
+      brandProfileId,
       input: {
         productName,
         productDescription: field("productDescription"),
@@ -97,9 +116,11 @@ export async function generateAdCopy(
         dialect,
       },
       output: object,
+      parentId: parent?.id ?? null,
+      feedback: parent ? feedback : null,
     });
 
-    return { status: "success", result: object, productName };
+    return { status: "success", result: object, productName, generationId: generationId ?? "" };
   } catch (err) {
     return {
       status: "error",

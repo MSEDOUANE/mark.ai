@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { generateAdCopy, type AdCopyState, type AdCopyVariant } from "./actions";
 import { BrandContextPicker, type BrandContextOption } from "@/components/brand-context-picker";
 import { LanguagePicker } from "@/components/language-picker";
+import { RefinePanel, useRefinementRounds } from "@/components/refine-panel";
 
 const FRAMEWORKS = [
   { id: "AIDA",              label: "AIDA",              desc: "Attention · Interest · Desire · Action" },
@@ -113,6 +114,7 @@ export function AdCopyGenerator({ brands = [] }: { brands?: BrandContextOption[]
     generateAdCopy,
     { status: "idle" },
   );
+  const { rounds, recordFeedback } = useRefinementRounds(state);
 
   const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>(
     ["AIDA", "PAS", "Hook-Story-Offer", "Benefit-Led", "Social Proof"],
@@ -301,6 +303,16 @@ export function AdCopyGenerator({ brands = [] }: { brands?: BrandContextOption[]
                 ))}
               </ul>
             </div>
+
+            {state.generationId ? (
+              <RefinePanel
+                generationId={state.generationId}
+                formAction={action}
+                pending={pending}
+                history={rounds}
+                onSubmitFeedback={recordFeedback}
+              />
+            ) : null}
           </>
         )}
       </div>
