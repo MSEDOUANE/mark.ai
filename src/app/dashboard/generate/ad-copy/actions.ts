@@ -69,7 +69,7 @@ export async function generateAdCopy(
       ? savedFrameworks
       : ["AIDA", "PAS", "Hook-Story-Offer", "Benefit-Led", "Social Proof"];
 
-  const brand = readBrandContext(formData);
+  const brand = readBrandContext(formData, savedInput);
   const brandProfileId = brand.brandProfileId ?? (parent?.brandProfileId ?? null);
   const language = field("language") ?? "ar";
   const dialect = field("dialect");
@@ -105,6 +105,7 @@ export async function generateAdCopy(
       tool: "ad-copy",
       brandProfileId,
       input: {
+        ...brand.fields,
         productName,
         productDescription: field("productDescription"),
         goal: field("goal"),

@@ -24,14 +24,26 @@ export function useRefinementRounds(state: {
   const lastId = useRef<string | null>(null);
 
   useEffect(() => {
+    if (state.status === "error") {
+      // A failed refine must not leak its feedback onto the next success —
+      // e.g. a fresh generation after the error would otherwise be logged
+      // as a refine round it never was.
+      pendingFeedback.current = null;
+      return;
+    }
     if (state.status !== "success" || !state.generationId) return;
     if (state.generationId === lastId.current) return;
     lastId.current = state.generationId;
-    setRounds((prev) => [
-      ...prev,
-      { round: prev.length + 1, feedback: pendingFeedback.current },
-    ]);
+    const feedback = pendingFeedback.current;
     pendingFeedback.current = null;
+    // No feedback ⇒ this success came from the main form: a NEW original
+    // generation (a fresh parentless chain server-side), so the round log
+    // starts over instead of appending to the previous thread's history.
+    setRounds((prev) =>
+      feedback === null
+        ? [{ round: 1, feedback: null }]
+        : [...prev, { round: prev.length + 1, feedback }],
+    );
   }, [state]);
 
   return {

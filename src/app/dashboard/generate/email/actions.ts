@@ -71,7 +71,7 @@ export async function generateEmail(
   const productName = field("productName");
   if (!productName) return { status: "error", message: "Product name is required." };
 
-  const brand = readBrandContext(formData);
+  const brand = readBrandContext(formData, savedInput);
   const brandProfileId = brand.brandProfileId ?? (parent?.brandProfileId ?? null);
   const language = field("language") ?? "ar";
   const dialect = field("dialect");
@@ -106,7 +106,7 @@ export async function generateEmail(
       orgId: org.id,
       tool: "email-marketing",
       brandProfileId,
-      input: { productName, description: field("description"), audience: field("audience"), offer: field("offer"), emailType: typeKey, language, dialect },
+      input: { ...brand.fields, productName, description: field("description"), audience: field("audience"), offer: field("offer"), emailType: typeKey, language, dialect },
       output: object,
       parentId: parent?.id ?? null,
       feedback: parent ? feedback : null,

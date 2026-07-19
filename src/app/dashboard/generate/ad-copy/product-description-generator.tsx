@@ -4,6 +4,7 @@ import { useActionState, useState } from "react";
 import { generateProductDescription, type ProductDescriptionState } from "./content-actions";
 import { BrandContextPicker, type BrandContextOption } from "@/components/brand-context-picker";
 import { LanguagePicker } from "@/components/language-picker";
+import { RefinePanel, useRefinementRounds } from "@/components/refine-panel";
 
 function SubmitButton({ pending }: { pending: boolean }) {
   return (
@@ -38,6 +39,7 @@ export function ProductDescriptionGenerator({ brands = [] }: { brands?: BrandCon
     generateProductDescription,
     { status: "idle" },
   );
+  const { rounds, recordFeedback } = useRefinementRounds(state);
 
   const field = "w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500";
 
@@ -126,6 +128,16 @@ export function ProductDescriptionGenerator({ brands = [] }: { brands?: BrandCon
                 {state.result.seoKeywords.map((k) => <span key={k} className="rounded-full bg-app-surface-2 px-2 py-0.5 text-[11px] text-app-text-muted">{k}</span>)}
               </div>
             </div>
+
+            {state.generationId ? (
+              <RefinePanel
+                generationId={state.generationId}
+                formAction={action}
+                pending={pending}
+                history={rounds}
+                onSubmitFeedback={recordFeedback}
+              />
+            ) : null}
           </>
         )}
       </div>

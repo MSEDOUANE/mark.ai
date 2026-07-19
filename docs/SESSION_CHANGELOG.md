@@ -170,3 +170,17 @@ Every one of the 9 tools (ad-copy, social-captions, personas, audience-insights,
 - `batch` (Inngest trigger, no `generateObject` call) and `scheduler`'s DB-mutation actions (`schedulePost`/`cancelScheduledPost`/`restoreScheduledPost`) are out of scope — not content generation.
 
 **Verified live** against the real Anthropic API + hosted Supabase via a throwaway spike (`scripts/tmp-verify-refine-loop.ts`, deleted after): round 1 generated real ad copy; round 2, using the actual `loadRefineParent`/`readRefineFeedback`/`refineDirective`/`saveGeneration` functions with a real `FormData`, asked for a specific discount + CTA change — the refined output kept the working headline and incorporated both requested changes exactly, and the DB round-trip confirmed `parentId`/`feedback` persisted correctly. `tsc` and `eslint` both clean (eslint's 3 errors/9 warnings are the pre-existing baseline, unchanged).
+
+---
+
+## Review pass on refine-with-feedback: 3 defects found and fixed
+
+A model-switch review (Fable reviewing Sonnet's commit `b2b9fda`) confirmed the mechanism sound (org-scoping, self-FK schema, input fallbacks, live verification all genuine) but caught three real defects:
+
+1. **Two tools missed.** `generateProductDescription` and `generateMarketingCopy` live in `ad-copy/content-actions.ts` (sibling tabs of the ad-copy page), not their own directories, so the "one actions.ts per tool" survey missed them. Both now fully wired (actions + `RefinePanel` in `product-description-generator.tsx` / `marketing-copy-generator.tsx`), including a `formats` getAll-fallback mirroring ad-copy's `frameworks` handling. **11 tools total now, not 9.**
+
+2. **Brand voice silently dropped on every refine round.** The `BrandContextPicker` hidden fields live in the main form; `RefinePanel` is its own `<form>`, and the brand fields were never persisted into the generation's `input` — so `readBrandContext` returned empty lines on refines and the refined output could drift off-brand. Fix: `readBrandContext(formData, savedInput?)` now falls back to the parent's stored input, `BrandContext` gained a `fields` record, and every tool spreads `...brand.fields` into its saved `input`. Verified against the real DB: a refine-round FormData carrying only the two refine fields reconstructs all 4 brand-voice prompt lines. **Caveat: only generations created after this fix carry the brand fields — refining an older generation still loses brand voice (graceful, same as pre-fix).**
+
+3. **Round-log misattribution in `useRefinementRounds`.** (a) A fresh main-form generation was appended to the previous thread's log as "Round N: original generation" — it now resets the log (server-side it starts a new parentless chain, so the client log matches). (b) A *failed* refine left its feedback in the pending ref, which would be falsely attributed to the next success — an error state now clears it.
+
+`tsc` clean; eslint clean on all touched files (baseline elsewhere unchanged).

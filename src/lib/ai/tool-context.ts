@@ -18,25 +18,53 @@ import { db, schema } from "@/db";
 export interface BrandContext {
   brandProfileId: string | null;
   lines: string[];
+  /**
+   * The raw brand fields, to spread into a generation's saved `input`. A
+   * refine round's form doesn't carry the BrandContextPicker's hidden fields
+   * (it's a separate <form>), so without persisting these the refined output
+   * would silently lose the brand voice the original round had.
+   */
+  fields: {
+    brandProfileId: string | null;
+    brandName: string | null;
+    brandTone: string | null;
+    brandDescription: string | null;
+    brandVoiceNotes: string | null;
+  };
 }
 
-export function readBrandContext(formData: FormData): BrandContext {
+export function readBrandContext(
+  formData: FormData,
+  /** A refine parent's stored `input` — fallback when the form lacks the
+   *  picker's fields (see BrandContext.fields). */
+  savedInput?: Record<string, unknown>,
+): BrandContext {
   const get = (k: string) => {
     const v = String(formData.get(k) ?? "").trim();
-    return v || null;
+    if (v) return v;
+    const saved = savedInput?.[k];
+    return typeof saved === "string" && saved ? saved : null;
   };
   const name = get("brandName");
   const tone = get("brandTone");
   const description = get("brandDescription");
   const voiceNotes = get("brandVoiceNotes");
+  const brandProfileId = get("brandProfileId");
   return {
-    brandProfileId: get("brandProfileId"),
+    brandProfileId,
     lines: [
       name ? `Brand: ${name}` : null,
       tone ? `Brand voice (write everything in this voice): ${tone}` : null,
       description ? `Brand context: ${description}` : null,
       voiceNotes ? `Consistency notes from past content (follow these patterns): ${voiceNotes}` : null,
     ].filter((l): l is string => !!l),
+    fields: {
+      brandProfileId,
+      brandName: name,
+      brandTone: tone,
+      brandDescription: description,
+      brandVoiceNotes: voiceNotes,
+    },
   };
 }
 

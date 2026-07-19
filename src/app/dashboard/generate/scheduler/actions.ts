@@ -66,7 +66,7 @@ export async function planContent(
   const productName = field("productName");
   if (!productName) return { status: "error", message: "Product name is required." };
 
-  const brand = readBrandContext(formData);
+  const brand = readBrandContext(formData, savedInput);
   const brandProfileId = brand.brandProfileId ?? (parent?.brandProfileId ?? null);
   const language = field("language") ?? "ar";
   const dialect = field("dialect");
@@ -101,7 +101,7 @@ export async function planContent(
       orgId: org.id,
       tool: "content-planner",
       brandProfileId,
-      input: { productName, description: field("description"), goal: field("goal"), count, language, dialect },
+      input: { ...brand.fields, productName, description: field("description"), goal: field("goal"), count, language, dialect },
       output: object,
       parentId: parent?.id ?? null,
       feedback: parent ? feedback : null,

@@ -5,6 +5,7 @@ import { generateMarketingCopy, type MarketingCopyState } from "./content-action
 import { MARKETING_FORMATS } from "./marketing-formats";
 import { BrandContextPicker, type BrandContextOption } from "@/components/brand-context-picker";
 import { LanguagePicker } from "@/components/language-picker";
+import { RefinePanel, useRefinementRounds } from "@/components/refine-panel";
 
 function SubmitButton({ pending }: { pending: boolean }) {
   return (
@@ -39,6 +40,7 @@ export function MarketingCopyGenerator({ brands = [] }: { brands?: BrandContextO
     generateMarketingCopy,
     { status: "idle" },
   );
+  const { rounds, recordFeedback } = useRefinementRounds(state);
   const [selectedFormats, setSelectedFormats] = useState<string[]>(["Email", "Landing Hero"]);
 
   const field = "w-full rounded-xl border border-app-border-strong bg-app-bg px-4 py-3 text-sm text-app-text outline-none placeholder:text-app-text-subtle focus:border-zinc-500";
@@ -112,18 +114,32 @@ export function MarketingCopyGenerator({ brands = [] }: { brands?: BrandContextO
             <p className="mt-3 text-sm text-app-text-muted">Writing {selectedFormats.length} piece{selectedFormats.length !== 1 ? "s" : ""}…</p>
           </div>
         )}
-        {state.status === "success" && !pending && state.result.pieces.map((p, i) => (
-          <div key={i} className="overflow-hidden rounded-2xl border border-app-border bg-app-surface">
-            <div className="flex items-center justify-between border-b border-app-border px-4 py-2.5">
-              <span className="rounded-full border border-app-border-strong px-2.5 py-0.5 text-xs font-semibold text-app-text">{p.format}</span>
-              <CopyButton text={[p.headline, p.body].filter(Boolean).join("\n\n")} />
-            </div>
-            <div className="space-y-2 p-4">
-              {p.headline && <p className="text-base font-bold text-app-text">{p.headline}</p>}
-              <p className="text-sm leading-relaxed text-app-text">{p.body}</p>
-            </div>
-          </div>
-        ))}
+        {state.status === "success" && !pending && (
+          <>
+            {state.result.pieces.map((p, i) => (
+              <div key={i} className="overflow-hidden rounded-2xl border border-app-border bg-app-surface">
+                <div className="flex items-center justify-between border-b border-app-border px-4 py-2.5">
+                  <span className="rounded-full border border-app-border-strong px-2.5 py-0.5 text-xs font-semibold text-app-text">{p.format}</span>
+                  <CopyButton text={[p.headline, p.body].filter(Boolean).join("\n\n")} />
+                </div>
+                <div className="space-y-2 p-4">
+                  {p.headline && <p className="text-base font-bold text-app-text">{p.headline}</p>}
+                  <p className="text-sm leading-relaxed text-app-text">{p.body}</p>
+                </div>
+              </div>
+            ))}
+
+            {state.generationId ? (
+              <RefinePanel
+                generationId={state.generationId}
+                formAction={action}
+                pending={pending}
+                history={rounds}
+                onSubmitFeedback={recordFeedback}
+              />
+            ) : null}
+          </>
+        )}
       </div>
     </div>
   );

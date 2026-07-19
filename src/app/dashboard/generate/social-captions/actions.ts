@@ -70,7 +70,7 @@ export async function generateSocialCaptions(
   if (!productName) return { status: "error", message: "Product name is required." };
 
   const guidance = PLATFORM_GUIDANCE[platform] ?? "";
-  const brand = readBrandContext(formData);
+  const brand = readBrandContext(formData, savedInput);
   const brandProfileId = brand.brandProfileId ?? (parent?.brandProfileId ?? null);
   const language = field("language") ?? "ar";
   const dialect = field("dialect");
@@ -106,6 +106,7 @@ export async function generateSocialCaptions(
       tool: "social-captions",
       brandProfileId,
       input: {
+        ...brand.fields,
         productName,
         platform,
         description: field("description"),

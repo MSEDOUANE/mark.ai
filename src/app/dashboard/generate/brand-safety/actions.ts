@@ -65,7 +65,7 @@ export async function checkBrandSafety(
   const copy = field("copy");
   if (!copy) return { status: "error", message: "Paste the copy you want checked." };
 
-  const brand = readBrandContext(formData);
+  const brand = readBrandContext(formData, savedInput);
   const brandProfileId = brand.brandProfileId ?? (parent?.brandProfileId ?? null);
   const language = field("language") ?? "ar";
   const dialect = field("dialect");
@@ -102,7 +102,7 @@ export async function checkBrandSafety(
       orgId: org.id,
       tool: "brand-safety",
       brandProfileId,
-      input: { copy, platform, market, language, dialect },
+      input: { ...brand.fields, copy, platform, market, language, dialect },
       output: object,
       parentId: parent?.id ?? null,
       feedback: parent ? feedback : null,

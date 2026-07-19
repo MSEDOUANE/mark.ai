@@ -65,7 +65,7 @@ export async function generateFunnel(
   const productName = field("productName");
   if (!productName) return { status: "error", message: "Product name is required." };
 
-  const brand = readBrandContext(formData);
+  const brand = readBrandContext(formData, savedInput);
   const brandProfileId = brand.brandProfileId ?? (parent?.brandProfileId ?? null);
   const language = field("language") ?? "ar";
   const dialect = field("dialect");
@@ -103,7 +103,7 @@ export async function generateFunnel(
       orgId: org.id,
       tool: "funnel-design",
       brandProfileId,
-      input: { productName, description: field("description"), audience: field("audience"), goal: field("goal"), market, destination, language, dialect },
+      input: { ...brand.fields, productName, description: field("description"), audience: field("audience"), goal: field("goal"), market, destination, language, dialect },
       output: object,
       parentId: parent?.id ?? null,
       feedback: parent ? feedback : null,

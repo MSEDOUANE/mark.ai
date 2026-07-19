@@ -6,7 +6,13 @@ import { redirect } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { strategistModel } from "@/lib/ai/models";
-import { readBrandContext, saveGeneration } from "@/lib/ai/tool-context";
+import {
+  readBrandContext,
+  saveGeneration,
+  loadRefineParent,
+  readRefineFeedback,
+  refineDirective,
+} from "@/lib/ai/tool-context";
 import { languageDirective } from "@/lib/ai/languages";
 
 /* ── Product Descriptions ─────────────────────────────────────────────── */
@@ -25,7 +31,7 @@ export type ProductDescriptionResult = z.infer<typeof productDescriptionSchema>;
 
 export type ProductDescriptionState =
   | { status: "idle" }
-  | { status: "success"; result: ProductDescriptionResult; productName: string }
+  | { status: "success"; result: ProductDescriptionResult; productName: string; generationId: string }
   | { status: "error"; message: string };
 
 export async function generateProductDescription(
@@ -37,15 +43,22 @@ export async function generateProductDescription(
   if (!user) redirect("/login");
   const { org } = await ensureProfile(user);
 
-  function field(key: string) {
+  const parent = await loadRefineParent(formData, org.id);
+  const feedback = readRefineFeedback(formData);
+  const savedInput = (parent?.input ?? {}) as Record<string, unknown>;
+
+  function field(key: string): string | null {
     const v = String(formData.get(key) ?? "").trim();
-    return v || null;
+    if (v) return v;
+    const saved = savedInput[key];
+    return typeof saved === "string" && saved ? saved : null;
   }
 
   const productName = field("productName");
   if (!productName) return { status: "error", message: "Product name is required." };
 
-  const brand = readBrandContext(formData);
+  const brand = readBrandContext(formData, savedInput);
+  const brandProfileId = brand.brandProfileId ?? (parent?.brandProfileId ?? null);
   const language = field("language") ?? "ar";
   const dialect = field("dialect");
 
@@ -58,6 +71,7 @@ export async function generateProductDescription(
     field("keywords")  && `SEO keywords to consider: ${field("keywords")}`,
     `\nWrite product-page copy in three lengths (short/medium/long), plus scannable bullets and SEO metadata.`,
     `Be concrete and sensory — describe what the product actually does, not vague adjectives.`,
+    parent && feedback ? refineDirective(parent.output, feedback) : null,
   ].filter(Boolean).join("\n");
 
   try {
@@ -70,15 +84,17 @@ export async function generateProductDescription(
       prompt,
     });
 
-    await saveGeneration({
+    const generationId = await saveGeneration({
       orgId: org.id,
       tool: "product-description",
-      brandProfileId: brand.brandProfileId,
-      input: { productName, features: field("features"), audience: field("audience"), keywords: field("keywords"), language, dialect },
+      brandProfileId,
+      input: { ...brand.fields, productName, features: field("features"), audience: field("audience"), keywords: field("keywords"), language, dialect },
       output: object,
+      parentId: parent?.id ?? null,
+      feedback: parent ? feedback : null,
     });
 
-    return { status: "success", result: object, productName };
+    return { status: "success", result: object, productName, generationId: generationId ?? "" };
   } catch (err) {
     return { status: "error", message: err instanceof Error ? err.message.slice(0, 200) : "Generation failed" };
   }
@@ -101,7 +117,7 @@ export type MarketingCopyResult = z.infer<typeof marketingCopyResultSchema>;
 
 export type MarketingCopyState =
   | { status: "idle" }
-  | { status: "success"; result: MarketingCopyResult; productName: string }
+  | { status: "success"; result: MarketingCopyResult; productName: string; generationId: string }
   | { status: "error"; message: string };
 
 export async function generateMarketingCopy(
@@ -113,18 +129,27 @@ export async function generateMarketingCopy(
   if (!user) redirect("/login");
   const { org } = await ensureProfile(user);
 
-  function field(key: string) {
+  const parent = await loadRefineParent(formData, org.id);
+  const feedback = readRefineFeedback(formData);
+  const savedInput = (parent?.input ?? {}) as Record<string, unknown>;
+
+  function field(key: string): string | null {
     const v = String(formData.get(key) ?? "").trim();
-    return v || null;
+    if (v) return v;
+    const saved = savedInput[key];
+    return typeof saved === "string" && saved ? saved : null;
   }
 
   const productName = field("productName");
   if (!productName) return { status: "error", message: "Product name is required." };
 
-  const formats = (formData.getAll("formats") as string[]).filter(Boolean);
+  const submittedFormats = (formData.getAll("formats") as string[]).filter(Boolean);
+  const savedFormats = Array.isArray(savedInput.formats) ? (savedInput.formats as string[]) : [];
+  const formats = submittedFormats.length ? submittedFormats : savedFormats;
   if (formats.length === 0) return { status: "error", message: "Select at least one format." };
 
-  const brand = readBrandContext(formData);
+  const brand = readBrandContext(formData, savedInput);
+  const brandProfileId = brand.brandProfileId ?? (parent?.brandProfileId ?? null);
   const language = field("language") ?? "ar";
   const dialect = field("dialect");
 
@@ -137,6 +162,7 @@ export async function generateMarketingCopy(
     field("audience") && `Audience: ${field("audience")}`,
     `\nWrite one piece of copy for each of these formats: ${formats.join(", ")}.`,
     `Match each format's natural length and register — an email is not a text message.`,
+    parent && feedback ? refineDirective(parent.output, feedback) : null,
   ].filter(Boolean).join("\n");
 
   try {
@@ -149,15 +175,17 @@ export async function generateMarketingCopy(
       prompt,
     });
 
-    await saveGeneration({
+    const generationId = await saveGeneration({
       orgId: org.id,
       tool: "marketing-copy",
-      brandProfileId: brand.brandProfileId,
-      input: { productName, goal: field("goal"), offer: field("offer"), audience: field("audience"), formats, language, dialect },
+      brandProfileId,
+      input: { ...brand.fields, productName, goal: field("goal"), offer: field("offer"), audience: field("audience"), formats, language, dialect },
       output: object,
+      parentId: parent?.id ?? null,
+      feedback: parent ? feedback : null,
     });
 
-    return { status: "success", result: object, productName };
+    return { status: "success", result: object, productName, generationId: generationId ?? "" };
   } catch (err) {
     return { status: "error", message: err instanceof Error ? err.message.slice(0, 200) : "Generation failed" };
   }
