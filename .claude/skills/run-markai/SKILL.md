@@ -153,6 +153,12 @@ that account (see Gotchas — no credential entry, ever, from this skill).
   the wrong Node unless `PATH` is prepended first. This is the #1 thing
   that will look like a mysterious failure if skipped.
 
+- **`turbopack.root` is pinned to the checkout dir in `next.config.ts`.**
+  Without it, Next's root auto-detection sees two lockfiles (main checkout
+  + nested worktree) and picks the MAIN checkout whenever the server runs
+  inside a worktree — it logs a "multiple lockfiles" warning and
+  destabilizes route/module resolution. Don't remove the pin.
+
 - **A fresh git worktree has neither `node_modules` nor `.env.local`.**
   Both are gitignored. `npm install` fixes the former cleanly (see
   Setup — don't bother with a junction/symlink to the main checkout;
@@ -229,6 +235,22 @@ that account (see Gotchas — no credential entry, ever, from this skill).
 - **Every route returns HTTP 500, logs show `Cannot find module
   '../lightningcss.win32-x64-msvc.node'`**: see the lightningcss Gotcha
   above — copy the binary, stop the server, clear `.next`, restart.
+- **A page that exists 404s — but ONLY for a logged-in user** (logged-out
+  `curl` still shows a healthy-looking 307): the 307 smoke check is blind
+  to this — the auth middleware redirects before route resolution ever
+  runs, so it can't distinguish a real page from a missing one. The
+  logged-in 404 is served from a poisoned `.next` cache (tell-tale sign in
+  the logs: `application-code` time is ~30–100ms, far too fast for these
+  DB-heavy pages to have actually run). Hit this live on
+  `/dashboard/videos` + `/dashboard/creatives` after the `.next` survived
+  a broken-`node_modules` window. Fix: stop server → `rm -rf .next` →
+  restart.
+- **`Could not find the module ".../global-error.js#default" in the React
+  Client Manifest` + flapping 200/500s right after editing
+  `next.config.ts`**: the running `.next` was built under the OLD config
+  (hit this pinning `turbopack.root` — module identity paths changed
+  meaning). Any config change that affects module resolution needs the
+  full stop → `rm -rf .next` → restart cycle, not just a restart.
 - **`chromium.launch()` throws `Executable doesn't exist at
   ...chrome-headless-shell-win64\chrome-headless-shell.exe`**: run
   `npx playwright install chromium` (not just `npm install playwright`).
