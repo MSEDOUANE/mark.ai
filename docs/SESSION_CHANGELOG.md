@@ -184,3 +184,25 @@ A model-switch review (Fable reviewing Sonnet's commit `b2b9fda`) confirmed the 
 3. **Round-log misattribution in `useRefinementRounds`.** (a) A fresh main-form generation was appended to the previous thread's log as "Round N: original generation" — it now resets the log (server-side it starts a new parentless chain, so the client log matches). (b) A *failed* refine left its feedback in the pending ref, which would be falsely attributed to the next success — an error state now clears it.
 
 `tsc` clean; eslint clean on all touched files (baseline elsewhere unchanged).
+
+---
+
+## Refine "already generated content" — the generation thread page
+
+**Why:** refine-with-feedback only worked on the result still on screen in the current session. The user asked for it on *past* content too. The refine chain already persisted in the DB (`parentId`/`feedback`), but nothing surfaced it, and the Library's text cards linked to `/dashboard/generate/${tool}` — which 404'd for 6 of the 11 tool strings (`marketing-calendar`, `funnel-design`, `email-marketing`, `content-planner`, `product-description`, `marketing-copy` aren't route segments) and dead-ended at a blank form for the rest.
+
+**Built:**
+- **`/dashboard/generations/[id]`** — a server-rendered thread page showing a stored generation's full lineage (root → this version), read from the DB so it survives reloads (fixes the earlier client-only round-log scope cut). Each version shows the feedback that produced it + its output; a feedback box at the bottom continues the conversation.
+- **`loadGenerationThread(id, orgId)`** / **`loadNewerVersion(id, orgId)`** in tool-context.ts — org-scoped ancestry walk (depth-capped, cycle-guarded) and direct-child detection.
+- **`GenerationOutput`** (`src/components/generation-output.tsx`) — one recursive renderer for all 11 tools' output shapes (strings, chip lists, object cards, nested objects), with a legacy double-encoded-jsonb string guard. No per-tool renderer duplication.
+- **`refineGeneration`** dispatch action (`generations/actions.ts`) + **`dispatch.ts`** (DISPATCH map over all 11 tool actions) — a refine from the thread page runs the *same* tool action with a refine-round FormData, so zero refine logic is duplicated. `redirect`s to the new version's thread on success.
+- **Library** now links text cards to the thread page and shows only **leaf** generations (the tip of each chain) — one card per conversation instead of one per round. Also fixes the 6 latent 404s above.
+- Bridge link ("Open full history →") from the live-tool RefinePanel into the durable thread.
+
+**Adversarial review (5-dimension workflow + per-finding verify) caught 2 real defects, both fixed:**
+1. **HIGH / build-breaker `tsc` can't see:** `isRefinable` was a *synchronous* export in a `"use server"` file — Next forbids non-async exports there, so the whole route (and every Library text card linking to it) would fail to compile. A verifier ran Next's SWC transform to confirm. Fixed by splitting the const map + sync helper into a plain `dispatch.ts`, leaving only the async `refineGeneration` in the `"use server"` file.
+2. **MEDIUM:** opening a mid-chain version mislabeled it "Latest"/"full conversation" and refining it forked a hidden branch. Fixed: Library shows only leaves; the thread page detects a newer child (`loadNewerVersion`), suppresses the "Latest" badge, shows a "go to newer version →" link, and only allows refining from the tip.
+
+**Verified:** `tsc` + `eslint` clean. Live DB spike (9/9 checks) against real hosted Supabase — a real 3-version chain (v2 via a real Claude refine that correctly applied "add 20% off"), `loadGenerationThread` ordering, `loadNewerVersion` child-vs-tip detection, and the Library leaf-filter all confirmed. The authenticated page render itself is behind the login wall (not driveable headless); the build-breaker fix was proven structurally (the `"use server"` file now has exactly one export, async) plus tsc/eslint/import-resolution, not via a production build (skipped to avoid corrupting the running dev server's `.next`).
+
+**Known limitation:** the Library leaf-filter is computed within the 100-row query window, so a parent whose only child fell outside the window could still show as a card — acceptable given the pre-existing 100-row cap.

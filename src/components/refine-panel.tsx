@@ -136,6 +136,16 @@ export function RefinePanel({
           {pending ? "Refining…" : "Refine with feedback"}
         </button>
       </form>
+
+      {/* Bridge to the durable, refresh-proof thread view of this content. */}
+      {generationId ? (
+        <a
+          href={`/dashboard/generations/${generationId}`}
+          className="mt-2 inline-block text-xs text-app-text-subtle hover:text-app-text"
+        >
+          Open full history →
+        </a>
+      ) : null}
     </div>
   );
 }

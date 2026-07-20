@@ -1,4 +1,4 @@
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { db, schema } from "@/db";
 
 /**
@@ -141,4 +141,76 @@ export function refineDirective(previousOutput: unknown, feedback: string): stri
     "\nRewrite fully incorporating the feedback above. Keep whatever already works; " +
       "change only what the feedback is asking for. Do not ignore or water down the feedback.",
   ].join("\n");
+}
+
+/**
+ * Human-readable labels per `generations.tool` string. The tool strings are
+ * historical / not 1:1 with route segments (e.g. "marketing-calendar" is
+ * served at /dashboard/generate/calendar), so this map is the single source
+ * of truth for displaying a stored generation's origin. Keep in sync with the
+ * tools that call saveGeneration.
+ */
+export const GENERATION_TOOL_LABELS: Record<string, string> = {
+  "ad-copy": "Ad Copy",
+  "product-description": "Product Description",
+  "marketing-copy": "Marketing Copy",
+  "social-captions": "Social Captions",
+  personas: "Buyer Personas",
+  "audience-insights": "Audience Insights",
+  "marketing-calendar": "Marketing Calendar",
+  "brand-safety": "Brand Safety Check",
+  "funnel-design": "Funnel Designer",
+  "email-marketing": "Email Marketing",
+  "content-planner": "Content Planner",
+};
+
+/**
+ * Walks a generation's ancestry (via `parentId`) from the given row up to its
+ * root original, org-scoped, and returns the chain oldest-first (root →
+ * target). This IS the persisted "conversation" for that version — read from
+ * the DB, so it survives page reloads (unlike the client-side round log in
+ * the live tool view). Depth-capped and cycle-guarded against bad data.
+ * Returns [] if the target isn't found or isn't owned by the org.
+ */
+export async function loadGenerationThread(
+  id: string,
+  orgId: string,
+): Promise<Array<typeof schema.generations.$inferSelect>> {
+  const chain: Array<typeof schema.generations.$inferSelect> = [];
+  const seen = new Set<string>();
+  let currentId: string | null = id;
+
+  for (let i = 0; i < 50 && currentId && !seen.has(currentId); i++) {
+    seen.add(currentId);
+    const [row] = await db
+      .select()
+      .from(schema.generations)
+      .where(and(eq(schema.generations.id, currentId), eq(schema.generations.orgId, orgId)))
+      .limit(1);
+    if (!row) break;
+    chain.push(row);
+    currentId = row.parentId;
+  }
+
+  return chain.reverse(); // root → target
+}
+
+/**
+ * The id of the most recent DIRECT child (later refinement) of a generation,
+ * or null if it's a leaf. Lets the thread page detect when the user opened a
+ * mid-chain version — so it can label honestly ("a newer version exists")
+ * and offer a forward link, rather than falsely claiming to be the latest.
+ * Org-scoped.
+ */
+export async function loadNewerVersion(
+  id: string,
+  orgId: string,
+): Promise<string | null> {
+  const [child] = await db
+    .select({ id: schema.generations.id })
+    .from(schema.generations)
+    .where(and(eq(schema.generations.parentId, id), eq(schema.generations.orgId, orgId)))
+    .orderBy(desc(schema.generations.createdAt))
+    .limit(1);
+  return child?.id ?? null;
 }

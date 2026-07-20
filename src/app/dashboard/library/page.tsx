@@ -58,6 +58,7 @@ export default async function LibraryPage({
         id: schema.generations.id,
         tool: schema.generations.tool,
         input: schema.generations.input,
+        parentId: schema.generations.parentId,
         createdAt: schema.generations.createdAt,
       })
       .from(schema.generations)
@@ -101,6 +102,18 @@ export default async function LibraryPage({
       .where(eq(schema.libraryItemMeta.orgId, org.id)),
   ]);
 
+  // A refine chain is one "conversation" spread across several generation rows
+  // (each version links to its parent via parentId). Show only the tip of each
+  // chain — a generation that isn't any other row's parent — so the Library
+  // lists one card per conversation (its latest version), not one per round.
+  // Opening it shows the full history and refines from the tip.
+  // (Coarse within the 100-row window; a parent whose only child fell outside
+  // the window would still appear — acceptable given the existing limit.)
+  const referencedParentIds = new Set(
+    generationRows.map((g) => g.parentId).filter((p): p is string => !!p),
+  );
+  const leafGenerationRows = generationRows.filter((g) => !referencedParentIds.has(g.id));
+
   const metaByKey = new Map(
     metaRows.map((m) => [`${m.kind}:${m.itemId}`, { favorite: m.favorite, folder: m.folder }]),
   );
@@ -125,13 +138,18 @@ export default async function LibraryPage({
           ...lookupMeta(kind, c.id),
         };
       }),
-    ...generationRows.map((g): AssetItem => ({
+    ...leafGenerationRows.map((g): AssetItem => ({
       id: g.id,
       kind: "text",
       title: (((g.input ?? {}) as Record<string, unknown>).productName as string) || g.tool,
       subtitle: g.tool.replace(/-/g, " "),
       thumbUrl: null,
-      href: `/dashboard/generate/${g.tool}`,
+      // The generation thread page — shows this content + its full refinement
+      // history and lets you continue refining. (Linking to
+      // /dashboard/generate/${g.tool} was also wrong: several tool strings,
+      // e.g. "marketing-calendar" / "funnel-design", aren't route segments and
+      // 404'd.)
+      href: `/dashboard/generations/${g.id}`,
       createdAt: g.createdAt,
       ...lookupMeta("text", g.id),
     })),
