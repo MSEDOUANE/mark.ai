@@ -102,6 +102,69 @@ export interface VideoScriptInput {
   sceneCount?: number;
 }
 
+/** Context for a feedback-driven revision — enough to keep voice/dialect/style right. */
+export interface ReviseVideoScriptInput {
+  current: VideoScript;
+  feedback: string;
+  style: string;
+  language: string;
+  dialect?: string | null;
+  brandName?: string | null;
+  tone?: string | null;
+}
+
+/**
+ * Revise an existing video script from free-text user feedback. Returns a new
+ * VideoScript (asset URLs intentionally dropped — a revised script re-renders
+ * from scratch). Keeps whatever already works and changes only what the
+ * feedback asks for, preserving language/dialect and (unless the feedback says
+ * otherwise) the scene count.
+ */
+export async function reviseVideoScript(
+  input: ReviseVideoScriptInput,
+): Promise<VideoScript> {
+  // Strip render artifacts so the model sees just the authored script.
+  const cleanScript = {
+    hook: input.current.hook,
+    scenes: (input.current.scenes ?? []).map((s) => ({
+      visual: s.visual,
+      motion: s.motion,
+      voiceover: s.voiceover,
+      durationSeconds: s.durationSeconds,
+    })),
+    ctaLine: input.current.ctaLine,
+  };
+  const sceneCount = cleanScript.scenes.length || 3;
+
+  const { object } = await generateObject({
+    model: strategistModel,
+    schema: videoScriptSchema,
+    system:
+      "You revise short-form video ad scripts (15-30s) for Meta/TikTok from a " +
+      "user's feedback. Scene visuals must stay concrete and filmable as single " +
+      "shots; voiceover must read aloud naturally in the SAME language/dialect as " +
+      "the current script and fit the scene duration (~2.5 words/second). Never " +
+      "invent prices or discounts.",
+    prompt: [
+      `Style: ${STYLE_DIRECTION[input.style] ?? STYLE_DIRECTION.ugc}`,
+      input.language === "ar"
+        ? `Voiceover language: ${arabicDialectHint(input.dialect)} Keep ALL voiceover lines natively in this exact dialect.`
+        : `Voiceover language: ${LANGUAGE_LABEL[input.language] ?? "English"} (keep ALL voiceover lines natively in it)`,
+      input.brandName ? `Brand: ${input.brandName}` : null,
+      input.tone ? `Brand voice: ${input.tone}` : null,
+      `\nCurrent script:\n${JSON.stringify(cleanScript, null, 2)}`,
+      `\nThe user reviewed this video and gave the following feedback — apply it specifically:\n"${input.feedback}"`,
+      "\nRewrite the script fully incorporating the feedback. Keep whatever already " +
+        `works; change only what the feedback asks for. Keep ${sceneCount} scenes ` +
+        "unless the feedback explicitly asks to add or remove scenes. The first " +
+        "scene's voiceover IS the hook.",
+    ]
+      .filter(Boolean)
+      .join("\n"),
+  });
+  return object;
+}
+
 export async function generateVideoScript(
   input: VideoScriptInput,
 ): Promise<VideoScript> {

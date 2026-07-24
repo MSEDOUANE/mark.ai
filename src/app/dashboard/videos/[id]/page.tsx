@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 import { createClient } from "@/lib/supabase/server";
 import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { db, schema } from "@/db";
@@ -12,6 +12,8 @@ import {
   deleteScene,
   moveScene,
   deleteVideoProject,
+  refineVideoScript,
+  restoreVideoScriptVersion,
 } from "../actions";
 import type { VideoScript } from "@/lib/ai/video-script";
 import { ARABIC_DIALECTS } from "@/lib/ai/video-script";
@@ -22,14 +24,17 @@ const field =
 
 export default async function VideoEditorPage({
   params,
+  searchParams,
 }: {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ error?: string; revised?: string; restored?: string }>;
 }) {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) redirect("/login");
   const { org } = await ensureProfile(user);
   const { id } = await params;
+  const { error, revised, restored } = await searchParams;
 
   const [project] = await db
     .select()
@@ -45,6 +50,17 @@ export default async function VideoEditorPage({
   const rendering = project.status === "rendering";
   // Avatar projects: one lip-synced take — only the spoken lines are editable.
   const isAvatar = project.style === "avatar";
+
+  const scriptHistory = await db
+    .select({
+      id: schema.videoScriptHistory.id,
+      feedback: schema.videoScriptHistory.feedback,
+      createdAt: schema.videoScriptHistory.createdAt,
+    })
+    .from(schema.videoScriptHistory)
+    .where(eq(schema.videoScriptHistory.videoProjectId, project.id))
+    .orderBy(desc(schema.videoScriptHistory.createdAt))
+    .limit(20);
 
   return (
     <main className="min-h-screen px-4 py-6 text-app-text sm:px-6 lg:px-8">
@@ -102,6 +118,24 @@ export default async function VideoEditorPage({
           </p>
         ) : null}
 
+        {error ? (
+          <p className="mt-5 rounded-xl border border-red-400/20 bg-red-950/35 px-4 py-3 text-sm text-red-200">
+            {error}
+          </p>
+        ) : null}
+        {revised ? (
+          <p className="mt-5 rounded-xl border border-emerald-400/20 bg-emerald-950/25 px-4 py-3 text-sm text-emerald-200">
+            Script revised from your feedback. Review the scenes below, then
+            hit <span className="font-semibold">Re-render final video</span> to
+            produce the new cut.
+          </p>
+        ) : null}
+        {restored ? (
+          <p className="mt-5 rounded-xl border border-emerald-400/20 bg-emerald-950/25 px-4 py-3 text-sm text-emerald-200">
+            Script version restored. Review it, then re-render.
+          </p>
+        ) : null}
+
         {/* Final video */}
         {project.finalUrl ? (
           <section className="mt-6 rounded-2xl border border-app-border bg-app-surface/60 p-5">
@@ -114,6 +148,35 @@ export default async function VideoEditorPage({
             </div>
             <video src={project.finalUrl} controls playsInline
               className="mt-4 max-h-[480px] w-full rounded-xl bg-black" />
+          </section>
+        ) : null}
+
+        {/* Refine the whole video from free-text feedback (revises the script;
+            you review, then re-render). Hidden while a render is in flight. */}
+        {scenes.length > 0 && !rendering ? (
+          <section className="mt-6 rounded-2xl border border-app-border-strong bg-app-surface p-5">
+            <h2 className="text-lg font-semibold">Refine with feedback</h2>
+            <p className="mt-1 text-sm text-app-text-muted">
+              Describe what to change about the whole video — the AI rewrites
+              the {isAvatar ? "script" : "scenes and voiceover"} in the same
+              language and style. You review the result, then re-render.
+            </p>
+            <form action={refineVideoScript} className="mt-3 flex flex-col gap-2 sm:flex-row sm:items-end">
+              <input type="hidden" name="projectId" value={project.id} />
+              <label className="flex-1 text-sm">
+                <textarea
+                  name="feedback"
+                  required
+                  rows={2}
+                  dir="auto"
+                  placeholder="e.g. Punchier hook, cut the third scene, warmer tone, mention it's handmade…"
+                  className={`${field} resize-none`}
+                />
+              </label>
+              <button className="whitespace-nowrap rounded-xl bg-amber-400 px-4 py-2.5 text-sm font-bold text-zinc-950 transition-colors hover:bg-amber-300">
+                Revise script
+              </button>
+            </form>
           </section>
         ) : null}
 
@@ -235,6 +298,41 @@ export default async function VideoEditorPage({
           <p className="mt-8 text-sm text-app-text-subtle">
             No script yet — hit “Re-render final video” to generate one.
           </p>
+        ) : null}
+
+        {/* Script version history — every AI feedback-revision snapshots the
+            prior script; restore any version, then re-render. */}
+        {scriptHistory.length > 0 ? (
+          <section className="mt-6 rounded-2xl border border-app-border bg-app-surface/60 p-5">
+            <h2 className="text-lg font-semibold">Script history</h2>
+            <p className="mt-1 text-sm text-app-text-muted">
+              Each refinement keeps the previous script. Restore any version —
+              the current one is snapshotted first, so it&apos;s reversible.
+            </p>
+            <ul className="mt-3 divide-y divide-app-border">
+              {scriptHistory.map((h) => (
+                <li key={h.id} className="flex items-center justify-between gap-3 py-2.5">
+                  <div className="min-w-0">
+                    <p className="truncate text-sm text-app-text">
+                      {h.feedback ? `“${h.feedback}”` : "Snapshot before a restore"}
+                    </p>
+                    <p className="text-xs text-app-text-subtle">
+                      {new Date(h.createdAt).toLocaleString()}
+                    </p>
+                  </div>
+                  {!rendering ? (
+                    <form action={restoreVideoScriptVersion}>
+                      <input type="hidden" name="projectId" value={project.id} />
+                      <input type="hidden" name="historyId" value={h.id} />
+                      <button className="whitespace-nowrap rounded-lg border border-app-border-emphasis bg-app-surface-2 px-3 py-1.5 text-xs font-semibold text-app-text transition-colors hover:bg-app-surface-2">
+                        Restore
+                      </button>
+                    </form>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          </section>
         ) : null}
       </div>
     </main>

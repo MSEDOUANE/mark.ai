@@ -8,6 +8,7 @@ import { ensureProfile } from "@/lib/auth/ensure-profile";
 import { db, schema } from "@/db";
 import { inngest } from "@/inngest/client";
 import type { VideoScript, VideoScriptInput } from "@/lib/ai/video-script";
+import { reviseVideoScript } from "@/lib/ai/video-script";
 
 function clean(formData: FormData, key: string): string | null {
   const v = String(formData.get(key) ?? "").trim();
@@ -239,6 +240,125 @@ export async function moveScene(formData: FormData) {
     .set({ script, updatedAt: new Date() })
     .where(eq(schema.videoProjects.id, projectId));
   revalidatePath(`/dashboard/videos/${projectId}`);
+}
+
+/** Loads brand name/tone for a project's brand profile, if any (for revision context). */
+async function brandContextFor(project: typeof schema.videoProjects.$inferSelect) {
+  if (!project.brandProfileId) return { brandName: null, tone: null };
+  const [brand] = await db
+    .select({ name: schema.brandProfiles.name, tone: schema.brandProfiles.tone })
+    .from(schema.brandProfiles)
+    .where(eq(schema.brandProfiles.id, project.brandProfileId))
+    .limit(1);
+  return { brandName: brand?.name ?? null, tone: brand?.tone ?? null };
+}
+
+/**
+ * Refine the WHOLE video from free-text feedback: snapshot the current script
+ * to history, have the AI rewrite it incorporating the feedback, and save the
+ * new script. Deliberately does NOT auto re-render — the user reviews the new
+ * scenes/voiceover in the editor, then hits "Re-render" (saves fal credits).
+ * The revised script carries no scene asset URLs, so a re-render re-films
+ * every scene from the new visuals.
+ */
+export async function refineVideoScript(formData: FormData) {
+  const { org } = await requireOrg();
+  const projectId = clean(formData, "projectId");
+  const feedback = clean(formData, "feedback");
+  if (!projectId) return;
+  const project = await ownedProject(projectId, org.id);
+  if (!project) return;
+  if (!feedback) {
+    redirect(`/dashboard/videos/${projectId}?error=` + encodeURIComponent("Add some feedback to refine the video."));
+  }
+
+  const current = project.script as VideoScript;
+  if (!current?.scenes?.length) {
+    redirect(`/dashboard/videos/${projectId}?error=` + encodeURIComponent("No script to refine yet — render one first."));
+  }
+
+  const { brandName, tone } = await brandContextFor(project);
+
+  let revised: VideoScript;
+  try {
+    revised = await reviseVideoScript({
+      current,
+      feedback: feedback!,
+      style: project.style,
+      language: project.language,
+      dialect: project.dialect,
+      brandName,
+      tone,
+    });
+  } catch (err) {
+    console.error("[videos] refine failed:", err);
+    redirect(`/dashboard/videos/${projectId}?error=` + encodeURIComponent("Couldn't revise the script — try again."));
+  }
+
+  // Snapshot the pre-revision script (with the feedback that superseded it),
+  // then overwrite. Best-effort history — never block the revision on it.
+  try {
+    await db.insert(schema.videoScriptHistory).values({
+      videoProjectId: projectId,
+      orgId: org.id,
+      snapshot: current,
+      feedback: feedback!,
+    });
+  } catch (err) {
+    console.error("[videos] script-history snapshot failed:", err);
+  }
+
+  await db
+    .update(schema.videoProjects)
+    .set({ script: revised!, updatedAt: new Date() })
+    .where(eq(schema.videoProjects.id, projectId));
+  revalidatePath(`/dashboard/videos/${projectId}`);
+  redirect(`/dashboard/videos/${projectId}?revised=1`);
+}
+
+/**
+ * Restore a past script version. Snapshots the CURRENT script first (symmetric
+ * / reversible, feedback=null since it wasn't feedback-driven), then swaps in
+ * the chosen snapshot. Doesn't auto re-render — the user reviews and renders.
+ */
+export async function restoreVideoScriptVersion(formData: FormData) {
+  const { org } = await requireOrg();
+  const projectId = clean(formData, "projectId");
+  const historyId = clean(formData, "historyId");
+  if (!projectId || !historyId) return;
+  const project = await ownedProject(projectId, org.id);
+  if (!project) return;
+
+  const [entry] = await db
+    .select()
+    .from(schema.videoScriptHistory)
+    .where(
+      and(
+        eq(schema.videoScriptHistory.id, historyId),
+        eq(schema.videoScriptHistory.videoProjectId, projectId),
+        eq(schema.videoScriptHistory.orgId, org.id),
+      ),
+    )
+    .limit(1);
+  if (!entry) return;
+
+  try {
+    await db.insert(schema.videoScriptHistory).values({
+      videoProjectId: projectId,
+      orgId: org.id,
+      snapshot: project.script,
+      feedback: null,
+    });
+  } catch (err) {
+    console.error("[videos] pre-restore snapshot failed:", err);
+  }
+
+  await db
+    .update(schema.videoProjects)
+    .set({ script: entry.snapshot as VideoScript, updatedAt: new Date() })
+    .where(eq(schema.videoProjects.id, projectId));
+  revalidatePath(`/dashboard/videos/${projectId}`);
+  redirect(`/dashboard/videos/${projectId}?restored=1`);
 }
 
 export async function deleteVideoProject(formData: FormData) {

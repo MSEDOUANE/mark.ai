@@ -544,6 +544,32 @@ export const videoProjects = pgTable("video_projects", {
 });
 
 /**
+ * Version history for a video project's SCRIPT — one snapshot of the previous
+ * VideoScript taken just before each AI feedback-revision (and before a
+ * restore), plus the feedback that superseded it. Lets the Video Studio show
+ * a script's refinement conversation and restore any past version. Mirrors
+ * brand_profile_history.
+ */
+export const videoScriptHistory = pgTable("video_script_history", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  videoProjectId: uuid("video_project_id")
+    .notNull()
+    .references(() => videoProjects.id, { onDelete: "cascade" }),
+  orgId: uuid("org_id")
+    .notNull()
+    .references(() => organizations.id, { onDelete: "cascade" }),
+  // A full VideoScript snapshot (hook, scenes[], ctaLine) as it was before the
+  // revision that created this history row.
+  snapshot: jsonb("snapshot").notNull(),
+  // The free-text feedback the user gave to move PAST this snapshot (null when
+  // the snapshot was taken by a restore rather than a feedback revision).
+  feedback: text("feedback"),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .defaultNow()
+    .notNull(),
+});
+
+/**
  * WhatsApp lead conversations (from click-to-WhatsApp ads or organic inbound)
  * via the WhatsApp Business Cloud API webhook. One row per message; the AI
  * responder threads by contact number.

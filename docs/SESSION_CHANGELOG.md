@@ -206,3 +206,22 @@ A model-switch review (Fable reviewing Sonnet's commit `b2b9fda`) confirmed the 
 **Verified:** `tsc` + `eslint` clean. Live DB spike (9/9 checks) against real hosted Supabase — a real 3-version chain (v2 via a real Claude refine that correctly applied "add 20% off"), `loadGenerationThread` ordering, `loadNewerVersion` child-vs-tip detection, and the Library leaf-filter all confirmed. The authenticated page render itself is behind the login wall (not driveable headless); the build-breaker fix was proven structurally (the `"use server"` file now has exactly one export, async) plus tsc/eslint/import-resolution, not via a production build (skipped to avoid corrupting the running dev server's `.next`).
 
 **Known limitation:** the Library leaf-filter is computed within the 100-row query window, so a parent whose only child fell outside the window could still show as a card — acceptable given the pre-existing 100-row cap.
+
+---
+
+## Refine generated VIDEOS with feedback (script revision + version history)
+
+**Why:** the same "keep enhancing with feedback" ask, now for videos. Videos are a different architecture from text — they live in `video_projects` (not `generations`), the AI artifact is the *script* (`VideoScript`: hook + scenes{visual,motion,voiceover,duration} + ctaLine), and re-rendering is expensive (fal credits) and async (Inngest, minutes). The editor already had per-scene manual editing + re-render; what was missing is natural-language, whole-video revision.
+
+**Scope (user-chosen via AskUserQuestion):** review-first (no auto re-render) + keep script version history.
+
+**Built:**
+- **`reviseVideoScript(current, feedback, ctx)`** in `video-script.ts` — feeds the current script + feedback to the model and returns a revised `VideoScript`, preserving language/dialect/style and scene count (unless the feedback says otherwise). Strips render artifacts (asset URLs) so a revised script re-films cleanly.
+- **`refineVideoScript(formData)`** action — snapshots the current script to the new `video_script_history` table (with the feedback), revises, saves the new script, and redirects back with a "review then re-render" banner. **Does not auto-render** — the user reviews the new scenes and hits the existing Re-render button (saves credits).
+- **`restoreVideoScriptVersion(formData)`** action — snapshots the current script first (symmetric/reversible), then swaps in a chosen past version.
+- **`video_script_history`** table (`scripts/add-video-script-history-table.ts`, mirrors `brand_profile_history`): videoProjectId/orgId/snapshot(jsonb)/feedback/createdAt, indexed by (project, createdAt desc).
+- **Video editor** (`videos/[id]/page.tsx`): a "Refine with feedback" box (works for avatar + scene styles), a "Script history" panel with Restore buttons, and info/error banners via searchParams.
+
+**Design note — why NOT the text model (immutable new-row chain):** a video project is heavy (rendered assets, finalUrl) and re-rendering costs real money, so duplicating a whole project per refine would double render cost. Video refines the script *in place* on one project and snapshots the prior script for reversibility — consistent with the existing in-place scene editor and with brand-profile version history.
+
+**Verified:** `tsc` + `eslint` clean. Live spike (8/8) against real Claude + hosted Supabase — `reviseVideoScript` applied "make the hook mention it's handmade + add urgency, keep 2 scenes" correctly (produced "Wait, you NEED this handmade coffee mug before they're gone.", 2 scenes preserved); `video_script_history` snapshot + restore round-trip and ON DELETE CASCADE all confirmed. The authenticated editor render is behind the login wall (not driven headless); the actual re-render can't run until the fal balance is topped up (known billing block), but the render pipeline is unchanged — refine only rewrites the script it consumes.
